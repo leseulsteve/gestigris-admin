@@ -1,0 +1,51 @@
+<md-toolbar>
+  <div class="md-toolbar-tools">
+    <md-button class="md-icon-button" aria-label="Menu">
+      <md-icon md-svg-icon="navigation:menu"></md-icon>
+    </md-button>
+    <h2>Interventions</h2>
+    <span flex></span>
+    <md-button class="md-icon-button" aria-label="More">
+      <md-icon md-svg-icon="content:add" ng-click="interventionsSectionCtrl.addPlage()"></md-icon>
+    </md-button>
+  </div>
+</md-toolbar>
+
+<div layout="column" flex>
+	<md-content layout="column" flex layout-margin class="plage-intervention-list">
+
+  <carousel class="wrap" flex layout="row">
+		<ul class="carousel">
+      <li class="carousel-seat">
+        <h2>1</h2>
+      </li>
+      <li class="carousel-seat">
+        <h2>2</h2>
+      </li>
+      <li class="carousel-seat">
+        <h2>3</h2>
+      </li>
+      <li class="carousel-seat">
+        <h2>4</h2>
+      </li>
+      <li class="carousel-seat">
+        <h2>5</h2>
+      </li>
+      <li class="carousel-seat is-ref">
+        <h2>6</h2>
+      </li>
+    </ul>
+  </carousel>
+
+  <div class="controls">
+    <button class="toggle" ng-click="interventionsSectionCtrl.next()">Next</button>
+  </div>
+    
+
+		<!--<plage-intervention layout="column" class="about-carousel";
+                        ng-repeat-owl-carousel carousel-init="interventionsSectionCtrl.carouselInitializer"
+												ng-repeat="plage in interventionsSectionCtrl.plages">
+		</plage-intervention>-->
+
+	</md-content>
+</div>

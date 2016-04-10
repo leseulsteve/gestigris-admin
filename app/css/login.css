@@ -1,0 +1,25 @@
+body.unauthenticated {
+  margin: 0;
+  padding: 0;
+  background: url(/img/home.jpeg) no-repeat center fixed;
+  -webkit-background-size: cover;
+  background-size: cover;
+}
+
+.ng-hide {
+  opacity: 0;
+}
+
+[login].ng-hide-remove-active {
+  -webkit-animation: slideInDown .5s;
+  animation: slideInDown .5s;
+}
+
+[login].ng-hide-add-active {
+  -webkit-animation: slideOutDown .5s;
+  animation: slideOutDown .5s;
+}
+
+[login] md-card-content {
+  height: 200px;
+}

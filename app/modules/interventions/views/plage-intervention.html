@@ -1,0 +1,37 @@
+<div layout="column" layout-margin class="header">
+	<div layout="row" flex>
+		<div class="md-title">{{ plage.etablissement.toString() }}</div>
+		<md-menu md-position-mode="target-right target">
+      <md-button aria-label="Open demo menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+        <md-icon md-menu-origin md-svg-icon="navigation:more_vert"></md-icon>
+      </md-button>
+      <md-menu-content width="4">
+        <md-menu-item>
+          <md-button ng-click="plageInterventionCtrl.addIntervention($event)">
+            <div layout="row" flex>
+              <p flex>Ajout d'une intervention</p>
+              <md-icon md-menu-align-target md-svg-icon="action:event" style="margin: auto 3px auto 0;"></md-icon>
+            </div>
+          </md-button>
+        </md-menu-item>
+      </md-menu-content>
+    </md-menu>
+	</div>
+	<div >{{ plage.date.format('[Le] dddd DD MMMM YYYY') }}</div>
+</div>
+
+<md-divider></md-divider>
+
+<md-content layout="column">
+	<intervention-card ng-repeat="intervention in plageInterventionCtrl.interventions"></intervention-card>
+	
+	
+	<md-card class="conversation">
+		<md-card-header layout="column">
+			<md-card-header-text layout="row" layout-align="start center">
+				<md-icon md-svg-icon="communication:forum"></md-icon>
+	      <span class="md-title" flex></span>
+	    </md-card-header-text>
+		</md-card-header>
+	</md-card>
+</md-content>

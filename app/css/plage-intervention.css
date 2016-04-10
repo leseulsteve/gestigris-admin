@@ -1,0 +1,60 @@
+plage-intervention {
+  background-color: #f5f5f5;
+}
+
+plage-intervention .header {
+  min-height: 75px;
+}
+
+plage-intervention .header .md-title {
+  line-height: 20px;
+}
+
+plage-intervention .header div:last-child {
+  margin-left: 9px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+plage-intervention md-content {
+  background: transparent;
+}
+
+.plage-intervention-list plage-intervention {
+  width: 350px;
+}
+
+intervention-card md-card-header-text div:first-child {
+  margin-bottom: 8px;
+}
+
+intervention-card md-card-header {
+  padding-bottom: 0px;
+}
+
+intervention-card md-card-header md-icon {
+  margin-right: 10px;
+}
+
+intervention-card md-card-content {
+  padding-top: 0px;
+}
+
+intervention-card md-card-content div:not(:last-child) {
+  margin-bottom: 8px;
+}
+
+intervention-card.booked md-card {
+  background-color: rgba(0,112,60, 0.3);
+}
+
+intervention-card avatar md-icon {
+  width: 40px;
+  height: 40px;
+}
+
+intervention-card avatar img {
+  width: 40px;
+  height: 40px;
+  margin: 5px;
+}

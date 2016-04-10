@@ -1,0 +1,32 @@
+{
+  "LOGIN_FORM": {
+    "EMAIL": {
+      "DESCRIPTION": "Courriel",
+      "ERRORS": {
+        "REQUIRED": "Veuillez inscrire votre courriel",
+        "INVALID": "Adresse courriel non valide"
+      }
+    },
+    "PASSWORD": {
+      "DESCRIPTION": "Mot de passe",
+      "ERRORS": {
+        "REQUIRED": "Veuillez inscrire votre mot de passe"
+      },
+      "RESET_PASSWORD": "Réinitialisation du mot de passe"
+    },
+    "BUTTONS": {
+      "SIGN_IN": "Se connecter"
+    }
+  },
+  "INTERVENTIONS": {
+    "INFORMATIONS": "informations",
+    "PARTICIPANT": "participant",
+    "PARTICIPANTS": "participants",
+    "GROUP_TYPE": "type de groupe"
+  },
+  "ETABLISSEMENTS": {
+    "TYPE": "type d'établissement",
+    "ADRESSE": "adresse",
+    "DUREE": "durée de l'intervention"
+  }
+}

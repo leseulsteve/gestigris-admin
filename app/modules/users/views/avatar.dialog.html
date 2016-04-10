@@ -1,0 +1,19 @@
+<md-dialog aria-label="Nouvelle conversation" style="width:550px;height:450px;">
+  <form name="conversationForm" ng-submit="conversationsSectionCtrl.summitForm(conversationForm)" novalidate>
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <div class="cropArea">
+          <img-crop image="myImage" result-image="myCroppedImage"></img-crop>
+        </div>
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-button ng-click="cancel()">
+        Annuler
+      </md-button>
+      <md-button ng-click="change()">
+        Changer
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

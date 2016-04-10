@@ -1,0 +1,29 @@
+<md-card md-ink-ripple ng-click="interventionCardCtrl.showDetails($event)">
+	<md-card-header layout="column">
+		<md-card-header-text layout="column">
+			<div layout="row" layout-align="start center">
+				<md-icon md-svg-icon="action:event"></md-icon>
+	    	<span class="md-title" flex>{{ intervention.date.start.format('HH:mm') }} - {{ intervention.date.end.format('HH:mm') }}</span>
+	    </div>
+	  	<div layout="row">
+				<div layout="row" layout-wrap>
+					<span class="badge"ng-repeat="tag in intervention.tags">{{ tag.name }}</span>
+				</div>
+		  </div>
+	  </md-card-header-text>
+  </md-card-header>
+  <md-card-content>
+  	<div ng-show="!intervention.isBooked()">
+	  	<span>Demandes</span>
+	    <div layout="row" layout-wrap>
+	      <avatar ng-repeat="user in intervention.demandes"></avatar>
+	    </div>
+	  </div>
+	  <div>
+			<span>Participants</span>
+	    <div layout="row" layout-wrap>
+	      <avatar ng-repeat="user in intervention.participants"></avatar>
+	    </div>
+	  </div>
+	</md-card-content>
+</md-card>

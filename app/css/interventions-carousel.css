@@ -1,0 +1,29 @@
+.wrap {
+  overflow: hidden;
+}
+
+.carousel {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  width: 100%;
+  right: 102%;
+}
+
+.carousel-seat {
+	margin: 5px;
+	width: 100%;
+  background: #ddd;
+  flex: 1 0 100%;
+  order: 2;
+}
+
+.carousel-seat.is-ref {
+  order: 1
+}
+
+.carousel-seat:nth-child(even) {
+  background: #d5d5d5;
+}
