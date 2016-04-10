@@ -5,16 +5,7 @@ var ApplicationConfiguration = (function () {
   // Init module configuration options
   var applicationModuleName = 'angularjsapp';
   var applicationModuleVendorDependencies = [
-    'ngAnimate',
-    'ngSanitize',
-    'ngMessages',
-    'ui.router',
-    'ngMaterial',
-    'leseulsteve.angular-mongoose',
-    'leseulsteve.angular-user-auth',
-    'leaflet-directive',
-    'pascalprecht.translate',
-    'btford.socket-io'
+    'gestigris-common'
   ];
 
   // Add a new vertical module

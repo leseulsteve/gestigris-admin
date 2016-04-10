@@ -1,3 +1,3 @@
 'use strict';
 
-ApplicationConfiguration.registerModule('interventions', ['ocNgRepeat']);
+ApplicationConfiguration.registerModule('interventions');

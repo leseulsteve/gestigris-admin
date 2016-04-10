@@ -1,8 +1,14 @@
 'use strict';
 
-module.exports = function (grunt) {
+module.exports = function(grunt) {
 
-  require('load-grunt-tasks')(grunt);
+  require('jit-grunt')(grunt, {
+    scsslint: 'grunt-scss-lint',
+    ngconstant: 'grunt-ng-constant',
+    ngtemplates: 'grunt-angular-templates',
+    useminPrepare: 'grunt-usemin',
+    comments: 'grunt-stripcomments'
+  });
 
   var gruntConfig = {
 
@@ -45,8 +51,21 @@ module.exports = function (grunt) {
         files: ['<%= paths.app %>/modules/**/views/*.html'],
       },
 
+      sass: {
+        files: '<%= paths.app %>/scss/*.scss',
+        tasks: [
+          'prettysass:all',
+          'scsslint:all',
+          'sass:dev'
+        ],
+        options: {
+          livereload: false
+        }
+      },
+
       css: {
         files: ['<%= paths.app %>/css/*.css'],
+        tasks: ['autoprefixer:dev'],
         options: {
           livereload: false
         }
@@ -62,7 +81,7 @@ module.exports = function (grunt) {
         },
         files: [
           '<%= paths.app %>/*.html',
-          '<%= paths.app %>/css/{,*/}*.css',
+          '<%= paths.temp %>/css/{,*/}*.css',
           '<%= paths.app %>/img/**/*.{png,jpg,jpeg,gif,webp,svg}'
         ]
       }
@@ -72,15 +91,16 @@ module.exports = function (grunt) {
       options: {
         port: 9001,
         hostname: 'localhost',
-        livereload: 1338
+        livereload: 1338,
+        base: [
+          '.tmp',
+          '<%= paths.app %>/lib/gestigris-common/dist',
+          '<%= paths.app %>'
+        ]
       },
       livereload: {
         options: {
-          open: true,
-          base: [
-            '.tmp',
-            '<%= paths.app %>'
-          ]
+          open: true
         }
       },
       dist: {
@@ -119,6 +139,46 @@ module.exports = function (grunt) {
       }
     },
 
+    prettysass: {
+      options: {
+        alphabetize: false
+      },
+      all: {
+        src: '<%= paths.app %>/scss/*.scss'
+      }
+    },
+
+    scsslint: {
+      options: {
+        colorizeOutput: true,
+        reporterOutput: null
+      },
+      all: {
+        src: '<%= paths.app %>/scss/*.scss'
+      }
+    },
+
+    sass: {
+      dev: {
+        files: [{
+          expand: true,
+          flatten: true,
+          src: '<%= paths.app %>/scss/main.scss',
+          dest: '<%= paths.temp %>/css',
+          ext: '.css'
+        }]
+      },
+      dist: {
+        files: [{
+          expand: true,
+          flatten: true,
+          src: '<%= paths.app %>/scss/main.scss',
+          dest: '<%= paths.app %>/css',
+          ext: '.css'
+        }]
+      }
+    },
+
     clean: {
       dev: '<%= paths.temp %>',
       dist: {
@@ -142,15 +202,15 @@ module.exports = function (grunt) {
     autoprefixer: {
       dev: {
         expand: true,
-        cwd: '<%= paths.app %>/css',
+        cwd: '<%= paths.temp %>/css',
         src: '*.css',
-        dest: '<%= paths.app %>/css'
+        dest: '<%= paths.temp %>/css'
       },
       dist: {
         expand: true,
-        cwd: '<%= paths.app %>/css',
+        cwd: '<%= paths.temp %>/css',
         src: '*.css',
-        dest: '<%= paths.app %>/css'
+        dest: '<%= paths.temp %>/css'
       },
     },
 
@@ -230,6 +290,54 @@ module.exports = function (grunt) {
       options: {} // correction d'un bug (https://github.com/paths/paths/issues/824)
     },
 
+    copy: {
+      dist: {
+        files: [{
+          expand: true,
+          dot: true,
+          cwd: '<%= paths.app %>',
+          dest: '<%= paths.dist %>',
+          src: [
+            '*.ico',
+            '.htaccess',
+            'index.html'
+          ]
+        }]
+      },
+      commonIcons: {
+        files: [{
+          expand: true,
+          cwd: '<%= paths.app %>/lib/gestigris-common/dist/icons',
+          src: '**',
+          dest: '<%= paths.dist %>/icons'
+        }]
+      },
+      commonFonts: {
+        files: [{
+          expand: true,
+          cwd: '<%= paths.app %>/lib/gestigris-common/dist/fonts',
+          src: '**',
+          dest: '<%= paths.dist %>/fonts'
+        }]
+      },
+      commonTranslations: {
+        files: [{
+          expand: true,
+          cwd: '<%= paths.app %>/lib/gestigris-common/dist/translations',
+          src: '**',
+          dest: '<%= paths.dist %>/translations'
+        }]
+      },
+      commonImages: {
+        files: [{
+          expand: true,
+          cwd: '<%= paths.app %>/lib/gestigris-common/dist/img',
+          src: '**',
+          dest: '<%= paths.dist %>/img'
+        }]
+      }
+    },
+
     imagemin: {
       dist: {
         files: [{
@@ -288,22 +396,6 @@ module.exports = function (grunt) {
       },
     },
 
-    copy: {
-      dist: {
-        files: [{
-          expand: true,
-          dot: true,
-          cwd: '<%= paths.app %>',
-          dest: '<%= paths.dist %>',
-          src: [
-            '*.ico',
-            '.htaccess',
-            'index.html'
-          ]
-        }]
-      }
-    },
-
     ngtemplates: {
       options: {
         module: 'angularjsapp',
@@ -351,6 +443,12 @@ module.exports = function (grunt) {
       dist2: [
         'copy:dist',
         'concat:templates',
+      ],
+      copyCommon: [
+        'copy:commonImages',
+        'copy:commonTranslations',
+        'copy:commonFonts',
+        'copy:commonIcons'
       ]
     }
   };
@@ -390,20 +488,21 @@ module.exports = function (grunt) {
     return {
       options: {
         ignorePath: ['app/'],
-        min: true
+      //  min: true
       },
       localDependencies: {
         files: {
           'app/index.html': [
-            'app/js/config.js',
-            'app/js/application.js',
+            'app/config/config.js',
+            'app/config/application.js',
             'app/modules/*/*.js',
+            'app/config/constants.js',
             'app/modules/*/config/*.js',
             'app/modules/*/services/*.js',
             'app/modules/*/directives/*.js',
             'app/modules/*/filters/*.js',
             'app/modules/*/controllers/*.js',
-            'app/css/*.css'
+            '<%= paths.app %>/css/*.css'
           ]
         }
       },
@@ -415,7 +514,7 @@ module.exports = function (grunt) {
     };
   }
 
-  grunt.registerTask('inject', function (mode) {
+  grunt.registerTask('inject', function(mode) {
     var injector;
     if (mode === 'dev') {
       injector = getDevInjector();
@@ -431,9 +530,12 @@ module.exports = function (grunt) {
   grunt.registerTask('dev', [
     'clean:dev',
     'newer:jshint:all',
+    'prettysass:all',
+    'scsslint:all',
+    'sass:dev',
+    'autoprefixer:dev',
     'ngconstant:development',
     'concurrent:dev',
-    'autoprefixer:dev',
     'inject:dev',
     'connect:livereload',
     'watch'
@@ -455,10 +557,11 @@ module.exports = function (grunt) {
     'concurrent:dist2',
     'copy:dist',
     'cssmin',
-    'uglify',
+    //  'uglify',
     'rev',
     'usemin',
     'htmlmin',
+    'concurrent:copyCommon',
     'comments:dist',
     'clean:postDist'
   ]);

@@ -1,0 +1,26 @@
+<md-dialog aria-label="Nouveau message" style="width:800px;">
+  <form novalidate name="benevoleForm" ng-submit="closeModal(benevoleForm)">
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Nouveau bénévole</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-svg-icon="navigation:close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content>
+      <div class="md-dialog-content">
+
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-button type="button" ng-click="cancelModal()">
+        Annuler
+      </md-button>
+      <md-button type="submit" style="margin-right:20px;">
+        Ajouter
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

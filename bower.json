@@ -1,29 +1,11 @@
 {
-  "name": "GestigrisIntervention",
+  "name": "gestigris-administration",
   "version": "0.0.1",
-  "description": "Cordova app built with AngularJs",
   "dependencies": {
-    "angular-sanitize": "~1.4.5",
-    "angular-ui-router": "~0.2.15",
-    "angular-user-auth": "git+https://github.com/leseulsteve/angular-user-auth.git",
-    "angular-mongoose": "git+https://github.com/leseulsteve/angular-mongoose.git",
-    "angular-messages": "~1.4.5",
-    "angular-translate": "~2.7.2",
-    "moment": "~2.10.6",
-    "angular-locale": "~0.1.9",
-    "moment-duration-format": "~1.3.0",
-    "angular-material": "~1.0",
-    "animate.css": "~3.4.0",
-    "angular-leaflet-directive": "~0.10.0",
-    "angular-socket-io": "~0.7.0",
-    "lodash": "~3.10",
-    "angular-translate-loader-static-files": "~2.9.1",
-    "angular-i18n": "~1.5.0",
-    "ng-repeat-owl-carousel": "*",
-    "OwlCarousel": "~1.3.2"
+    "gestigris-common": "git+https://github.com/leseulsteve/gestigris-common.git"
   },
   "resolutions": {
-    "angular": "1.5.0",
+    "angular": "1.5.3",
     "lodash": "~3.10",
     "angular-translate": "~2.9.1"
   }

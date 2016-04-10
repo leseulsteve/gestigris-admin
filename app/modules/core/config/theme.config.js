@@ -2,7 +2,9 @@
 
 angular.module('core')
   .config(function ($mdThemingProvider) {
+
     $mdThemingProvider.theme('default')
-      .primaryPalette('indigo')
-      .accentPalette('pink');
+      .primaryPalette('redGris')
+      .accentPalette('orangeGris')
+      .warnPalette('vertGris');
   });

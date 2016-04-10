@@ -1,9 +1,0 @@
-<div layout="row" layout-align="center center">
-	<md-icon ng-if="!hasImage" md-svg-icon="action:face" class="md-avatar" alt="user.toString()">
-		<md-tooltip>{{ user.toString() }}</md-tooltip>
-	</md-icon>
-	<span ng-if="hasImage">
- 		<img ng-src="{{ user.avatar }}" alt="{{ user.toString() }}"/>
- 		<md-tooltip>{{ user.toString() }}</md-tooltip>
- 	</span>
-</div>
