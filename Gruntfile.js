@@ -450,6 +450,17 @@ module.exports = function(grunt) {
         'copy:commonFonts',
         'copy:commonIcons'
       ]
+    },
+    'ftp-deploy': {
+      build: {
+        auth: {
+          host: '192.99.23.18',
+          port: 21,
+          authKey: 'key'
+        },
+        src: '<%= paths.dist %>',
+        dest: '/public_html/admin'
+      }
     }
   };
 
@@ -488,7 +499,7 @@ module.exports = function(grunt) {
     return {
       options: {
         ignorePath: ['app/'],
-      //  min: true
+        //  min: true
       },
       localDependencies: {
         files: {
@@ -563,6 +574,7 @@ module.exports = function(grunt) {
     'htmlmin',
     'concurrent:copyCommon',
     'comments:dist',
-    'clean:postDist'
+    'clean:postDist',
+    'ftp-deploy:build'
   ]);
 };
