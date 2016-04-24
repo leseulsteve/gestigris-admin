@@ -45,7 +45,7 @@ intervention-card md-card-content div:not(:last-child) {
 }
 
 intervention-card.booked md-card {
-  background-color: rgba(0,112,60, 0.3);
+  background-color: rgba(0, 112, 60, 0.3);
 }
 
 intervention-card avatar md-icon {

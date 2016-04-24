@@ -1,51 +1,31 @@
-<md-toolbar>
-  <div class="md-toolbar-tools">
-    <md-button class="md-icon-button" aria-label="Menu">
-      <md-icon md-svg-icon="navigation:menu"></md-icon>
-    </md-button>
-    <h2>Interventions</h2>
-    <span flex></span>
-    <md-button class="md-icon-button" aria-label="More">
-      <md-icon md-svg-icon="content:add" ng-click="interventionsSectionCtrl.addPlage()"></md-icon>
-    </md-button>
+<div layout="column" flex class="layout-bg">
+
+  <div flex layout="row">
+  <md-subheader class="filter-bar" flex="30">
+    <md-input-container md-no-float class="md-block md-icon-right">
+      <md-icon md-svg-icon="action:search"></md-icon>
+      <input ng-model="search" placeholder="recherche..." ng-change="benevolesSectionCtrl.doSearch(search)" ng-model-options="{ debounce: 1000 }">
+      <md-icon md-svg-icon="content:clear" ng-show="search" ng-click="search = undefined;benevolesSectionCtrl.clearSearch()"></md-icon>
+    </md-input-container>
+  </md-subheader>
+    <div flex="70" layout="row" layout-align="center center">
+      <md-tabs layout-fill flex class="md-primary" class="benevole-fiche-tabs md-accent">
+        <md-tab>
+          <md-tab-label>Cette semaine</md-tab-label>
+        </md-tab>
+        <md-tab>
+          <md-tab-label>Ce mois-ci</md-tab-label>
+        </md-tab>
+        <md-tab>
+          <md-tab-label>Les autres</md-tab-label>
+        </md-tab>
+      </md-tabs>
+    </div>
   </div>
-</md-toolbar>
 
-<div layout="column" flex>
-	<md-content layout="column" flex layout-margin class="plage-intervention-list">
+	<md-content layout="row" flex layout-margin class="plage-intervention-list">
 
-  <carousel class="wrap" flex layout="row">
-		<ul class="carousel">
-      <li class="carousel-seat">
-        <h2>1</h2>
-      </li>
-      <li class="carousel-seat">
-        <h2>2</h2>
-      </li>
-      <li class="carousel-seat">
-        <h2>3</h2>
-      </li>
-      <li class="carousel-seat">
-        <h2>4</h2>
-      </li>
-      <li class="carousel-seat">
-        <h2>5</h2>
-      </li>
-      <li class="carousel-seat is-ref">
-        <h2>6</h2>
-      </li>
-    </ul>
-  </carousel>
-
-  <div class="controls">
-    <button class="toggle" ng-click="interventionsSectionCtrl.next()">Next</button>
-  </div>
-    
-
-		<!--<plage-intervention layout="column" class="about-carousel";
-                        ng-repeat-owl-carousel carousel-init="interventionsSectionCtrl.carouselInitializer"
-												ng-repeat="plage in interventionsSectionCtrl.plages">
-		</plage-intervention>-->
+		<plage-intervention layout-margin style="width: 400px;min-width: 400px" layout="column" ng-repeat="plage in interventionsSectionCtrl.plages"></plage-intervention>
 
 	</md-content>
 </div>

@@ -34,8 +34,8 @@ angular.module('interventions').factory('Benevole',
       role: 'Intervenant'
     }, {
       _id: 2,
-      prenom: 'Steve',
-      nomFamille: 'Boisvert',
+      prenom: 'Kevin',
+      nomFamille: 'Smith',
       role: 'Intervenant'
     }, {
       _id: 3,

@@ -5,8 +5,8 @@
     "gestigris-common": "git+https://github.com/leseulsteve/gestigris-common.git"
   },
   "resolutions": {
-    "angular": "1.5.3",
-    "lodash": "~3.10",
-    "angular-translate": "~2.9.1"
+    "angular": "1.5.5",
+    "angular-translate": "~2.9.1",
+    "lodash": "~4.11.1"
   }
 }

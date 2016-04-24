@@ -1,35 +1,36 @@
-<md-card layout="column" flex class="card-list">
-
-		<div layout="column" layout-padding
-				 style="background: url('/img/mb-bg-fb-22.png') no-repeat center;height:150px;min-height:150px">
-			<div layout="row">
-				<span flex></span>
-				<md-button class="md-icon-button" ng-click="benevoleFicheCtrl.sendMessage($event, benevole)">
-					<md-icon md-svg-icon="communication:message"></md-icon>
-					<md-tooltip>Message</md-tooltip>
-				</md-button>
-				<md-button class="md-icon-button" ng-click="benevoleFicheCtrl.deleteBenevole($event, benevole)">
-					<md-icon md-svg-icon="action:delete"></md-icon>
-					<md-tooltip>Supprimer</md-tooltip>
-				</md-button>
-			</div>
+<md-card layout="column" flex>
+		
+	<div layout="column" layout-padding class="fiche-header">
+		<div layout="row">
 			<span flex></span>
-			<div layout="row">
-				<div layout="row" layout-align="center start">
-					<avatar></avatar>
-				</div>
-				<div layout="column" layout-align="center start">
-					<span>{{ benevole.toString() }}</span>
-		      <span>{{ benevole.role }}</span>
-				</div>
+			<md-button class="md-icon-button" ng-click="benevoleFicheCtrl.sendMessage($event, benevole)">
+				<md-icon md-svg-icon="communication:message"></md-icon>
+				<md-tooltip>Message</md-tooltip>
+			</md-button>
+			<md-button class="md-icon-button" ng-click="benevoleFicheCtrl.deleteBenevole($event, benevole)">
+				<md-icon md-svg-icon="action:delete"></md-icon>
+				<md-tooltip>Supprimer</md-tooltip>
+			</md-button>
+		</div>
+		<span flex></span>
+		<div layout="row" class="benevoles-infos">
+			<div layout="row" layout-align="center start">
+				<avatar></avatar>
+			</div>
+			<div layout="column" layout-align="center start">
+				<span class="md-title">{{ benevole.toString() }}</span>
+	      <span class="md-subhead">{{ benevole.role }}</span>
 			</div>
 		</div>
+	</div>
 
-		<md-tabs class="md-accent" flex>
-      <md-tab>
+	<md-content flex style="overflow:visible;">
+
+		<md-tabs layout-fill flex class="benevole-fiche-tabs md-accent">
+      <md-tab layout-fill>
         <md-tab-label>Activité</md-tab-label>
         <md-tab-body>
-        	<md-content layout-margin layout="row">
+        	<md-content layout-padding layout="row" flex>
 
         	<div flex="60">
         	</div>
@@ -91,7 +92,7 @@
       <md-tab>
         <md-tab-label>Profil</md-tab-label>
         <md-tab-body>
-                <md-content layout-margin>
+        	<md-content layout-padding layout="row" flex>
 
       	<form name="userProfileForm" ng-submit="profilCtrl.saveProfile(userProfileForm)" novalidate>
 
@@ -216,4 +217,5 @@
         </md-tab-body>
       </md-tab>
     </md-tabs>
+    </md-content>
 	</md-card>

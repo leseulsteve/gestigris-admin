@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Gestigris - Administration</title>
-    <meta name="description" content="">
+    <meta name="description" content=""> 
     <meta name="viewport" content="width=device-width">
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
@@ -25,7 +25,6 @@
   </head>
 
   <body layout="row">
-    <sidenav layout="column"></sidenav>
     <div layout="column" role="main" flex>
       <md-progress-linear ng-show="loadingRoute" md-mode="indeterminate"></md-progress-linear>
       <toolbar></toolbar>
@@ -62,27 +61,36 @@
         <script src="config/application.js"></script>
         <script src="modules/benevoles/benevoles.module.js"></script>
         <script src="modules/core/core.js"></script>
+        <script src="modules/dashboard/dashboard.module.js"></script>
         <script src="modules/interventions/interventions.module.js"></script>
         <script src="modules/navigation/navigation.module.js"></script>
+        <script src="modules/search/search.module.js"></script>
         <script src="modules/users/users.module.js"></script>
         <script src="config/constants.js"></script>
         <script src="modules/benevoles/config/benevoles.routes.js"></script>
-        <script src="modules/core/config/core.routes.js"></script>
         <script src="modules/core/config/last-visit.run.js"></script>
         <script src="modules/core/config/theme.config.js"></script>
+        <script src="modules/dashboard/config/core.routes.js"></script>
         <script src="modules/interventions/config/interventions.routes.js"></script>
         <script src="modules/users/config/user-auth.config.js"></script>
         <script src="modules/benevoles/services/benevole.factory.js"></script>
         <script src="modules/interventions/services/intervention.factory.js"></script>
         <script src="modules/interventions/services/plage-intervention.factory.js"></script>
+        <script src="modules/search/services/search.service.js"></script>
         <script src="modules/users/services/user.factory.js"></script>
         <script src="modules/benevoles/directives/benevole-fiche.directive.js"></script>
+        <script src="modules/dashboard/directives/dashboard-card-content.directive.js"></script>
+        <script src="modules/dashboard/directives/dashboard-card-header.directive.js"></script>
+        <script src="modules/dashboard/directives/dashboard-card.directive.js"></script>
+        <script src="modules/dashboard/directives/dashboard-fullscreen-header-card.directive.js"></script>
         <script src="modules/interventions/directives/intervention-card.directive.js"></script>
         <script src="modules/interventions/directives/plage-intervention.directive.js"></script>
         <script src="modules/navigation/directives/side-nav.directive.js"></script>
         <script src="modules/navigation/directives/toolbar.directive.js"></script>
         <script src="modules/benevoles/controllers/benevole-fiche.controller.js"></script>
         <script src="modules/benevoles/controllers/benevoles-section.controller.js"></script>
+        <script src="modules/dashboard/controllers/dashboard-card.controller.js"></script>
+        <script src="modules/dashboard/controllers/dashboard.controller.js"></script>
         <script src="modules/interventions/controllers/intervention-card.controller.js"></script>
         <script src="modules/interventions/controllers/intervention-dialog.controller.js"></script>
         <script src="modules/interventions/controllers/interventions-section.controller.js"></script>

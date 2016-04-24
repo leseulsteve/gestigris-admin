@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
   require('jit-grunt')(grunt, {
     scsslint: 'grunt-scss-lint',
@@ -49,6 +49,9 @@ module.exports = function(grunt) {
 
       html: {
         files: ['<%= paths.app %>/modules/**/views/*.html'],
+        options: {
+          livereload: true
+        }
       },
 
       sass: {
@@ -525,7 +528,7 @@ module.exports = function(grunt) {
     };
   }
 
-  grunt.registerTask('inject', function(mode) {
+  grunt.registerTask('inject', function (mode) {
     var injector;
     if (mode === 'dev') {
       injector = getDevInjector();

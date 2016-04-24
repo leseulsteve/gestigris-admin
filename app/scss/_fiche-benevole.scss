@@ -1,0 +1,46 @@
+benevole-fiche {
+  .fiche-header {
+    background: url("../img/mb-bg-fb-22.png") no-repeat center;
+    background-size: cover;
+    height: 200px;
+    min-height: 200px;
+
+    .benevoles-infos {
+      padding-bottom: 40px;
+    }
+  }
+
+  .benevole-fiche-tabs {
+    position: absolute;
+    overflow: visible;
+
+    md-tabs-wrapper {
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)) !important;
+      padding: 20px 0 0;
+      box-sizing: border-box;
+      height: 68px;
+      top: -68px;
+
+      .md-tab {
+        color: rgba(255, 255, 255, 0.6) !important;
+
+        &.md-active, &.md-focused {
+          color: #fff !important;
+        }
+      }
+    }
+
+    md-tabs-content-wrapper {
+      top: 0;
+
+      md-tab-content {
+        overflow: hidden;
+
+        > div {
+          display: flex;
+          height: 100%;
+        }
+      }
+    }
+  }
+}

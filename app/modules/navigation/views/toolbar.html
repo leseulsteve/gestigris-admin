@@ -1,16 +1,44 @@
-<md-toolbar md-scroll-shrink>
+<!--<md-toolbar md-scroll-shrink ng-style="!loadingRoute && { 'padding-top' : '5px' }" style="padding-bottom: 5px;">
   <div class="md-toolbar-tools">
   	<md-button class="md-icon-button" aria-label="Menu" ng-hide="$mdMedia('gt-md')" ng-click="toolbarCtrl.showSidenav()">
       <md-icon md-svg-icon="navigation:menu"></md-icon>
     </md-button>
-    <h2>
-      <span>{{ toolbarCtrl.title }}</span>
-    </h2>
+    <h2>{{ toolbarCtrl.title }}</h2>
     <span flex></span>
     <md-button class="md-icon-button" aria-label="Menu"
     					 ng-repeat="tool in toolbarCtrl.tools"
     					 ng-click="toolbarCtrl.handleAction($event, tool.action)">
       <md-icon md-svg-icon="{{ tool.icon }}"></md-icon>
     </md-button>
+  </div>
+</md-toolbar>-->
+
+<md-toolbar md-scroll-shrink ng-style="!loadingRoute && { 'padding-top' : '5px' }" style="padding-bottom: 5px;">
+  <div class="md-toolbar-tools" ng-init="searchToggled = false">
+    <h2>Gestigris</h2>
+    <span flex></span>
+    <md-button class="md-icon-button" aria-label="Recherche"
+               ng-click="searchToggled = !searchToggled">
+      <md-icon md-svg-icon="action:search"></md-icon>
+    </md-button>
+    <md-autocomplete ng-class="{ show: searchToggled }" class="search-box"
+                     md-delay="500"
+                     md-search-text="searchText"
+                     md-selected-item-change="toolbarCtrl.selectSearchResult(item)"
+                     md-items="item in toolbarCtrl.search(searchText)"
+                     md-item-text="item.description"
+                     md-min-length="1"
+                     placeholder="recherche..."
+                     md-menu-class="autocomplete-search-template">
+      <md-item-template>
+        <div class="item-title" layout="row" layout-align="start center">
+          <span><md-icon md-svg-icon="{{ item.icon }}"></md-icon></span>
+          <span layout="column">
+            <div class="md-subhead" style="line-height: 25px;">{{ item.description }}</div>
+            <div  style="line-height: 20px;">{{ item.type }}</div>
+          </span>
+        </div>
+      </md-item-template>
+    </md-autocomplete>
   </div>
 </md-toolbar>
