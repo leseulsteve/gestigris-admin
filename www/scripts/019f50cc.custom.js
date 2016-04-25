@@ -66,7 +66,11 @@ ApplicationConfiguration.registerModule('dashboard');
 ;
 'use strict';
 
-ApplicationConfiguration.registerModule('interventions');
+ApplicationConfiguration.registerModule('interventions', ['navigation']);
+;
+'use strict';
+
+ApplicationConfiguration.registerModule('messages', ['navigation', 'benevoles']);
 ;
 'use strict';
 
@@ -168,6 +172,26 @@ angular.module('dashboard').config(
 'use strict';
 
 angular.module('interventions').config(
+  ['FabSpeedDialServiceProvider', 'INTERVENTIONS', function (FabSpeedDialServiceProvider, INTERVENTIONS) {
+
+    FabSpeedDialServiceProvider.addItem({
+      tooltip: 'plage d\'intervention',
+      icon: INTERVENTIONS.ICONS.PLAGE
+    });
+
+  }]);
+;
+'use strict';
+
+angular.module('interventions').constant('INTERVENTIONS', {
+  ICONS: {
+    PLAGE: 'action:event'
+  }
+});
+;
+'use strict';
+
+angular.module('interventions').config(
   ['$stateProvider', function ($stateProvider) {
 
     $stateProvider.
@@ -179,6 +203,31 @@ angular.module('interventions').config(
       controllerAs: 'interventionsSectionCtrl'
     });
   }]);
+;
+'use strict';
+
+angular.module('messages').config(
+  ['FabSpeedDialServiceProvider', 'MESSAGES', function (FabSpeedDialServiceProvider, MESSAGES) {
+
+    FabSpeedDialServiceProvider.addItem({
+      tooltip: 'message',
+      icon: MESSAGES.ICONS.MESSAGE,
+      dialog: {
+        templateUrl: 'modules/messages/views/nouveau-message.dialog.html',
+        controller: 'NouveauMessageController',
+        controllerAs: 'nouveauMessageCtrl'
+      }
+    });
+
+  }]);
+;
+'use strict';
+
+angular.module('messages').constant('MESSAGES', {
+  ICONS: {
+    MESSAGE: 'communication:message'
+  }
+});
 ;
 'use strict';
 
@@ -198,6 +247,8 @@ angular.module('interventions').factory('Benevole',
 
     var Benevole = function (params) {
       _.assign(this, params);
+      this.fullname = this.toString();
+      this.image = 'https://www.govloop.com/wp-content/uploads/avatars/2/3819dcd8c7718dd630a1aaefe12dc925-bpthumb.jpg';
     };
 
     Benevole.prototype.remove = function () {
@@ -301,6 +352,14 @@ angular.module('interventions').factory('Benevole',
         var deffered = $q.defer();
         $timeout(function () {
           deffered.resolve(_.find(benevoles, '_id', id));
+        }, 1000);
+        return deffered.promise;
+      },
+      search: function (query) {
+        console.log(query);
+        var deffered = $q.defer();
+        $timeout(function () {
+          deffered.resolve(benevoles);
         }, 1000);
         return deffered.promise;
       }
@@ -447,6 +506,34 @@ angular.module('interventions').factory('PlageIntervention',
     return PlageIntervention;
 
   }]);
+;
+'use strict';
+
+angular.module('navigation').provider('FabSpeedDialService',
+  function () {
+
+    var items = [];
+
+    return {
+
+      addItem: function (item) {
+        items.push(item);
+      },
+
+      $get: function () {
+
+        var FabSpeedDialService = {};
+
+        FabSpeedDialService.getItems = function () {
+          return items;
+        };
+
+        return FabSpeedDialService;
+
+      }
+    };
+
+  });
 ;
 'use strict';
 
@@ -621,6 +708,18 @@ angular.module('interventions').directive('plageIntervention',
       templateUrl: 'modules/interventions/views/plage-intervention.html',
       controller: 'PlageInterventionController',
       controllerAs: 'plageInterventionCtrl'
+    };
+  });
+;
+'use strict';
+
+angular.module('navigation').directive('fabSpeedDial',
+  function () {
+    return {
+      restrict: 'E',
+      templateUrl: 'modules/navigation/views/fab-speed-dial.html',
+      controller: 'FabSeedDialController',
+      controllerAs: 'fabSeedDialCtrl'
     };
   });
 ;
@@ -871,6 +970,52 @@ angular.module('interventions').controller('PlageInterventionController',
 ;
 'use strict';
 
+angular.module('messages').controller('NouveauMessageController',
+  ['$scope', 'Benevole', function ($scope, Benevole) {
+
+    var ctrl = this;
+
+    $scope.message = {
+      destinataires: []
+    };
+
+    ctrl.searchDestinataires = function(query) {
+      return Benevole.search(query).then(function(results) {
+        return _.difference(results, $scope.message.destinataires);
+      });
+    };
+
+    ctrl.send = function (messageForm) {
+      messageForm.destinataires.$setValidity('required', $scope.message.destinataires.length > 0);
+      console.log(messageForm.destinataires);
+      if (messageForm.$valid) {
+        console.log('SEND MESSAGE');
+      }
+    };
+
+  }]);
+;
+'use strict';
+
+angular.module('navigation').controller('FabSeedDialController',
+  ['FabSpeedDialService', '$mdDialog', function (FabSpeedDialService, $mdDialog) {
+
+    var ctrl = this;
+
+    ctrl.items = FabSpeedDialService.getItems();
+
+    ctrl.handleClick = function ($event, item) {
+
+      $mdDialog.show(_.assign(item.dialog, {
+        parent: angular.element(document.body),
+        targetEvent: $event,
+        clickOutsideToClose: true
+      }));
+    };
+  }]);
+;
+'use strict';
+
 angular.module('interventions').controller('SidenavController',
   ['$rootScope', '$mdSidenav', function ($rootScope, $mdSidenav) {
 
@@ -974,6 +1119,16 @@ angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('modules/interventions/views/plage-intervention.html',
     "<div layout=column layout-margin class=header><div layout=row flex><div class=md-title>{{ plage.etablissement.toString() }}</div><md-menu md-position-mode=\"target-right target\"><md-button aria-label=\"Open demo menu\" class=md-icon-button ng-click=$mdOpenMenu($event)><md-icon md-menu-origin md-svg-icon=navigation:more_vert></md-icon></md-button><md-menu-content width=4><md-menu-item><md-button ng-click=plageInterventionCtrl.addIntervention($event)><div layout=row flex><p flex>Ajout d'une intervention</p><md-icon md-menu-align-target md-svg-icon=action:event style=\"margin: auto 3px auto 0\"></md-icon></div></md-button></md-menu-item></md-menu-content></md-menu></div><div>{{ plage.date.format('[Le] dddd DD MMMM YYYY') }}</div></div><md-divider></md-divider><md-content layout=column><intervention-card ng-repeat=\"intervention in plageInterventionCtrl.interventions\"></intervention-card><md-card class=conversation><md-card-header layout=column><md-card-header-text layout=row layout-align=\"start center\"><md-icon md-svg-icon=communication:forum></md-icon><span class=md-title flex></span></md-card-header-text></md-card-header></md-card></md-content>"
+  );
+
+
+  $templateCache.put('modules/messages/views/nouveau-message.dialog.html',
+    "<md-dialog aria-label=\"Nouveau message\" style=width:800px><form novalidate name=messageForm ng-submit=nouveauMessageCtrl.send(messageForm)><md-toolbar><div class=md-toolbar-tools><h2>Nouveau message</h2><span flex></span><md-button class=md-icon-button ng-click=cancel()><md-icon md-svg-icon=navigation:close aria-label=\"Close dialog\"></md-icon></md-button></div></md-toolbar><md-dialog-content><div class=md-dialog-content><md-contact-chips ng-model=message.destinataires name=destinataires md-contacts=nouveauMessageCtrl.searchDestinataires($query) md-contact-name=fullname md-contact-image=image md-contact-email=role md-require-match=true md-highlight-flags=i placeholder=Destinataire(s)></md-contact-chips><div ng-messages=messageForm.destinataires.$error><div ng-message=required>requis.</div></div><md-input-container class=md-block><label>Sujet</label><input name=subject ng-model=message.subject required><div ng-messages=messageForm.subject.$error><div ng-message=required>requis.</div></div></md-input-container><md-input-container class=md-block><label>Message</label><textarea name=body ng-model=message.body rows=5 required></textarea><div ng-messages=messageForm.body.$error><div ng-message=required>requis.</div></div></md-input-container></div></md-dialog-content><md-dialog-actions layout=row><md-button type=button ng-click=cancelModal()>Annuler</md-button><md-button type=submit style=margin-right:20px>Envoyer</md-button></md-dialog-actions></form></md-dialog>"
+  );
+
+
+  $templateCache.put('modules/navigation/views/fab-speed-dial.html',
+    "<md-fab-speed-dial md-direction=up class=md-fling ng-cloak><md-fab-trigger><md-button aria-label=menu class=md-fab><md-icon md-svg-icon=content:add></md-icon></md-button></md-fab-trigger><md-fab-actions><md-button ng-repeat=\"item in fabSeedDialCtrl.items\" ng-click=\"fabSeedDialCtrl.handleClick($event, item)\" aria-label=\"{{ item.tooltip }}\" class=\"md-fab md-raised md-mini\"><md-tooltip md-direction=left>{{ item.tooltip }}</md-tooltip><md-icon md-svg-icon=\"{{ item.icon }}\"></md-icon></md-button></md-fab-actions></md-fab-speed-dial>"
   );
 
 
