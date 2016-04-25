@@ -5,6 +5,8 @@ angular.module('interventions').factory('Benevole',
 
     var Benevole = function (params) {
       _.assign(this, params);
+      this.fullname = this.toString();
+      this.image = 'https://www.govloop.com/wp-content/uploads/avatars/2/3819dcd8c7718dd630a1aaefe12dc925-bpthumb.jpg';
     };
 
     Benevole.prototype.remove = function () {
@@ -34,7 +36,7 @@ angular.module('interventions').factory('Benevole',
       role: 'Intervenant'
     }, {
       _id: 2,
-      prenom: 'Steve',
+      prenom: 'John',
       nomFamille: 'Boisvert',
       role: 'Intervenant'
     }, {
@@ -108,6 +110,14 @@ angular.module('interventions').factory('Benevole',
         var deffered = $q.defer();
         $timeout(function () {
           deffered.resolve(_.find(benevoles, '_id', id));
+        }, 1000);
+        return deffered.promise;
+      },
+      search: function (query) {
+        console.log(query);
+        var deffered = $q.defer();
+        $timeout(function () {
+          deffered.resolve(benevoles);
         }, 1000);
         return deffered.promise;
       }

@@ -31,7 +31,8 @@
       <toolbar></toolbar>
       <section ui-view layout="column" flex></section>
     </div>
-              
+    <fab-speed-dial></fab-speed-dial>
+
     <!-- build:js scripts/vendor.js -->
         <!-- injector:bowerjs -->
         <script src="lib/angular/angular.js"></script>
@@ -63,6 +64,7 @@
         <script src="modules/benevoles/benevoles.module.js"></script>
         <script src="modules/core/core.js"></script>
         <script src="modules/interventions/interventions.module.js"></script>
+        <script src="modules/messages/messages.module.js"></script>
         <script src="modules/navigation/navigation.module.js"></script>
         <script src="modules/users/users.module.js"></script>
         <script src="config/constants.js"></script>
@@ -70,15 +72,21 @@
         <script src="modules/core/config/core.routes.js"></script>
         <script src="modules/core/config/last-visit.run.js"></script>
         <script src="modules/core/config/theme.config.js"></script>
+        <script src="modules/interventions/config/interventions.config.js"></script>
+        <script src="modules/interventions/config/interventions.constants.js"></script>
         <script src="modules/interventions/config/interventions.routes.js"></script>
+        <script src="modules/messages/config/messages.config.js"></script>
+        <script src="modules/messages/config/messages.constants.js"></script>
         <script src="modules/users/config/user-auth.config.js"></script>
         <script src="modules/benevoles/services/benevole.factory.js"></script>
         <script src="modules/interventions/services/intervention.factory.js"></script>
         <script src="modules/interventions/services/plage-intervention.factory.js"></script>
+        <script src="modules/navigation/services/fab-speed-dial.service.js"></script>
         <script src="modules/users/services/user.factory.js"></script>
         <script src="modules/benevoles/directives/benevole-fiche.directive.js"></script>
         <script src="modules/interventions/directives/intervention-card.directive.js"></script>
         <script src="modules/interventions/directives/plage-intervention.directive.js"></script>
+        <script src="modules/navigation/directives/fab-speed-dial.directive.js"></script>
         <script src="modules/navigation/directives/side-nav.directive.js"></script>
         <script src="modules/navigation/directives/toolbar.directive.js"></script>
         <script src="modules/benevoles/controllers/benevole-fiche.controller.js"></script>
@@ -87,6 +95,8 @@
         <script src="modules/interventions/controllers/intervention-dialog.controller.js"></script>
         <script src="modules/interventions/controllers/interventions-section.controller.js"></script>
         <script src="modules/interventions/controllers/plage-intervention.controller.js"></script>
+        <script src="modules/messages/controllers/nouveau-message.controller.js"></script>
+        <script src="modules/navigation/controllers/fab-speed-dial.controller.js"></script>
         <script src="modules/navigation/controllers/sidenav.controller.js"></script>
         <script src="modules/navigation/controllers/toolbar.controller.js"></script>
         <!-- endinjector -->
