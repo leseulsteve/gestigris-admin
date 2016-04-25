@@ -1,26 +1,30 @@
 'use strict';
 
 angular.module('interventions').controller('BenevolesSectionController',
-  function ($rootScope, Benevole, benevoles, $mdDialog) {
+  function ($rootScope, Benevole, $mdDialog) {
 
     var ctrl = this;
 
-    ctrl.showProfile = function (benevole) {
-      ctrl.currentProfile = undefined;
-      Benevole.findById(benevole._id).then(function (benevole) {
-        ctrl.currentProfile = benevole;
-      });
-    };
+    Benevole.find().then(function (benevoles) {
 
-    ctrl.benevoles = benevoles;
-    ctrl.showProfile(_.first(benevoles));
+      ctrl.showProfile = function (benevole) {
+        ctrl.currentProfile = undefined;
+        Benevole.findById(benevole._id).then(function (benevole) {
+          ctrl.currentProfile = benevole;
+        });
+      };
 
-    $rootScope.$on('Toolbar:addBenevole', function ($event, targetEvent) {
-      $mdDialog.show({
-        templateUrl: 'modules/benevoles/views/benevole.form-dialogue.html',
-        parent: angular.element(document.body),
-        targetEvent: targetEvent
+      ctrl.benevoles = benevoles;
+      ctrl.showProfile(_.first(benevoles));
+
+      $rootScope.$on('Toolbar:addBenevole', function ($event, targetEvent) {
+        $mdDialog.show({
+          templateUrl: 'modules/benevoles/views/benevole.form-dialogue.html',
+          parent: angular.element(document.body),
+          targetEvent: targetEvent
+        });
       });
+
     });
 
   });

@@ -52353,10 +52353,10 @@ angular.module('leseulsteve.angular-user-auth').run(
     $rootScope.$on('$stateChangeStart',
       function (event, toState, toParams) {
 
-      /*  if (!$rootScope.currentUser.isAuthentified() && !_.contains(config.authorizedRoutes, toState.name) && toState.name !== config.loginStateName) {
+        if (!$rootScope.currentUser.isAuthentified() && !_.contains(config.authorizedRoutes, toState.name) && toState.name !== config.loginStateName) {
           event.preventDefault();
           $state.go(config.loginStateName, toParams);
-        }*/
+        }
       });
   }]);
 ;
@@ -86580,7 +86580,7 @@ angular.module('gestigris-common').config(
 
               route = config.url.split('/')[config.url.split('/').length - 2];
 
-            if (!_.contains(['img', 'icons', '/'], route)) {
+            if (!_.contains(['img', 'icons', '/'], route) && !_.endsWith(config.url, 'md-close.svg') && !_.endsWith(config.url, 'md-tabs-arrow.svg')) {
               urlPrefix += '/api/v1';
               config.url = urlPrefix + '/' + config.url;
             }

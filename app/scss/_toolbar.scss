@@ -1,0 +1,33 @@
+.search-box {
+  flex: none;
+  width: 0;
+  min-width: 0;
+  transition: flex-grow 0.5s;
+  transition-timing-function: ease-out;
+
+  &.show {
+    flex-grow: 1;
+  }
+}
+
+.autocomplete-search-template {
+  .item-title {
+    md-icon {
+      height: 38px;
+      width: 38px;
+      margin-right: 20px;
+    }
+  }
+
+  li {
+    border-bottom: 1px solid #ccc;
+    height: auto;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    white-space: normal;
+
+    &:last-child {
+      border-bottom-width: 0;
+    }
+  }
+}
