@@ -9,8 +9,8 @@ angular.module('messages').controller('NouveauMessageController',
       destinataires: []
     };
 
-    ctrl.searchDestinataires = function(query) {
-      return Benevole.search(query).then(function(results) {
+    ctrl.searchDestinataires = function (query) {
+      return Benevole.search(query).then(function (results) {
         return _.difference(results, $scope.message.destinataires);
       });
     };

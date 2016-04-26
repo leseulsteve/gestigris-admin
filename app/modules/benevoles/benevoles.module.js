@@ -1,3 +1,3 @@
 'use strict';
 
-ApplicationConfiguration.registerModule('benevoles');
+ApplicationConfiguration.registerModule('benevoles', ['search']);

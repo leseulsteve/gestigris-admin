@@ -26,7 +26,7 @@
                      md-search-text="searchText"
                      md-selected-item-change="toolbarCtrl.selectSearchResult(item)"
                      md-items="item in toolbarCtrl.search(searchText)"
-                     md-item-text="item.description"
+                     md-item-text="item._description"
                      md-min-length="1"
                      placeholder="recherche..."
                      md-menu-class="autocomplete-search-template">
@@ -34,7 +34,7 @@
         <div class="item-title" layout="row" layout-align="start center">
           <span><md-icon md-svg-icon="{{ item.icon }}"></md-icon></span>
           <span layout="column">
-            <div class="md-subhead" style="line-height: 25px;">{{ item.description }}</div>
+            <div class="md-subhead" style="line-height: 25px;">{{ item._description }}</div>
             <div  style="line-height: 20px;">{{ item.type }}</div>
           </span>
         </div>
