@@ -21,11 +21,12 @@
                ng-click="searchToggled = !searchToggled">
       <md-icon md-svg-icon="action:search"></md-icon>
     </md-button>
-    <md-autocomplete ng-class="{ show: searchToggled }" class="search-box"
+    <md-autocomplete search-bar
+                     ng-class="{ show: searchToggled }" class="search-bar"
                      md-delay="500"
                      md-search-text="searchText"
-                     md-selected-item-change="toolbarCtrl.selectSearchResult(item)"
-                     md-items="item in toolbarCtrl.search(searchText)"
+                     md-selected-item-change="searchBarCtrl.selectSearchResult($event, item)"
+                     md-items="item in searchBarCtrl.search(searchText)"
                      md-item-text="item.description"
                      md-min-length="1"
                      placeholder="recherche..."

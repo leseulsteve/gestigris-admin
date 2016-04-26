@@ -1,15 +1,9 @@
 'use strict';
 
 angular.module('interventions').controller('ToolbarController',
-  function (SearchService) {
+  function () {
 
-    var ctrl = this;
-
-    ctrl.search = SearchService.search;
-
-    ctrl.selectSearchResult = function () {
-
-    };
+    // var ctrl = this;
 
     /* $rootScope.$on('$stateChangeSuccess', function (event, toState) {
 
