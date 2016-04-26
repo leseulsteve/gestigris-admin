@@ -113,11 +113,12 @@ angular.module('interventions').factory('Benevole',
         }, 1000);
         return deffered.promise;
       },
-      search: function (query) {
-        console.log(query);
+      search: function (term) {
         var deffered = $q.defer();
         $timeout(function () {
-          deffered.resolve(benevoles);
+          deffered.resolve(_.filter(benevoles, function (benevole) {
+            return _.contains(benevole.toString().toLowerCase(), term.toLowerCase());
+          }));
         }, 1000);
         return deffered.promise;
       }
