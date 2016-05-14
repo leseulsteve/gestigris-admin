@@ -1,11 +1,23 @@
 'use strict';
 
 angular.module('interventions').factory('Intervention',
-  function ($q, Moment, Benevole) {
+  function ($q, Moment, Benevole, InterventionTag) {
 
+    var id = 1;
     var Intervention = function (params) {
       _.assign(this, params);
+      this._id = id++;
+      this.tags = _.map(this.tags, function (tag) {
+        return new InterventionTag(tag);
+      });
     };
+
+    /*  Intervention.post('find', function(next) {
+        this.tags = _.maps(this.tags, function(tag) {
+          return new InterventionTag(tag);
+        });
+        next();
+      });*/
 
     Intervention.prototype.getDateRange = function () {
       return this.date;
@@ -15,11 +27,23 @@ angular.module('interventions').factory('Intervention',
       return Benevole.find().then(function (benevoles) {
         switch (type) {
         case 'confirmed':
-          return _.take(benevoles, 3);
+          return _.take(benevoles, Math.floor(Math.random() * 3) + 0);
         case 'interested':
-          return _.takeRight(benevoles, 3);
+          return _.take(benevoles, Math.floor(Math.random() * 50) + 40);
         }
       });
+    };
+
+    Intervention.prototype.getLocal = function () {
+      return 1123;
+    };
+
+    Intervention.prototype.getResponsable = function () {
+      return 'Ginette Larue';
+    };
+
+    Intervention.prototype.getMeetingPlace = function () {
+      return undefined;
     };
 
     var interventions = _.map([{
@@ -34,7 +58,8 @@ angular.module('interventions').factory('Intervention',
         }
       },
       tags: [{
-        name: 'secondaire 3'
+        _id: 1,
+        description: 'secondaire 3'
       }],
       participants: [{}, {}, {}],
       isBooked: function () {
@@ -52,7 +77,8 @@ angular.module('interventions').factory('Intervention',
         }
       },
       tags: [{
-        name: 'secondaire 3'
+        _id: 1,
+        description: 'secondaire 3'
       }],
       demandes: [{}, {}, {}],
       participants: [{}, {}, {}],
@@ -71,7 +97,8 @@ angular.module('interventions').factory('Intervention',
         }
       },
       tags: [{
-        name: 'secondaire 3'
+        _id: 1,
+        description: 'secondaire 3'
       }],
       demandes: [{}, {}, {}],
       participants: [{}, {}, {}],
@@ -90,7 +117,8 @@ angular.module('interventions').factory('Intervention',
         }
       },
       tags: [{
-        name: 'secondaire 3'
+        _id: 1,
+        description: 'secondaire 3'
       }],
       demandes: [{}, {}, {}],
       participants: [{}, {}, {}],

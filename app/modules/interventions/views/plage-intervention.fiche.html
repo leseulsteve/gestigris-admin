@@ -15,69 +15,69 @@
 		<span flex></span>
 		<div layout="row" class="fiche-title-over-custom-tabs">
 			<div layout="column" layout-align="center start">
-				<span class="md-title">{{ plage.getEtablissement().toString() }}</span>
-	      <span class="md-subhead">{{ plage.getCalendarDay() }}</span>
+				<span class="md-title">{{ plageFicheCtrl.plage.getEtablissement().toString() }}</span>
+	      <span class="md-subhead">{{ plageFicheCtrl.plage.getCalendarDay() }}</span>
 			</div>
 		</div>
 	</div>
+	<md-content layout="column" flex style="overflow:visible">
 
-	<md-content flex style="overflow:visible;">
-
-		<md-tabs layout-fill flex class="custom-tabs md-accent">
-      <md-tab layout-fill>
+		<md-tabs layout-fill layout="column" flex class="custom-tabs md-accent">
+      <md-tab layout-fill >
         <md-tab-label>Interventions</md-tab-label>
         <md-tab-body>
-        	<md-content layout-padding flex>
-        		<md-card ng-repeat="intervention in plage.interventions" flex>
-        			<md-card-content layout="column">
-        				<div layout="row" flex>
-        					<div flex="30" layout="column">
-        						<div class="md-headline">{{ intervention.getDateRange().start.format('H:mm') }}</div>
-        						<div>Autres infos</div>
-        					</div>
-        					<div flex layout="column">
-        						<div>Bénévoles confirmés</div>
-        						<div dnd-list="intervention.confirmed" layout="row">
-									    <avatar ng-repeat="benevole in intervention.confirmed"
-									    			user="benevole"
-									          dnd-draggable="benevole"
-									          dnd-moved="intervention.confirmed.splice($index, 1)"
-									          dnd-effect-allowed="move"
-									          dnd-selected="models.selected = item"
-									          ng-class="{'selected': models.selected === item}">
-									      {{ benevole.toString() }}
-									    </avatar>
-										</div>
-        					</div>
-        				</div>
-        				<md-divider style="margin:16px 0;"></md-divider>
-        				<div layout="column" flex>
-        					<div>Bénévoles intéressés</div>
-        					<div dnd-list="intervention.interested" layout="row">
-								    <avatar ng-repeat="benevole in intervention.interested"
-								    				user="benevole"
-								       	  dnd-draggable="benevole"
-								          dnd-moved="intervention.interested.splice($index, 1)"
-								          dnd-effect-allowed="move"
-								          dnd-selected="models.selected = item"
-								          ng-class="{'selected': models.selected === item}">
-									    {{ benevole.toString() }}
-								    </avatar>
-									</div>
-        				</div>
+        	<md-content flex class="layout-bg"> 
+        		<intervention-card ng-repeat="intervention in plageFicheCtrl.interventions"></intervention-card>
+        	</md-content>
+        </md-tab-body>
+      </md-tab>
+      <md-tab>
+        <md-tab-label>Conversation</md-tab-label>
+        <md-tab-body>
+        	<md-content flex class="layout-bg">
+        		<md-card>
+        			<md-card-title layout="column">
+        				<div class="md-title">Participants</div>
+        				<div layout="row" layout-align="start center" layout-wrap>
+        					<avatar ng-repeat="benevole in plageFicheCtrl.conversation.getParticipants()"
+						    					user="benevole">
+						    	</avatar>
+						    </div>
+        			</md-card-title>
+        			<md-card-content>
+        				<conversation conversation="plageFicheCtrl.conversation"></conversation>
         			</md-card-content>
         		</md-card>
-        	</md-content>
+		  		</md-content>
         </md-tab-body>
       </md-tab>
       <md-tab>
         <md-tab-label>Infos</md-tab-label>
         <md-tab-body>
-        	<md-content layout-padding flex>
-        		INFOS
+        	<md-content flex class="layout-bg">
+        		<md-card>
+              <md-card-title layout="column">
+                <div class="md-title">Plage d'intervention</div>
+              </md-card-title>
+              <md-card-content>
+                DATE CRÉATION<br>
+                CRÉÉ PAR<br>
+                PERSONNE RESSOURCE<br>
+              </md-card-content>
+            </md-card>
+            <md-card>
+              <md-card-title layout="column">
+                <div class="md-title">Établissement</div>
+              </md-card-title>
+              <md-card-content>
+                ADRESSE<br>
+                STATIONNEMENT<br>
+                NOTES<br>
+              </md-card-content>
+            </md-card>
 		  		</md-content>
         </md-tab-body>
       </md-tab>
     </md-tabs>
-  </md-content>
-</div>
+    </md-content>
+	</div>

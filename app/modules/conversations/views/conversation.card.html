@@ -1,0 +1,10 @@
+<md-card md-ink-ripple ui-sref="conversation({conversationId: conversation._id})">
+  <conversation-image conversation="conversation"></conversation-image>
+  <div layout="row" layout-margin style="min-height:70px;">
+  	<div flex layout="row" layout-align="start center"><span>{{conversation.title }}<span></div>
+    <div layout="row" layout-align="start center">
+    	<span>{{ conversation.messages.length }}</span>&nbsp
+    	<md-icon ng-class="{ 'md-accent' : conversation.hasNewMessages() }" md-svg-icon="communication:message"></md-icon>
+  	</div>
+  </div>
+</md-card>

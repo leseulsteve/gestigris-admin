@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('interventions').factory('PlageIntervention',
-  function ($q, Moment, Intervention) {
+  function ($q, Moment, Intervention, Conversation) {
 
     var id = 0;
     var PlageIntervention = function (params) {
@@ -79,11 +79,7 @@ angular.module('interventions').factory('PlageIntervention',
 
     PlageIntervention.findByIntervention = function (intervention) {
       return PlageIntervention.find().then(function (plages) {
-        var plage = _.find(plages, '_id', intervention.plage);
-        return Intervention.findByPlageId(plage._id).then(function (interventions) {
-          plage.interventions = interventions;
-          return plage;
-        });
+        return _.find(plages, '_id', intervention.plage);
       });
     };
 
@@ -93,6 +89,10 @@ angular.module('interventions').factory('PlageIntervention',
         return _.includes(plage.toString().toLowerCase(), term.toLowerCase());
       }));
       return deffered.promise;
+    };
+
+    PlageIntervention.prototype.getConversation = function () {
+      return Conversation.findById(this.conversation);
     };
 
     return PlageIntervention;

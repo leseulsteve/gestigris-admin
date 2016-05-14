@@ -1,29 +1,77 @@
-<md-card md-ink-ripple ng-click="interventionCardCtrl.showDetails($event)">
-	<md-card-header layout="column">
-		<md-card-header-text layout="column">
-			<div layout="row" layout-align="start center">
-				<md-icon md-svg-icon="action:event"></md-icon>
-	    	<span class="md-title" flex>{{ intervention.date.start.format('HH:mm') }} - {{ intervention.date.end.format('HH:mm') }}</span>
-	    </div>
-	  	<div layout="row">
-				<div layout="row" layout-wrap>
-					<span class="badge"ng-repeat="tag in intervention.tags">{{ tag.name }}</span>
+<md-card>
+	<md-card-title layout-align="start center">
+    <div class="md-headline" flex="5">{{ intervention.getDateRange().start.format('H:mm') }}</div>
+		
+		<md-chips ng-model="intervention.tags"
+							md-autocomplete-snap
+							md-separator-key="interventionCardCtrl.chipSeparatorKeys"
+        			md-transform-chip="interventionCardCtrl.transformChip($chip)">
+			<md-autocomplete md-selected-item="selectedItem"
+				          		 md-search-text="searchText"
+				          		 md-items="tag in interventionCardCtrl.searchTags(searchText)"
+				          		 md-item-text="tag.description"
+				          		 placeholder="Ajout mot clef">
+  			<span md-highlight-text="searchText">{{ tag.description }}</span>
+			</md-autocomplete>
+      <md-chip-template>
+        <span>
+          <strong>{{ $chip.description }}</strong>
+        </span>
+      </md-chip-template>
+    </md-chips>
+  </md-card-title>
+	
+  <md-card-content layout="row">
+		<div layout="column" flex="50">
+			
+			<div flex class="infos" layout="row">
+				<div layout="column" flex="20" style="margin-right:5px;">
+					<div>local: </div>
+					<div>responsable: </div>
+					<div>lieu de rencontre: </div>
 				</div>
-		  </div>
-	  </md-card-header-text>
-  </md-card-header>
-  <md-card-content>
-  	<div ng-show="!intervention.isBooked()">
-	  	<span>Demandes</span>
-	    <div layout="row" layout-wrap>
-	      <avatar ng-repeat="user in intervention.demandes"></avatar>
-	    </div>
-	  </div>
-	  <div>
-			<span>Participants</span>
-	    <div layout="row" layout-wrap>
-	      <avatar ng-repeat="user in intervention.participants"></avatar>
-	    </div>
-	  </div>
+				<div layout="column" flex>
+					<div>{{ intervention.getLocal() }}</div>
+					<div>{{ intervention.getResponsable() }}</div>
+					<div>{{ intervention.getMeetingPlace() }}</div>
+				</div>
+			</div>
+
+			<div class="benevoles-confimes">
+				<div class="md-subhead">Bénévoles confirmés</div>
+				<div class="benevole-list" layout="row" layout-wrap layout-align="start center"
+						 dnd-list="interventionCardCtrl.confirmed"
+						 dnd-allowed-types="[intervention._id]" dnd-horizontal-list="true"
+						 dnd-drop="interventionCardCtrl.dropped(item)">
+			    <avatar ng-repeat="benevole in interventionCardCtrl.confirmed"
+			    				user="benevole"
+			          	dnd-draggable="benevole"
+			          	dnd-type="intervention._id"
+			          	dnd-moved="interventionCardCtrl.confirmed.splice($index, 1)"
+			          	dnd-effect-allowed="move">
+			    </avatar>
+			    <md-button class="md-fab md-mini" aria-label="Ajout bénévole">
+          	<md-icon md-svg-icon="content:add"></md-icon>
+        	</md-button>
+				</div>
+			</div>
+		</div>
+		
+		<div layout="column" flex>
+			<div class="md-subhead">Bénévoles intéressés</div>
+			<md-content class="benevole-list" layout="row" layout-wrap
+									dnd-list="interventionCardCtrl.interested"
+									dnd-allowed-types="[intervention._id]"
+									dnd-drop="interventionCardCtrl.dropped(item)">
+		    <avatar ng-repeat="benevole in interventionCardCtrl.interested"
+		    				user="benevole"
+		       	  	dnd-draggable="benevole"
+		       	  	dnd-type="intervention._id"
+			          dnd-moved="interventionCardCtrl.interested.splice($index, 1)"
+			          dnd-effect-allowed="move">
+		    </avatar>
+			</md-content>
+		</div>
+
 	</md-card-content>
 </md-card>

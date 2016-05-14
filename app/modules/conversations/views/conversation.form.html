@@ -1,0 +1,42 @@
+<md-dialog aria-label="Nouvelle conversation">
+  <form name="conversationForm" ng-submit="conversationsSectionCtrl.summitForm(conversationForm)" novalidate>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Nouvelle conversation</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="conversationsSectionCtrl.cancel()">
+          <md-icon md-svg-icon="navigation:close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content>
+      <div class="md-dialog-content" layout="column" style="width:500px">
+        <md-input-container flex="60">
+          <label>Titre de la conversation</label>
+          <input name="title"
+                 md-maxlength="50"
+                 required
+                 ng-model="conversation.title">
+          <ng-messages for="conversationForm.title.$error" role="alert">
+            <ng-message when="md-maxlength">un peu trop long!</ng-message>
+            <ng-message when="required">requis.</ng-message>
+          </ng-messages>
+        </md-input-container>
+        <md-input-container flex="60">
+          <label>Permier message</label>
+          <input name="message"
+                 required
+                 ng-model="conversation.message">
+          <ng-messages for="conversationForm.message.$error" role="alert">
+            <ng-message when="required">requis.</ng-message>
+          </ng-messages>
+        </md-input-container>
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-button type="submit">
+        Créer
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

@@ -1,0 +1,51 @@
+intervention-card {
+  md-chips {
+    .md-chips {
+      box-shadow: none;
+    }
+  }
+
+  md-card-content {
+    max-height: 220px;
+
+    .infos {
+      margin-bottom: 10px;
+    }
+
+    .benevoles-confimes {
+      min-height: 100px;
+    }
+
+    .benevole-list {
+      img {
+        margin-left: 0 !important;
+      }
+
+      .md-button.md-fab {
+        margin: 10px;
+      }
+    }
+
+    [dnd-list] {
+      min-height: 42px;
+      padding-left: 0;
+
+      .dndDraggingSource {
+        display: none;
+      }
+
+      .dndPlaceholder {
+        display: block;
+        background-color: #ddd;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        margin: 10px;
+      }
+    }
+
+    [dnd-list], [dnd-list] > avatar {
+      position: relative;
+    }
+  }
+}

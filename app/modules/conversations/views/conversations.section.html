@@ -1,0 +1,30 @@
+<md-content layout="column" flex>
+  
+  <md-subheader>
+    <div layout="column" layout-gt-sm="row" layout-align="end center">
+
+      <md-button class="md-raised" style="margin:0px"
+                 ng-click="conversationsSectionCtrl.create($event)">
+        nouvelle conversation
+      </md-button>
+
+    </div>
+  </md-subheader>
+
+  <md-content layout="column" md-scroll-y flex>
+
+    <div ng-hide="conversationsSectionCtrl.conversations"
+        layout="row" layout-align="center center" layout-margin>
+      <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+    </div>
+
+    <div layout="row" layout-wrap ng-show="conversationsSectionCtrl.conversations">
+      <conversation-card flex="33"
+                         conversation="conversation" 
+                         ng-repeat="conversation in conversationsSectionCtrl.conversations">
+      </conversation-card>
+    </div>
+
+  </md-content>
+ 
+</md-content>

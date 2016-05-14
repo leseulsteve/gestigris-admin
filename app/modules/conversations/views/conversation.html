@@ -1,0 +1,46 @@
+<md-list layout="column">
+  
+  <md-content md-scroll-y>
+    
+    <md-list-item class="md-2-line" ng-repeat="message in messages | orderBy : 'date'"
+                  ng-mouseover="showOptions = true"
+                  ng-mouseleave="showOptions = false"
+                  ng-init="$last && scrollDown()">                
+      <avatar user="message.getAuthor()"></avatar>
+      <div class="md-list-item-text" layout="column" style="padding-left:5px;">
+        <div layout="row" flex>
+          <h3>{{ message.getAuthor().toString() }}</h3>
+          <span flex></span>
+          <span class="md-caption" ng-hide="message.author._id === currentUser._id && showOptions" style="padding-right:6px;line-height:23px;">
+            {{ message.getDate().fromNow() }}
+          </span>
+          <md-button class="md-icon-button" aria-label="Supprimer"
+                     style="margin:0px;padding:0px;min-height:23px;height:18px;"
+                     ng-show="message.author._id === currentUser._id && showOptions"
+                     ng-click="deleteMessage(message)">
+            <md-icon md-svg-icon="action:delete" style="height: 16px;"></md-icon>
+          </md-button>
+        </div>
+        <p>{{ message.body }}</p>
+      </div>
+      
+    </md-list-item>
+
+  </md-content>
+  <form ng-submit="addMessage(newMessage)">
+    <div layout="row" style="min-height: 60px;height:60px">
+      <avatar user="currentUser"></avatar>
+      <md-input-container flex>
+        <label>Nouveau message</label>
+        <input style="margin-top:10px;" ng-model="newMessage.body">
+      </md-input-container>
+      <div layout="row" layout-align="center center" style="height: 74px;">
+        <md-button type="submit"
+                   class="md-icon-button md-primary" aria-label="Ajouter"
+                   ng-disabled="newMessage.body === undefined || newMessage.body.length === 0">
+          <md-icon md-svg-icon="content:send"></md-icon>
+        </md-button>
+      </div>
+    </div>
+  </from>
+</md-list>

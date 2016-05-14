@@ -1,0 +1,10 @@
+<md-toast>
+	<avatar user="newMessageToastCtl.user"></avatar>
+	<div layout="column" flex>
+  	<span>{{ newMessageToastCtl.subject }}</span>
+  	<span>{{ newMessageToastCtl.message.body }}</span>
+  </div>
+  <md-button ng-click="newMessageToastCtl.viewMessage(newMessageToastCtl.message)">
+    Voir
+  </md-button>
+</md-toast>

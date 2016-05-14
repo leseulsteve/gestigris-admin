@@ -1,0 +1,42 @@
+<md-toolbar class="md-accent">
+  <div class="md-toolbar-tools">
+    <h2>
+      <span>{{ conversationFicheCtrl.conversation.getTitle() }}</span>
+    </h2>
+    <span flex></span>
+    <md-button class="md-icon-button" aria-label="More">
+      <md-icon md-svg-icon="content:clear" ng-click="conversationFicheCtrl.close()"></md-icon>
+    </md-button>
+  </div>
+</md-toolbar>
+
+<md-content layout="column">
+  
+  <div ng-hide="conversationFicheCtrl.conversation"
+       layout="row" layout-align="center center" layout-margin>
+    <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+  </div>
+
+  <md-card ng-show="conversationFicheCtrl.conversation" layout="column">
+    
+    <md-card-title style="min-height: 100px;heigth: 100px;">
+    
+      <md-card-title-media flex="30">
+        <img style="width:150px;heigth:150px"
+             src="http://nilofermerchant.com/wp-content/uploads/2009/09/HiRes-1024x785.jpg"/>
+      </md-card-title-media>
+
+      <md-card-title-text>
+        <span class="md-title">Participants</span>
+        <div layout="row" layout-wrap>
+          <avatar user="participant" ng-repeat="participant in conversationFicheCtrl.conversation.getParticipants()"></avatar>
+        </div>
+      </md-card-title-text>
+           
+    </md-card-title>
+    
+    <md-card-content layout="column">
+      <conversation layout="column" conversation="conversationFicheCtrl.conversation"></conversation>
+    </md-card-content>
+  </md-card>
+</md-content>

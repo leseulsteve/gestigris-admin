@@ -51,10 +51,7 @@ module.exports = function (grunt) {
       },
 
       html: {
-        files: ['<%= paths.app %>/modules/**/views/*.html'],
-        options: {
-          livereload: true
-        }
+        files: ['<%= paths.app %>/modules/**/views/*.html']
       },
 
       sass: {
