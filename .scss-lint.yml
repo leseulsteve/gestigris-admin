@@ -139,7 +139,7 @@ linters:
     max_depth: 6
 
   SelectorFormat:
-    enabled: true
+    enabled: false
     convention: hyphenated_lowercase # or 'strict_BEM', or 'hyphenated_BEM', or 'snake_case', or 'camel_case', or a regex pattern
 
   Shorthand:

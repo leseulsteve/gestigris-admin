@@ -4,7 +4,7 @@
       <div class="md-toolbar-tools">
         <h2>Nouveau message</h2>
         <span flex></span>
-        <md-button class="md-icon-button" ng-click="cancel()">
+        <md-button class="md-icon-button" ng-click="nouveauMessageCtrl.dialog.hide()">
           <md-icon md-svg-icon="navigation:close" aria-label="Close dialog"></md-icon>
         </md-button>
       </div>
@@ -15,7 +15,7 @@
         <md-contact-chips ng-model="message.destinataires" name="destinataires"
                           md-contacts="nouveauMessageCtrl.searchDestinataires($query)"
                           md-contact-name="fullname"
-                          md-contact-image="image"
+                          md-contact-image="avatar"
                           md-contact-email="role"
                           md-require-match="true"
                           md-highlight-flags="i"
@@ -44,7 +44,7 @@
       </div>
     </md-dialog-content>
     <md-dialog-actions layout="row">
-      <md-button type="button" ng-click="cancelModal()">
+      <md-button type="button" ng-click="nouveauMessageCtrl.dialog.hide()">
         Annuler
       </md-button>
       <md-button type="submit" style="margin-right:20px;">

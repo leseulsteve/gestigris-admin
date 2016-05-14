@@ -38,7 +38,10 @@ module.exports = function (grunt) {
           'inject:dev',
           'newer:jshint:all',
           'newer:jsbeautifier:all'
-        ]
+        ],
+        options: {
+          livereload: false
+        }
       },
 
       config: {

@@ -1,3 +1,3 @@
 'use strict';
 
-ApplicationConfiguration.registerModule('search');
+ApplicationConfiguration.registerModule('search', ['core']);

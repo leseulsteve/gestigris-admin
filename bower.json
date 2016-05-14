@@ -2,12 +2,12 @@
   "name": "gestigris-administration",
   "version": "0.0.1",
   "dependencies": {
-    "gestigris-common": "git+https://github.com/leseulsteve/gestigris-common.git"
+    "gestigris-common": "git+https://github.com/leseulsteve/gestigris-common.git",
+    "angular-drag-and-drop-lists": "~1.4.0"
   },
   "resolutions": {
     "angular-translate": "~2.9.1",
-    "angular": "1.5.5",
-    "angular-translate": "~2.9.1",
+    "angular": "^1.4.8",
     "lodash": "~4.11.1"
   }
 }

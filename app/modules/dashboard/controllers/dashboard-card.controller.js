@@ -1,33 +1,34 @@
 'use strict';
 
 angular.module('dashboard').controller('DashboardCardController',
-  function ($rootScope, $mdDialog) {
+  function ($rootScope, Dialog) {
 
     var ctrl = this;
 
     ctrl.expand = function ($event, cardName) {
 
-      var dialog = {
-        targetEvent: $event,
-        fullscreen: true
-      };
+      var dialogConfig = {
+          targetEvent: $event,
+          fullscreen: true
+        },
+        dialog;
 
       switch (cardName) {
       case 'benevoles':
-        _.assign(dialog, {
+
+        dialog = new Dialog(_.assign({
           controller: 'BenevolesSectionController',
           controllerAs: 'benevolesSectionCtrl',
-          templateUrl: 'modules/benevoles/views/benevoles.section.html',
-          parent: angular.element(document.body)
-        });
+          templateUrl: 'modules/benevoles/views/benevoles.section.html'
+        }, dialogConfig));
       }
 
       if (cardName) {
-        $mdDialog.show(dialog);
+        dialog.show($event);
       }
 
       $rootScope.$on('Dialog:close', function () {
-        $mdDialog.hide();
+        dialog.hide();
       });
 
     };

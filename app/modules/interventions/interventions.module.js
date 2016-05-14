@@ -1,3 +1,3 @@
 'use strict';
 
-ApplicationConfiguration.registerModule('interventions', ['navigation']);
+ApplicationConfiguration.registerModule('interventions', ['navigation', 'events']);

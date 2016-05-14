@@ -6,7 +6,7 @@ angular.module('interventions').factory('Benevole',
     var Benevole = function (params) {
       _.assign(this, params);
       this.fullname = this.toString();
-      this.image = 'https://www.govloop.com/wp-content/uploads/avatars/2/3819dcd8c7718dd630a1aaefe12dc925-bpthumb.jpg';
+      this.avatar = 'https://www.govloop.com/wp-content/uploads/avatars/2/3819dcd8c7718dd630a1aaefe12dc925-bpthumb.jpg';
     };
 
     Benevole.prototype.remove = function () {
@@ -117,7 +117,7 @@ angular.module('interventions').factory('Benevole',
         var deffered = $q.defer();
         $timeout(function () {
           deffered.resolve(_.filter(benevoles, function (benevole) {
-            return _.contains(benevole.toString().toLowerCase(), term.toLowerCase());
+            return _.includes(benevole.toString().toLowerCase(), term.toLowerCase());
           }));
         }, 1000);
         return deffered.promise;

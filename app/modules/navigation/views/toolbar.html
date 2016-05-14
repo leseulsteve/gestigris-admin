@@ -26,7 +26,7 @@
                      md-delay="500"
                      md-search-text="searchText"
                      md-selected-item-change="searchBarCtrl.selectSearchResult($event, item)"
-                     md-items="item in toolbarCtrl.search(searchText)"
+                     md-items="item in searchBarCtrl.search(searchText)"
                      md-item-text="item._description"
                      md-min-length="1"
                      placeholder="recherche..."
@@ -40,6 +40,9 @@
           </span>
         </div>
       </md-item-template>
+      <md-not-found>
+        Aucun résultat pour {{ searchText }}.
+      </md-not-found>
     </md-autocomplete>
   </div>
 </md-toolbar>

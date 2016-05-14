@@ -1,0 +1,83 @@
+<div layout="column" flex>
+		
+	<div layout="column" layout-padding class="fiche-header">
+		<div layout="row">
+			<span flex></span>
+			<!--<md-button class="md-icon-button" ng-click="benevoleFicheCtrl.sendMessage($event, benevole)">
+				<md-icon md-svg-icon="communication:message"></md-icon>
+				<md-tooltip>Message</md-tooltip>
+			</md-button>
+			<md-button class="md-icon-button" ng-click="benevoleFicheCtrl.deleteBenevole($event, benevole)">
+				<md-icon md-svg-icon="action:delete"></md-icon>
+				<md-tooltip>Supprimer</md-tooltip>
+			</md-button>-->
+		</div>
+		<span flex></span>
+		<div layout="row" class="fiche-title-over-custom-tabs">
+			<div layout="column" layout-align="center start">
+				<span class="md-title">{{ plage.getEtablissement().toString() }}</span>
+	      <span class="md-subhead">{{ plage.getCalendarDay() }}</span>
+			</div>
+		</div>
+	</div>
+
+	<md-content flex style="overflow:visible;">
+
+		<md-tabs layout-fill flex class="custom-tabs md-accent">
+      <md-tab layout-fill>
+        <md-tab-label>Interventions</md-tab-label>
+        <md-tab-body>
+        	<md-content layout-padding flex>
+        		<md-card ng-repeat="intervention in plage.interventions" flex>
+        			<md-card-content layout="column">
+        				<div layout="row" flex>
+        					<div flex="30" layout="column">
+        						<div class="md-headline">{{ intervention.getDateRange().start.format('H:mm') }}</div>
+        						<div>Autres infos</div>
+        					</div>
+        					<div flex layout="column">
+        						<div>Bénévoles confirmés</div>
+        						<div dnd-list="intervention.confirmed" layout="row">
+									    <avatar ng-repeat="benevole in intervention.confirmed"
+									    			user="benevole"
+									          dnd-draggable="benevole"
+									          dnd-moved="intervention.confirmed.splice($index, 1)"
+									          dnd-effect-allowed="move"
+									          dnd-selected="models.selected = item"
+									          ng-class="{'selected': models.selected === item}">
+									      {{ benevole.toString() }}
+									    </avatar>
+										</div>
+        					</div>
+        				</div>
+        				<md-divider style="margin:16px 0;"></md-divider>
+        				<div layout="column" flex>
+        					<div>Bénévoles intéressés</div>
+        					<div dnd-list="intervention.interested" layout="row">
+								    <avatar ng-repeat="benevole in intervention.interested"
+								    				user="benevole"
+								       	  dnd-draggable="benevole"
+								          dnd-moved="intervention.interested.splice($index, 1)"
+								          dnd-effect-allowed="move"
+								          dnd-selected="models.selected = item"
+								          ng-class="{'selected': models.selected === item}">
+									    {{ benevole.toString() }}
+								    </avatar>
+									</div>
+        				</div>
+        			</md-card-content>
+        		</md-card>
+        	</md-content>
+        </md-tab-body>
+      </md-tab>
+      <md-tab>
+        <md-tab-label>Infos</md-tab-label>
+        <md-tab-body>
+        	<md-content layout-padding flex>
+        		INFOS
+		  		</md-content>
+        </md-tab-body>
+      </md-tab>
+    </md-tabs>
+  </md-content>
+</div>

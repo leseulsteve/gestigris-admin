@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('navigation').controller('FabSeedDialController',
-  function (FabSpeedDialService, $mdDialog) {
+  function (FabSpeedDialService, Dialog) {
 
     var ctrl = this;
 
@@ -9,10 +9,8 @@ angular.module('navigation').controller('FabSeedDialController',
 
     ctrl.handleClick = function ($event, item) {
 
-      $mdDialog.show(_.assign(item.dialog, {
-        parent: angular.element(document.body),
-        targetEvent: $event,
-        clickOutsideToClose: true
-      }));
+      var dialog = new Dialog(item.dialog);
+
+      dialog.show($event);
     };
   });

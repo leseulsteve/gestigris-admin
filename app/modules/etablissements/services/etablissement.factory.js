@@ -40,7 +40,7 @@ angular.module('etablissements').factory('Etablissement',
         var deffered = $q.defer();
         $timeout(function () {
           deffered.resolve(_.filter(etablissements, function (etablissement) {
-            return _.contains(etablissement.toString().toLowerCase(), term.toLowerCase());
+            return _.includes(etablissement.toString().toLowerCase(), term.toLowerCase());
           }));
         }, 1000);
         return deffered.promise;

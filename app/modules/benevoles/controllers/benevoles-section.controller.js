@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('interventions').controller('BenevolesSectionController',
+angular.module('benevoles').controller('BenevolesSectionController',
   function ($rootScope, Benevole, $mdDialog) {
 
     var ctrl = this;

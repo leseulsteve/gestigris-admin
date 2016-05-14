@@ -6,7 +6,7 @@ angular.module('messages').controller('NouveauMessageController',
     var ctrl = this;
 
     $scope.message = {
-      destinataires: []
+      destinataires: ctrl.receivers || []
     };
 
     ctrl.searchDestinataires = function (query) {
@@ -20,6 +20,9 @@ angular.module('messages').controller('NouveauMessageController',
       console.log(messageForm.destinataires);
       if (messageForm.$valid) {
         console.log('SEND MESSAGE');
+        if (ctrl.dialog) {
+          ctrl.dialog.hide();
+        }
       }
     };
 

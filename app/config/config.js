@@ -5,7 +5,8 @@ var ApplicationConfiguration = (function () {
   // Init module configuration options
   var applicationModuleName = 'angularjsapp';
   var applicationModuleVendorDependencies = [
-    'gestigris-common'
+    'gestigris-common',
+    'dndLists'
   ];
 
   // Add a new vertical module

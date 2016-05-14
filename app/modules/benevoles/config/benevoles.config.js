@@ -5,8 +5,14 @@ angular.module('benevoles').config(
 
     SearchServiceProvider.register({
       factory: 'Benevole',
-      type: 'bénévole',
-      icon: 'action:account_circle'
+      type: 'Bénévole',
+      icon: 'action:account_circle',
+      dialog: {
+        controller: 'BenevoleFicheController',
+        controllerAs: 'benevoleFicheCtrl',
+        templateUrl: 'modules/benevoles/views/benevole-fiche.dialog.html',
+        itemName: 'benevole'
+      }
     });
 
   });

@@ -41,7 +41,7 @@ angular.module('employes').factory('Employe',
         var deffered = $q.defer();
         $timeout(function () {
           deffered.resolve(_.filter(employes, function (employe) {
-            return _.contains(employe.toString().toLowerCase(), term.toLowerCase());
+            return _.includes(employe.toString().toLowerCase(), term.toLowerCase());
           }));
         }, 1000);
         return deffered.promise;

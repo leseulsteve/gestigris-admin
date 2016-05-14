@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('search').provider('SearchService',
+angular.module('events').provider('EventService',
   function () {
 
     var providers = [];
@@ -19,21 +19,22 @@ angular.module('search').provider('SearchService',
           factories[provider.type] = $injector.get(provider.factory);
         });
 
-        var SearchService = {};
+        var EventService = {};
 
-        SearchService.search = function (term) {
+        EventService.getByDate = function (date) {
 
           var promises = [];
 
           _.forEach(providers, function (provider) {
-            promises.push(factories[provider.type].search(term).then(function (results) {
+            promises.push(factories[provider.type].getByDate(date).then(function (results) {
               return _.map(results, function (result) {
                 return {
                   provider: provider,
                   item: result,
+                  date: result.getDate(),
                   type: provider.type,
-                  icon: provider.icon,
-                  _description: result.toString()
+                  description: result.toString(),
+                  stateIcon: provider.stateIcon ? result.getStateIcon() : undefined
                 };
               });
             }));
@@ -45,7 +46,7 @@ angular.module('search').provider('SearchService',
 
         };
 
-        SearchService.select = function ($event, selectedItem) {
+        EventService.select = function ($event, selectedItem) {
           if (selectedItem) {
 
             var dialogConfig = selectedItem.provider.dialog,
@@ -62,7 +63,7 @@ angular.module('search').provider('SearchService',
           }
         };
 
-        return SearchService;
+        return EventService;
       }
     };
   });
