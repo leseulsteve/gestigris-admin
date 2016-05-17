@@ -27,8 +27,8 @@ angular.module('core').factory('Dialog',
       return $mdDialog.show(dialog);
     };
 
-    Dialog.prototype.hide = function () {
-      return $mdDialog.hide().then(function () {
+    Dialog.prototype.hide = function (item) {
+      return $mdDialog.hide(item).then(function () {
         lastDialogs.pop();
         var lastDialog = _.last(lastDialogs);
         if (lastDialog) {

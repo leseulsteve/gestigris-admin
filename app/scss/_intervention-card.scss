@@ -1,51 +1,142 @@
 intervention-card {
+  @media screen and (min-width: 768px) {
+    margin: 16px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    margin: 24px;
+  }
+
+  display: block;
+
+  md-card-title {
+    padding: 16px 24px;
+
+    md-input-container {
+      padding: 0;
+      margin: 0;
+    }
+
+    md-icon {
+      color: #aed581;
+      height: 48px;
+      width: 48px;
+    }
+  }
+
   md-chips {
     .md-chips {
+      padding: 0 16px;
       box-shadow: none;
+      background-color: #aed581;
+
+      .md-chip-input-container input {
+        height: 28px;
+      }
+
+      .md-chip {
+        margin: 7px 8px 0 0;
+        height: 22px;
+        line-height: 22px;
+        font-size: 12px;
+
+        .md-chip-content {
+          padding-right: 0 !important;
+        }
+
+        .md-chip-remove {
+          height: 22px;
+          width: 22px;
+
+          md-icon {
+            height: 16px;
+            width: 16px;
+          }
+        }
+      }
+
+      .md-chip-input-container:not(:first-child) {
+        margin-top: 3px;
+      }
     }
   }
 
   md-card-content {
-    max-height: 220px;
+    max-height: 305px;
 
-    .infos {
-      margin-bottom: 10px;
+    .value {
+      padding-left: 3px;
     }
 
-    .benevoles-confimes {
-      min-height: 100px;
+    .infos {
+      margin: 8px;
+      line-height: 31px;
+      min-height: 93px;
+
+      :first-child {
+        min-width: 130px;
+      }
+
+      md-input-container {
+        padding: 0 0 1px;
+        margin: 0;
+      }
     }
 
     .benevole-list {
-      img {
-        margin-left: 0 !important;
+      padding: 8px 16px 16px;
+      min-height: 100px;
+      position: relative;
+
+      participant-avatar, .dndPlaceholder {
+        display: block;
+        width: 67px;
+        height: 67px;
       }
 
-      .md-button.md-fab {
-        margin: 10px;
-      }
-    }
+      participant-avatar {
+        padding: 8px 8px 0 0;
+        position: relative;
 
-    [dnd-list] {
-      min-height: 42px;
-      padding-left: 0;
+        avatar {
+          border: 2px solid #fff;
+        }
+
+        md-icon {
+          border-radius: 50%;
+          background-color: #fff;
+          position: absolute;
+          top: 2px;
+          right: 2px;
+        }
+      }
+
+      .dndPlaceholder {
+        background-color: #ddd;
+        border-radius: 50%;
+        margin: 8px 6px 4px 0;
+      }
 
       .dndDraggingSource {
         display: none;
       }
-
-      .dndPlaceholder {
-        display: block;
-        background-color: #ddd;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        margin: 10px;
-      }
     }
 
-    [dnd-list], [dnd-list] > avatar {
-      position: relative;
+    // [dnd-list], [dnd-list] > avatar {}
+ 
+  }
+
+  .md-toolbar-tools {
+    position: relative;
+
+    .toolbar-fab-buttons {
+      position: absolute;
+      top: 24px;
+      right: 12px;
+
+      button {
+        margin: 0 4px;
+      }
     }
   }
 }

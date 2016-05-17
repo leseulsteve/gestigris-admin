@@ -14,3 +14,18 @@ md-dialog.md-dialog-fullscreen {
   min-width: 100%;
   border-radius: 0;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button,
+input::-webkit-clear-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.autocomplete-search-template {
+  avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+  }
+}

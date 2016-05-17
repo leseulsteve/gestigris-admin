@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('interventions').controller('PlageFicheController',
-  function ($scope, $q, PlageIntervention, Intervention) {
+  function ($scope, $q, $state, PlageIntervention, Intervention) {
 
     var ctrl = this;
 
@@ -14,15 +14,12 @@ angular.module('interventions').controller('PlageFicheController',
       });
     }
 
-    if (ctrl.intervention) {
-      PlageIntervention.findByIntervention(ctrl.intervention).then(function (plage) {
-        populatePlage(plage).then(function () {
-          ctrl.plage = plage;
-        });
-      });
-    } else if ($scope.plage) {
-      populatePlage($scope.plage).then(function () {
-        ctrl.plage = $scope.plage;
-      });
-    }
+    populatePlage($scope.plage).then(function () {
+      ctrl.plage = $scope.plage;
+    });
+
+    ctrl.close = function () {
+      $state.go('home');
+    };
+
   });

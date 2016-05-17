@@ -23,13 +23,7 @@ angular.module('interventions').config(
       factory: 'Intervention',
       type: 'intervention',
       stateIcon: true,
-      dialog: {
-        controller: 'PlageFicheController',
-        controllerAs: 'plageFicheCtrl',
-        templateUrl: 'modules/interventions/views/plage-intervention-fiche.dialog.html',
-        itemName: 'intervention',
-        fullscreen: true
-      }
+      route: 'fiche-intervention'
     });
 
   });

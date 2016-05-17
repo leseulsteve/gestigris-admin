@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('interventions').factory('Intervention',
-  function ($q, Moment, Benevole, InterventionTag) {
+  function ($q, Moment, Benevole, InterventionTag, $mdToast) {
 
     var id = 1;
     var Intervention = function (params) {
@@ -10,6 +10,11 @@ angular.module('interventions').factory('Intervention',
       this.tags = _.map(this.tags, function (tag) {
         return new InterventionTag(tag);
       });
+      this.date.start = this.date.start.seconds(0).millisecond(0);
+      this.date.end = this.date.end.add(45, 'minute').seconds(0).millisecond(0);
+      this.local = '12121';
+      this.responsable = 'Ginette Larue';
+      this.meetingPlace = 'Secrétaria principal';
     };
 
     /*  Intervention.post('find', function(next) {
@@ -24,26 +29,38 @@ angular.module('interventions').factory('Intervention',
     };
 
     Intervention.prototype.getBenevoles = function (type) {
+      var that = this;
       return Benevole.find().then(function (benevoles) {
         switch (type) {
-        case 'confirmed':
-          return _.take(benevoles, Math.floor(Math.random() * 3) + 0);
+        case 'participants':
+          that.participants = _.take(benevoles, Math.floor(Math.random() * 3) + 0);
+          return angular.copy(that.participants);
         case 'interested':
-          return _.take(benevoles, Math.floor(Math.random() * 50) + 40);
+          return _.take(benevoles, Math.floor(Math.random() * 10) + 2);
         }
       });
     };
 
-    Intervention.prototype.getLocal = function () {
-      return 1123;
+    Intervention.prototype.addParticipant = function (benevole) {
+      var deffered = $q.defer();
+
+      var toast = $mdToast.simple()
+        .textContent('Demande de confirmation envoyé à ' + benevole.toString() + '!')
+        .action('annuler')
+        .highlightAction(true);
+
+      $mdToast.show(toast).then(function (response) {
+        return response === 'ok' ? deffered.reject() : deffered.resolve(benevole);
+      });
+
+      return deffered.promise;
     };
 
-    Intervention.prototype.getResponsable = function () {
-      return 'Ginette Larue';
-    };
+    Intervention.prototype.isConfirmed = function (benevole) {
 
-    Intervention.prototype.getMeetingPlace = function () {
-      return undefined;
+      return !_.isUndefined(_.find(this.participants, function (participant) {
+        return benevole._id === participant._id;
+      }));
     };
 
     var interventions = _.map([{
@@ -148,7 +165,7 @@ angular.module('interventions').factory('Intervention',
     };
 
     Intervention.getByDate = function (date) {
-      console.log(date);
+      date = date;
       return Intervention.findByPlageId();
     };
 

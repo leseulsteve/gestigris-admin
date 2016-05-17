@@ -12,13 +12,18 @@ angular.module('interventions').config(
       controllerAs: 'interventionsSectionCtrl'
     }).
 
-    state('fiche', {
-      url: '/fiche',
+    state('fiche-intervention', {
+      url: '/intervention/:_id',
+      resolve: {
+        plage: function (PlageIntervention) {
+          return PlageIntervention.find().then(function (plages) {
+            return plages[0];
+          });
+        }
+      },
       template: '<plage-intervention-fiche plage="plage" layout="column" flex></plage-intervention-fiche>',
-      controller: function ($scope, PlageIntervention) {
-        PlageIntervention.find().then(function (plages) {
-          $scope.plage = plages[0];
-        });
+      controller: function ($scope, plage) {
+        $scope.plage = plage;
       }
     });
   });

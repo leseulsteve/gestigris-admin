@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('benevoles').config(
-  function (SearchServiceProvider) {
+  function (SearchServiceProvider, benevoleConstants) {
 
     SearchServiceProvider.register({
       factory: 'Benevole',
       type: 'Bénévole',
-      icon: 'action:account_circle',
+      icon: benevoleConstants.USER_ICON_NAME,
       dialog: {
         controller: 'BenevoleFicheController',
         controllerAs: 'benevoleFicheCtrl',

@@ -11,7 +11,7 @@ angular.module('events').provider('EventService',
         providers.push(provider);
       },
 
-      $get: function ($q, $injector, Dialog) {
+      $get: function ($q, $injector, $state, Dialog) {
 
         var factories = {};
 
@@ -49,17 +49,24 @@ angular.module('events').provider('EventService',
         EventService.select = function ($event, selectedItem) {
           if (selectedItem) {
 
-            var dialogConfig = selectedItem.provider.dialog,
-              locals = {};
+            if (selectedItem.provider.route) {
+              $state.go(selectedItem.provider.route, {
+                _id: selectedItem.item._id
+              });
+            } else if (selectedItem.provider.dialog) {
+              var dialogConfig = selectedItem.provider.dialog,
+                locals = {};
 
-            locals[dialogConfig.itemName] = selectedItem.item;
+              locals[dialogConfig.itemName] = selectedItem.item;
 
-            var dialog = new Dialog(_.assign(dialogConfig, {
-              locals: locals,
-              bindToController: true
-            }));
+              var dialog = new Dialog(_.assign(dialogConfig, {
+                locals: locals,
+                bindToController: true
+              }));
 
-            dialog.show($event);
+              dialog.show($event);
+            }
+
           }
         };
 

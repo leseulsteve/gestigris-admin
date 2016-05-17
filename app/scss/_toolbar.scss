@@ -1,1 +1,8 @@
+md-toolbar {
+  min-height: 48px;
 
+  .md-toolbar-tools {
+    max-height: 48px;
+    height: 45px;
+  }
+}

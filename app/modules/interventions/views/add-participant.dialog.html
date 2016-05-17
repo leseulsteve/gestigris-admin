@@ -1,0 +1,42 @@
+<md-dialog aria-label="Ajout d'un participant" style="width:500px">
+  <form name="addParticipantForm" ng-submit="addParticipantCtrl.add(addParticipantForm, message)">
+    <md-dialog-content>
+      <div class="md-dialog-content">
+
+        <div style="margin-bottom:30px;padding:2px;">
+          <md-autocomplete md-delay="500"
+                           md-search-text="searchText"
+                           md-selected-item-change="addParticipantCtrl.selectedItemChange(item)"
+                           md-items="item in addParticipantCtrl.search(searchText)"
+                           md-item-text="item.toString()"
+                           md-min-length="2"
+                           placeholder="recherche..."
+                           md-menu-class="autocomplete-search-template">
+            <md-item-template>
+              <div class="item-title" layout="row" layout-align="start center">
+                <avatar user="item"></avatar>
+                <span layout="column">
+                  <div class="md-subhead" style="line-height: 25px;">{{ item.toString() }}</div>
+                </span>
+              </div>
+            </md-item-template>
+          </md-autocomplete>
+        </div>
+
+        <md-input-container class="md-block">
+          <label>Message</label>
+          <textarea ng-model="message.body" rows="5"></textarea>
+        </md-input-container>
+
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-button type="button" ng-click="addParticipantCtrl.dialog.cancel()">
+       annuler
+      </md-button>
+      <md-button type="submit">
+        ajouter
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

@@ -1,77 +1,140 @@
 <md-card>
-	<md-card-title layout-align="start center">
-    <div class="md-headline" flex="5">{{ intervention.getDateRange().start.format('H:mm') }}</div>
+  <md-card-title>
+    
+    <div class="md-headline" layout="row" layout-align="start center">
+
+    	<div class="value" ng-mouseover="showStart = true" ng-hide="showStart">
+    		{{ intervention.getDateRange().start.format('H:mm') }}
+    	</div>
+    	<md-input-container ng-show="showStart" ng-mouseleave="interventionCardCtrl.setStartDate()"
+    											layout="row" layout-align="start center">
+	    	<input type="time" step="60" aria-label="start"
+	    				 ng-model="interventionCardCtrl.start">
+    	</md-input-container>
+
+    	&nbsp-&nbsp
+
+    	<div class="value" ng-mouseover="showEnd = true" ng-hide="showEnd">
+    		{{ intervention.getDateRange().end.format('H:mm') }}
+    	</div>
+    	<md-input-container ng-show="showEnd" ng-mouseleave="interventionCardCtrl.setEndDate()"
+    											layout="row" layout-align="start center">
+    		<input type="time" step="60" aria-label="end"
+    				 	 ng-model="interventionCardCtrl.end">
+    	</md-input-container>
+    	
+    </div>
+
+    <span flex></span>
+
+    <md-icon md-svg-icon="action:done"></md-icon>
 		
-		<md-chips ng-model="intervention.tags"
-							md-autocomplete-snap
-							md-separator-key="interventionCardCtrl.chipSeparatorKeys"
-        			md-transform-chip="interventionCardCtrl.transformChip($chip)">
-			<md-autocomplete md-selected-item="selectedItem"
-				          		 md-search-text="searchText"
-				          		 md-items="tag in interventionCardCtrl.searchTags(searchText)"
-				          		 md-item-text="tag.description"
-				          		 placeholder="Ajout mot clef">
-  			<span md-highlight-text="searchText">{{ tag.description }}</span>
-			</md-autocomplete>
-      <md-chip-template>
-        <span>
-          <strong>{{ $chip.description }}</strong>
-        </span>
-      </md-chip-template>
-    </md-chips>
   </md-card-title>
-	
-  <md-card-content layout="row">
-		<div layout="column" flex="50">
+
+	<md-chips ng-model="intervention.tags"
+						md-autocomplete-snap
+						md-separator-key="interventionCardCtrl.chipSeparatorKeys"
+      			md-transform-chip="interventionCardCtrl.transformChip($chip)">
+		<md-autocomplete md-selected-item="selectedItem"
+			          		 md-search-text="searchText"
+			          		 md-items="tag in interventionCardCtrl.searchTags(searchText)"
+			          		 md-item-text="tag.description"
+			          		 placeholder="Ajout mot clef">
+			<span md-highlight-text="searchText">{{ tag.description }}</span>
+		</md-autocomplete>
+    <md-chip-template>
+      <span>
+        <strong>{{ $chip.description }}</strong>
+      </span>
+    </md-chip-template>
+  </md-chips>
+
+  <md-card-content layout="column" layout-gt-xs="row">
+		<div layout="column" flex-gt-xs="50">	
 			
-			<div flex class="infos" layout="row">
-				<div layout="column" flex="20" style="margin-right:5px;">
+			<div class="infos" layout="row">
+				<div layout="column">
 					<div>local: </div>
 					<div>responsable: </div>
 					<div>lieu de rencontre: </div>
 				</div>
 				<div layout="column" flex>
-					<div>{{ intervention.getLocal() }}</div>
-					<div>{{ intervention.getResponsable() }}</div>
-					<div>{{ intervention.getMeetingPlace() }}</div>
+					<div>
+						<div class="value" ng-mouseover="showLocal = true" ng-hide="showLocal">{{ intervention.local }}</div>
+						<md-input-container ng-show="showLocal" ng-mouseleave="showLocal = false"
+    														layout="row" layout-align="start center">
+    					<input ng-model="intervention.local" aria-label="local">
+    				</md-input-container>
+    			</div>
+    			<div>
+						<div class="value" ng-mouseover="showResponsable = true" ng-hide="showResponsable">{{ intervention.responsable }}</div>
+						<md-input-container ng-show="showResponsable" ng-mouseleave="showResponsable = false"
+    														layout="row" layout-align="start center">
+    					<input ng-model="intervention.responsable" aria-label="responsable">
+    				</md-input-container>
+    			</div>
+    			<div>
+						<div class="value" ng-mouseover="showMeetingPlace = true" ng-hide="showMeetingPlace">{{ intervention.meetingPlace }}</div>
+						<md-input-container ng-show="showMeetingPlace" ng-mouseleave="showMeetingPlace = false"
+    														layout="row" layout-align="start center">
+    					<input ng-model="intervention.meetingPlace" aria-label="meetingPlace">
+    				</md-input-container>
+    			</div>
 				</div>
 			</div>
 
-			<div class="benevoles-confimes">
-				<div class="md-subhead">Bénévoles confirmés</div>
-				<div class="benevole-list" layout="row" layout-wrap layout-align="start center"
-						 dnd-list="interventionCardCtrl.confirmed"
-						 dnd-allowed-types="[intervention._id]" dnd-horizontal-list="true"
-						 dnd-drop="interventionCardCtrl.dropped(item)">
-			    <avatar ng-repeat="benevole in interventionCardCtrl.confirmed"
-			    				user="benevole"
-			          	dnd-draggable="benevole"
-			          	dnd-type="intervention._id"
-			          	dnd-moved="interventionCardCtrl.confirmed.splice($index, 1)"
-			          	dnd-effect-allowed="move">
-			    </avatar>
-			    <md-button class="md-fab md-mini" aria-label="Ajout bénévole">
-          	<md-icon md-svg-icon="content:add"></md-icon>
-        	</md-button>
+			<md-card>
+			 	<md-toolbar>
+      		<div class="md-toolbar-tools">
+        		<h2 class="md-subhead"><div>Bénévoles participants</div></h2>
+        		<span flex></span>
+        		<div class="toolbar-fab-buttons">
+	        		<md-button class="md-fab md-mini" aria-label="Suppression bénévole"
+	        							 ng-show="showGarbage">
+	          		<md-icon md-svg-icon="action:delete"></md-icon>
+	        		</md-button>
+	        		<md-button class="md-fab md-mini" aria-label="Ajout bénévole"
+				    						 ng-click="interventionCardCtrl.addParticipant($event)">
+	          		<md-icon md-svg-icon="content:add"></md-icon>
+	        		</md-button>
+	        	</div>
+      		</div>
+    		</md-toolbar>
+				<div class="benevole-list" layout="row" layout-wrap
+						 dnd-list="interventionCardCtrl.participants"
+						 dnd-allowed-types="[intervention._id]"
+						 dnd-drop="interventionCardCtrl.droppedInParticipants(item)">
+					<participant-avatar ng-repeat="benevole in interventionCardCtrl.participants"
+															show-status
+															dnd-dragstart="interventionCardCtrl.toogleGarbage(true)"
+															dnd-dragend="interventionCardCtrl.toogleGarbage(false)"
+											  			dnd-draggable="benevole"
+						          				dnd-type="intervention._id"
+						          				dnd-moved="interventionCardCtrl.participants.splice($index, 1)"
+						          				dnd-effect-allowed="move">
+				  </participant-avatar>
 				</div>
-			</div>
+			</md-card>
 		</div>
 		
-		<div layout="column" flex>
-			<div class="md-subhead">Bénévoles intéressés</div>
+		<md-card flex-gt-xs="50">
+			<md-toolbar>
+      	<div class="md-toolbar-tools">
+        	<h2 class="md-subhead"><div>Bénévoles intéressés</div></h2>
+     		</div>
+   		</md-toolbar>
 			<md-content class="benevole-list" layout="row" layout-wrap
 									dnd-list="interventionCardCtrl.interested"
 									dnd-allowed-types="[intervention._id]"
 									dnd-drop="interventionCardCtrl.dropped(item)">
-		    <avatar ng-repeat="benevole in interventionCardCtrl.interested"
-		    				user="benevole"
-		       	  	dnd-draggable="benevole"
-		       	  	dnd-type="intervention._id"
-			          dnd-moved="interventionCardCtrl.interested.splice($index, 1)"
-			          dnd-effect-allowed="move">
-		    </avatar>
+				<participant-avatar ng-repeat="benevole in interventionCardCtrl.interested"
+		       	  							dnd-draggable="benevole"
+		       	  							dnd-type="intervention._id"
+			          						dnd-moved="interventionCardCtrl.interested.splice($index, 1)"
+			          						dnd-effect-allowed="move">
+		    </participant-avatar>
 			</md-content>
-		</div>
+		</md-card>
 
 	</md-card-content>
 </md-card>
