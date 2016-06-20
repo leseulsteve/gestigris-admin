@@ -161,6 +161,7 @@ angular.module('interventions').factory('Intervention',
       });
     };
 
+    // Pour le module EVENTS
     Intervention.getByDate = function (date) {
       return Intervention.findByPlageId().then(function (interventions) {
         return _.map(interventions, function (intervention) {

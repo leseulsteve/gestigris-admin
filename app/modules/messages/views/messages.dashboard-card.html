@@ -1,0 +1,11 @@
+<md-card ng-click="messagesDashboardCardCtrl.handleClick()">
+	<md-card-content flex layout="column" layout-align="center center" class="text-center">
+	  <div class="md-display-1">{{ messagesDashboardCardCtrl.nbNouveauxMessages }}</div>
+	  <ng-pluralize class="md-title"
+	  							count="messagesDashboardCardCtrl.nbNouveauxMessages"
+                 	when="{'0': 'Aucun nouveau message.',
+                     'one': '1 nouveau message',
+                     'other': 'nouveaux messages'}">
+		</ng-pluralize>
+	</md-card-content>
+</md-card>

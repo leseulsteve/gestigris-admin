@@ -1,0 +1,11 @@
+<md-card ng-click="benevolesDashboardCardCtrl.handleClick()">
+	<md-card-content flex layout="column" layout-align="center center" class="text-center">
+	  <div class="md-display-1">{{ benevolesDashboardCardCtrl.nbBenevoles }}</div>
+	  <ng-pluralize class="md-title"
+	  							count="benevolesDashboardCardCtrl.nbBenevoles"
+                 	when="{'0': 'Aucun bénévole.',
+                     'one': '1 bénévole',
+                     'other': 'bénévoles'}">
+		</ng-pluralize>
+	</md-card-content>
+</md-card>

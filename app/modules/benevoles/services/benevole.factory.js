@@ -11,6 +11,14 @@ angular.module('interventions').factory('Benevole',
       //this.avatar = 'https://premium.wpmudev.org/forums/?bb_attachments=712464&bbat=47619&inline';
     };
 
+    Benevole.count = function () {
+      var deffered = $q.defer();
+      $timeout(function () {
+        deffered.resolve(benevoles.length);
+      }, 500);
+      return deffered.promise;
+    };
+
     Benevole.prototype.remove = function () {
       var deffered = $q.defer();
       $timeout(function () {
