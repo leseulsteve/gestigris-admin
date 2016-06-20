@@ -11,66 +11,76 @@
 		<span flex></span>
 		<div layout="row" class="fiche-title-over-custom-tabs">
 			<div layout="column" layout-align="center start">
-				<span class="md-title">{{ plageFicheCtrl.plage.getEtablissement().toString() }}</span>
+				<span class="md-title">{{ plageFicheCtrl.plage.etablissement.toString() }}</span>
 	      <span class="md-subhead">{{ plageFicheCtrl.plage.getCalendarDay() }}</span>
 			</div>
 		</div>
 	</div>
 	<md-content layout="column" flex style="overflow:visible">
 
-		<md-tabs layout-fill layout="column" flex class="custom-tabs md-accent">
-      <md-tab layout-fill >
+		<md-tabs layout-fill class="custom-tabs md-accent">
+      <md-tab layout-fill>
         <md-tab-label>Interventions</md-tab-label>
         <md-tab-body>
         	<md-content flex class="layout-bg"> 
-        		<intervention-card ng-repeat="intervention in plageFicheCtrl.interventions"></intervention-card>
+        		<intervention-card class="plage-card"
+                               ng-repeat="intervention in plageFicheCtrl.interventions">
+            </intervention-card>
         	</md-content>
         </md-tab-body>
       </md-tab>
       <md-tab>
         <md-tab-label>Conversation</md-tab-label>
         <md-tab-body>
-        	<md-content flex class="layout-bg">
-        		<md-card>
-        			<md-card-title layout="column">
+          <div class="layout-bg" layout="column" flex>
+        		<md-card class="plage-card" layout="column" flex>
+        			<md-card-title layout="column" style="max-height:155px;height:155px;padding-bottom:0px">
         				<div class="md-title">Participants</div>
-        				<div layout="row" layout-align="start center" layout-wrap>
-        					<avatar ng-repeat="benevole in plageFicheCtrl.conversation.getParticipants()"
-						    					user="benevole">
-						    	</avatar>
-						    </div>
+        				<div layout="row" layout-align="start center" layout-wrap layout-margin>
+                  <participant-avatar ng-repeat="benevole in plageFicheCtrl.conversation.getParticipants()"
+                                      plage="plageFicheCtrl.plage"
+                                      click-for-details-avatar show-status>
+                  </participant-avatar>
+  					    </div>
         			</md-card-title>
-        			<md-card-content>
-        				<conversation conversation="plageFicheCtrl.conversation"></conversation>
+              <span flex></span>
+        			<md-card-content layout="column">
+        				<conversation conversation="plageFicheCtrl.conversation" layout="column"></conversation>
         			</md-card-content>
         		</md-card>
-		  		</md-content>
+          </div>
         </md-tab-body>
       </md-tab>
       <md-tab>
         <md-tab-label>Infos</md-tab-label>
         <md-tab-body>
         	<md-content flex class="layout-bg">
-        		<md-card>
-              <md-card-title layout="column">
+        		<md-card class="plage-card">
+              <md-card-title>
                 <div class="md-title">Plage d'intervention</div>
               </md-card-title>
               <md-card-content>
-                DATE CRÉATION<br>
-                CRÉÉ PAR<br>
-                PERSONNE RESSOURCE<br>
+                <div class="hidden-input-group" layout="row">
+                  <div>
+                    <div>date de création:</div>
+                    <div>créé par:</div>
+                    <div>personne ressource:</div>
+                  </div>
+                  <div>
+                    <div>{{ plageFicheCtrl.plage.createdAt.format('LL') }}</div>
+                    <hidden-input ng-model="plageFicheCtrl.plage.createdBy"
+                                  aria-label="créé par">
+                    </hidden-input>
+                    <hidden-input ng-model="plageFicheCtrl.plage.contact"
+                                  aria-label="contact">
+                    </hidden-input>
+                  </div>
+                </div>
               </md-card-content>
             </md-card>
-            <md-card>
-              <md-card-title layout="column">
-                <div class="md-title">Établissement</div>
-              </md-card-title>
-              <md-card-content>
-                ADRESSE<br>
-                STATIONNEMENT<br>
-                NOTES<br>
-              </md-card-content>
-            </md-card>
+            <etablissement-card class="plage-card"
+                                etablissement="plageFicheCtrl.etablissement">
+            </etablissement-card>
 		  		</md-content>
         </md-tab-body>
       </md-tab>

@@ -1,0 +1,13 @@
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right-panel">
+  <md-toolbar class="md-theme-light">
+  	<div class="md-toolbar-tools">
+  		<md-button class="md-icon-button" ng-click="closeSideNav()" aria-label="Fermer">
+				<md-icon md-svg-icon="navigation:arrow_forward"></md-icon>
+			</md-button>
+    	<h1>{{ title }}</h1>
+    </div>
+  </md-toolbar>
+  <div layout="column" flex>
+    <md-content flex ng-include="templateUrl"></md-content>
+  </div>
+</md-sidenav>

@@ -9,6 +9,11 @@ angular.module('interventions').controller('PlageFicheController',
       plage.getConversation().then(function (conversation) {
         ctrl.conversation = conversation;
       });
+
+      plage.getEtablissement().then(function (etablissement) {
+        ctrl.etablissement = etablissement;
+      });
+
       return Intervention.findByPlageId(plage._id).then(function (interventions) {
         ctrl.interventions = interventions;
       });

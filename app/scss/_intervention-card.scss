@@ -1,12 +1,4 @@
 intervention-card {
-  @media screen and (min-width: 768px) {
-    margin: 16px;
-  }
-
-  @media screen and (min-width: 1024px) {
-    margin: 24px;
-  }
-
   display: block;
 
   md-card-title {
@@ -68,62 +60,23 @@ intervention-card {
       padding-left: 3px;
     }
 
-    .infos {
-      margin: 8px;
-      line-height: 31px;
-      min-height: 93px;
-
-      :first-child {
-        min-width: 130px;
-      }
-
-      md-input-container {
-        padding: 0 0 1px;
-        margin: 0;
-      }
-    }
-
     .benevole-list {
-      padding: 8px 16px 16px;
       min-height: 100px;
       position: relative;
 
-      participant-avatar, .dndPlaceholder {
-        display: block;
-        width: 67px;
-        height: 67px;
-      }
-
-      participant-avatar {
-        padding: 8px 8px 0 0;
-        position: relative;
-
-        avatar {
-          border: 2px solid #fff;
-        }
-
-        md-icon {
-          border-radius: 50%;
-          background-color: #fff;
-          position: absolute;
-          top: 2px;
-          right: 2px;
-        }
-      }
-
       .dndPlaceholder {
+        display: block;
+        width: 69px;
+        height: 69px;
         background-color: #ddd;
         border-radius: 50%;
-        margin: 8px 6px 4px 0;
+        margin: 8px;
       }
 
       .dndDraggingSource {
         display: none;
       }
     }
-
-    // [dnd-list], [dnd-list] > avatar {}
- 
   }
 
   .md-toolbar-tools {

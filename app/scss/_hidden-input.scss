@@ -1,0 +1,35 @@
+.hidden-input-group {
+  margin: 8px;
+  line-height: 31px;
+  min-height: 93px;
+
+  :first-child {
+    min-width: 130px;
+  }
+}
+
+hidden-input {
+  .value {
+    padding-left: 3px;
+  }
+
+  md-input-container {
+    padding: 0 0 1px;
+    margin: 0;
+
+    &.md-has-icon {
+      position: relative;
+      padding-left: 0;
+    }
+  }
+
+  md-icon {
+    width: 20px;
+    height: 20px;
+    top: 6px;
+    right: 56px;
+    left: auto;
+    margin: 0;
+    position: absolute;
+  }
+}

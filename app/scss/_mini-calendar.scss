@@ -1,7 +1,9 @@
 mini-calendar {
-  md-list {
-    .md-caption {
-      line-height: 14px;
-    }
+  .flickity-viewport {
+    height: 370px !important;
+  }
+
+  .flickity-page-dots {
+    display: none;
   }
 }

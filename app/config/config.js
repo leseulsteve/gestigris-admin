@@ -6,7 +6,8 @@ var ApplicationConfiguration = (function () {
   var applicationModuleName = 'angularjsapp';
   var applicationModuleVendorDependencies = [
     'gestigris-common',
-    'dndLists'
+    'dndLists',
+    'bc.Flickity'
   ];
 
   // Add a new vertical module

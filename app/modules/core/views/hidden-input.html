@@ -1,0 +1,8 @@
+<div>
+	<div class="value" ng-mouseover="showInput = true" ng-hide="showInput">{{ ngModel }}</div>
+	<md-input-container ng-show="showInput" ng-mouseleave="showInput = false"
+											layout="row" layout-align="start center">
+		<input ng-model="ngModel" name="{{ inputName }}" aria-label="{{ inputName }}">
+		<md-icon md-svg-icon="editor:mode_edit"></md-icon>
+	</md-input-container>
+</div>

@@ -1,0 +1,20 @@
+<dashboard-card>
+	<dashboard-card-header>
+		<h3 class="text-center" flex>Urgences</h3>
+	</dashboard-card-header>
+	<dashboard-card-content>
+		<md-list>
+		<md-list-item ng-repeat="intervention in urgentInterventionsCardCtrl.interventions"
+									ng-click="urgentInterventionsCardCtrl.showDetails(intervention)">
+				<div flex="20" layout="row" ng-init="dateRange = intervention.getDateRange()">
+		  		<div class="md-display-1">{{ dateRange.start.hour() }}</div>
+		  		<div class="md-subhead">{{ dateRange.start.format('mm') }}</div>
+		  	</div>
+		  	<div flex layout="column">
+		  		<div class="md-subhead">{{ intervention.toString() }}</div>
+		  		<div class="md-caption">intervention</div>
+		  	</div>
+				<md-icon md-svg-icon="alert:warning"></md-icon>
+			</md-list-item>
+	</dashboard-card-content>
+</dashboard-card>

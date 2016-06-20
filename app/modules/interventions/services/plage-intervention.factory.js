@@ -1,12 +1,19 @@
 'use strict';
 
 angular.module('interventions').factory('PlageIntervention',
-  function ($q, Moment, Intervention, Conversation) {
+  function ($q, Moment, Intervention, Conversation, Etablissement) {
 
     var id = 0;
     var PlageIntervention = function (params) {
       _.assign(this, params);
       this._id = ++id;
+      this.createdAt = new Moment();
+      this.createdBy = 'Vincent Chouinard';
+      this.contact = 'Stéphanie Paradis';
+      var that = this;
+      Etablissement.findById('55f2151edb35ddb304bcba84').then(function (etablissement) {
+        that.etablissement = etablissement;
+      });
     };
 
     PlageIntervention.prototype.toString = function () {
@@ -14,11 +21,18 @@ angular.module('interventions').factory('PlageIntervention',
     };
 
     PlageIntervention.prototype.getEtablissement = function () {
-      return this.etablissement;
+      var deffered = $q.defer();
+      deffered.resolve(this.etablissement);
+      return deffered.promise;
     };
 
     PlageIntervention.prototype.getDate = function () {
       return this.date;
+    };
+
+    PlageIntervention.prototype.isConfirmed = function (benevole) {
+      benevole = benevole;
+      return true;
     };
 
     PlageIntervention.prototype.getCalendarDay = function () {
@@ -32,41 +46,15 @@ angular.module('interventions').factory('PlageIntervention',
     };
 
     var plages = _.map([{
-      date: new Moment(),
-      etablissement: {
-        toString: function () {
-          return 'École Secondaire de Neufchâtel';
-        }
-      },
-
+      date: new Moment()
     }, {
-      date: new Moment(),
-      etablissement: {
-        toString: function () {
-          return 'École Secondaire de Neufchâtel';
-        }
-      }
+      date: new Moment()
     }, {
-      date: new Moment(),
-      etablissement: {
-        toString: function () {
-          return 'École Secondaire de Neufchâtel';
-        }
-      }
+      date: new Moment()
     }, {
-      date: new Moment(),
-      etablissement: {
-        toString: function () {
-          return 'École Secondaire de Neufchâtel';
-        }
-      }
+      date: new Moment()
     }, {
-      date: new Moment(),
-      etablissement: {
-        toString: function () {
-          return 'École Secondaire de Neufchâtel';
-        }
-      }
+      date: new Moment()
     }], function (data) {
       return new PlageIntervention(data);
     });

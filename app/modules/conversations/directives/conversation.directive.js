@@ -1,13 +1,15 @@
 'use strict';
 
 angular.module('conversations').directive('conversation',
-  function ($rootScope, $timeout, Message) {
+  function ($rootScope, $timeout) {
     return {
       restrict: 'E',
       scope: {
         conversation: '='
       },
       templateUrl: 'modules/conversations/views/conversation.html',
+      controller: 'ConversationController',
+      controllerAs: 'conversationCtrl',
       link: function (scope, element) {
 
         var messagesContainer = element.find('md-content');
@@ -26,25 +28,6 @@ angular.module('conversations').directive('conversation',
             unwatch();
           }
         });
-
-        scope.addMessage = function (newMessage) {
-
-          Message.create(_.assign({
-            conversation: scope.conversation._id,
-          }, newMessage)).then(function (message) {
-            scope.newMessage = {};
-            scope.conversation.messages.push(message);
-
-            var isParticipating = false,
-              participants = scope.conversation.getParticipants();
-            _.forEach(participants, function (participant) {
-              isParticipating = participant.equals(message.author);
-            });
-            if (!isParticipating) {
-              participants.push(message.author);
-            }
-          });
-        };
 
         scope.deleteMessage = function (message) {
           message.remove().then(function () {

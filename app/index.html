@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="lib/angular-material/angular-material.css">
         <link rel="stylesheet" href="lib/animate.css/animate.css">
         <link rel="stylesheet" href="lib/gestigris-common/dist/gestigris-common.css">
+        <link rel="stylesheet" href="lib/flickity/dist/flickity.min.css">
         <!-- endinjector -->
     <!-- endbuild --> 
 
@@ -30,6 +31,7 @@
       <toolbar></toolbar>
       <section ui-view layout="column" flex></section>
     </div>
+    <right-panel></right-panel>
     <fab-speed-dial></fab-speed-dial>
 
     <!-- build:js scripts/vendor.js -->
@@ -53,6 +55,19 @@
         <script src="lib/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
         <script src="lib/gestigris-common/dist/gestigris-common.js"></script>
         <script src="lib/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js"></script>
+        <script src="lib/classie/classie.js"></script>
+        <script src="lib/eventie/eventie.js"></script>
+        <script src="lib/doc-ready/doc-ready.js"></script>
+        <script src="lib/eventEmitter/EventEmitter.js"></script>
+        <script src="lib/matches-selector/matches-selector.js"></script>
+        <script src="lib/fizzy-ui-utils/utils.js"></script>
+        <script src="lib/get-style-property/get-style-property.js"></script>
+        <script src="lib/get-size/get-size.js"></script>
+        <script src="lib/unipointer/unipointer.js"></script>
+        <script src="lib/tap-listener/tap-listener.js"></script>
+        <script src="lib/unidragger/unidragger.js"></script>
+        <script src="lib/flickity/dist/flickity.pkgd.js"></script>
+        <script src="lib/angular-flickity/dist/angular-flickity.js"></script>
         <!-- endinjector -->
         <script src="lib/angular-i18n/angular-locale_fr-ca.js"></script>
         <script src="lib/moment/locale/fr-ca.js"></script>
@@ -97,8 +112,8 @@
         <script src="modules/conversations/services/conversation.service.js"></script>
         <script src="modules/conversations/services/message.factory.js"></script>
         <script src="modules/core/services/dialog.factory.js"></script>
+        <script src="modules/core/services/right-panel.service.js"></script>
         <script src="modules/employes/services/employe.factory.js"></script>
-        <script src="modules/etablissements/services/etablissement.factory.js"></script>
         <script src="modules/events/services/event.service.js"></script>
         <script src="modules/interventions/services/intervention-tag.factory.js"></script>
         <script src="modules/interventions/services/intervention.factory.js"></script>
@@ -114,21 +129,27 @@
         <script src="modules/conversations/directives/conversation-side-nav-list.directive.js"></script>
         <script src="modules/conversations/directives/conversation.directive.js"></script>
         <script src="modules/conversations/directives/conversations-card.directive.js"></script>
+        <script src="modules/core/directives/hidden-input.directive.js"></script>
+        <script src="modules/core/directives/right-panel.directive.js"></script>
         <script src="modules/dashboard/directives/dashboard-card-content.directive.js"></script>
         <script src="modules/dashboard/directives/dashboard-card-header.directive.js"></script>
         <script src="modules/dashboard/directives/dashboard-card.directive.js"></script>
         <script src="modules/dashboard/directives/dashboard-fullscreen-header-card.directive.js"></script>
+        <script src="modules/etablissements/directives/etablissement-card.directive.js"></script>
         <script src="modules/events/directives/mini-calendar.directive.js"></script>
         <script src="modules/interventions/directives/intervention-card.directive.js"></script>
         <script src="modules/interventions/directives/participant-avatar.directive.js"></script>
         <script src="modules/interventions/directives/plage-intervention-fiche.directive.js"></script>
+        <script src="modules/interventions/directives/urgent-interventions-card.directive.js"></script>
         <script src="modules/navigation/directives/fab-speed-dial.directive.js"></script>
         <script src="modules/navigation/directives/side-nav.directive.js"></script>
         <script src="modules/navigation/directives/toolbar.directive.js"></script>
         <script src="modules/search/directives/search-bar.directive.js"></script>
+        <script src="modules/users/directives/click-for-details-avatar.directive.js"></script>
         <script src="modules/benevoles/controllers/benevole-fiche.controller.js"></script>
         <script src="modules/benevoles/controllers/benevoles-section.controller.js"></script>
         <script src="modules/conversations/controllers/conversation-fiche.controller.js"></script>
+        <script src="modules/conversations/controllers/conversation.controller.js"></script>
         <script src="modules/conversations/controllers/conversations-section.controller.js"></script>
         <script src="modules/dashboard/controllers/dashboard-card.controller.js"></script>
         <script src="modules/dashboard/controllers/dashboard.controller.js"></script>
@@ -137,6 +158,7 @@
         <script src="modules/interventions/controllers/intervention-card.controller.js"></script>
         <script src="modules/interventions/controllers/plage-intervention-fiche.controller.js"></script>
         <script src="modules/interventions/controllers/plage-intervention.controller.js"></script>
+        <script src="modules/interventions/controllers/urgent-interventions-card.controller.js"></script>
         <script src="modules/messages/controllers/nouveau-message.controller.js"></script>
         <script src="modules/navigation/controllers/fab-speed-dial.controller.js"></script>
         <script src="modules/navigation/controllers/sidenav.controller.js"></script>

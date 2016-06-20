@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('interventions').factory('Intervention',
-  function ($q, Moment, Benevole, InterventionTag, $mdToast) {
+  function ($q, Moment, Benevole, InterventionTag, $mdToast, Etablissement, $timeout) {
 
     var id = 1;
     var Intervention = function (params) {
@@ -69,11 +69,6 @@ angular.module('interventions').factory('Intervention',
         start: new Moment(),
         end: new Moment()
       },
-      etablissement: {
-        toString: function () {
-          return 'École Secondaire de Neufchâtel';
-        }
-      },
       tags: [{
         _id: 1,
         description: 'secondaire 3'
@@ -87,11 +82,6 @@ angular.module('interventions').factory('Intervention',
       date: {
         start: new Moment(),
         end: new Moment()
-      },
-      etablissement: {
-        toString: function () {
-          return 'École Secondaire de Neufchâtel';
-        }
       },
       tags: [{
         _id: 1,
@@ -107,11 +97,6 @@ angular.module('interventions').factory('Intervention',
       date: {
         start: new Moment(),
         end: new Moment()
-      },
-      etablissement: {
-        toString: function () {
-          return 'École Secondaire de Neufchâtel';
-        }
       },
       tags: [{
         _id: 1,
@@ -128,11 +113,6 @@ angular.module('interventions').factory('Intervention',
         start: new Moment(),
         end: new Moment()
       },
-      etablissement: {
-        toString: function () {
-          return 'École Secondaire de Neufchâtel';
-        }
-      },
       tags: [{
         _id: 1,
         description: 'secondaire 3'
@@ -147,7 +127,11 @@ angular.module('interventions').factory('Intervention',
     });
 
     Intervention.prototype.toString = function () {
-      return this.etablissement.toString();
+      return this.etablissement ? this.etablissement.toString() : undefined;
+    };
+
+    Intervention.prototype.getEtablissement = function () {
+      return this.etablissement;
     };
 
     Intervention.prototype.getDate = function () {
@@ -159,14 +143,35 @@ angular.module('interventions').factory('Intervention',
     };
 
     Intervention.findByPlageId = function () {
-      var deffered = $q.defer();
-      deffered.resolve(interventions);
-      return deffered.promise;
+      return $timeout(function () {
+        return Etablissement.findById('55f2151edb35ddb304bcba84').then(function (etablissement) {
+          return _.map(interventions, function (intervention) {
+            return _.assign(intervention, {
+              etablissement: etablissement
+            });
+          });
+        });
+      }, 1500);
+
+    };
+
+    Intervention.getUrgents = function () {
+      return Intervention.findByPlageId().then(function (interventions) {
+        return _.take(interventions, 3);
+      });
     };
 
     Intervention.getByDate = function (date) {
-      date = date;
-      return Intervention.findByPlageId();
+      return Intervention.findByPlageId().then(function (interventions) {
+        return _.map(interventions, function (intervention) {
+          return _.assign(intervention, {
+            date: {
+              start: date,
+              end: date
+            }
+          });
+        });
+      });
     };
 
     return Intervention;

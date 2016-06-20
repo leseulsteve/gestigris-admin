@@ -1,29 +1,81 @@
 <dashboard-card>
 	<dashboard-card-header layout="row" layout-align="start center">
-		<md-button aria-label="Avant"
-   						 class="md-icon-button">
+		<md-button aria-label="Jour précédent"
+   						 class="md-icon-button"
+   						 ng-click="miniCalendarCtrl.previousDay()">
       <md-icon md-svg-icon="navigation:chevron_left"></md-icon>
     </md-button>
-		<span flex><h3 class="text-center" flex>Aujourd'hui</h3></span>
-		<md-button aria-label="Arpès"
-   						 class="md-icon-button">
+		<span flex>
+			<h3 class="text-center">{{ miniCalendarCtrl.date.calendar(null, miniCalendarCtrl.calendarOptions) }}</h3>
+		</span>
+		<md-button aria-label="Jour suivant"
+   						 class="md-icon-button"
+   						 ng-click="miniCalendarCtrl.nextDay()">
       <md-icon md-svg-icon="navigation:chevron_right"></md-icon>
     </md-button>
 	</dashboard-card-header>
 	<dashboard-card-content>
-		<md-list>
-		  <md-list-item ng-repeat="event in miniCalendarCtrl.events"
-		  							ng-click="miniCalendarCtrl.selectEvent($event, event)">
-		  	<div flex="20" layout="row">
-		  		<div class="md-display-1">{{ event.date.start.hour() }}</div>
-		  		<div class="md-subhead">{{ event.date.start.format('mm') }}</div>
-		  	</div>
-		  	<div flex layout="column">
-		  		<div class="md-subhead">{{ event.description }}</div>
-		  		<div class="md-caption">{{ event.type }}</div>
-		  	</div>
-		    <md-icon ng-if="event.stateIcon" md-svg-icon="{{ event.stateIcon }}"></md-icon>
-		  </md-list-item>
-		</md-list>
+		<div bc-flickity="{{ miniCalendarCtrl.flickityOptions }}" id="calendarList">
+
+			<div style="width:470px">
+			 <md-progress-circular md-mode="indeterminate" ng-show="miniCalendarCtrl.list1.loading"></md-progress-circular>
+	<md-list ng-show="!miniCalendarCtrl.list1.loading">
+		<md-list-item ng-repeat="event in miniCalendarCtrl.list1.events"
+									ng-click="miniCalendarCtrl.selectEvent($event, event)">
+			<div flex="20" layout="row">
+
+				<div class="md-display-1">{{ event.date.start.hour() }}</div>
+				<div class="md-subhead">{{ event.date.start.format('mm') }}</div>
+			</div>
+			<div flex layout="column">
+				<div class="md-subhead">{{ event.description }}</div>
+				<div class="md-caption">{{ event.type }}</div>
+			</div>
+			<md-icon ng-if="event.stateIcon" md-svg-icon="{{ event.stateIcon }}"></md-icon>
+		</md-list-item>
+	</md-list>
+</div>
+
+<div style="width:470px">
+	<md-progress-circular md-mode="indeterminate" ng-show="miniCalendarCtrl.list2.loading"></md-progress-circular>
+
+	<md-list ng-show="!miniCalendarCtrl.list2.loading">
+		<md-list-item ng-repeat="event in miniCalendarCtrl.list2.events"
+									ng-click="miniCalendarCtrl.selectEvent($event, event)">
+			<div flex="20" layout="row">
+
+				<div class="md-display-1">{{ event.date.start.hour() }}</div>
+				<div class="md-subhead">{{ event.date.start.format('mm') }}</div>
+			</div>
+			<div flex layout="column">
+				<div class="md-subhead">{{ event.description }}</div>
+				<div class="md-caption">{{ event.type }}</div>
+			</div>
+			<md-icon ng-if="event.stateIcon" md-svg-icon="{{ event.stateIcon }}"></md-icon>
+		</md-list-item>
+	</md-list>
+</div>
+
+<div style="width:470px">
+	<md-progress-circular md-mode="indeterminate" ng-show="miniCalendarCtrl.list3.loading"></md-progress-circular>
+
+	<md-list ng-show="!miniCalendarCtrl.list3.loading">
+		<md-list-item ng-repeat="event in miniCalendarCtrl.list3.events"
+									ng-click="miniCalendarCtrl.selectEvent($event, event)">
+			<div flex="20" layout="row">
+				<div class="md-display-1">{{ event.date.start.hour() }}</div>
+				<div class="md-subhead">{{ event.date.start.format('mm') }}</div>
+			</div>
+			<div flex layout="column">
+				<div class="md-subhead">{{ event.description }}</div>
+				<div class="md-caption">{{ event.type }}</div>
+			</div>
+			<md-icon ng-if="event.stateIcon" md-svg-icon="{{ event.stateIcon }}"></md-icon>
+		</md-list-item>
+	</md-list>
+</div>
+
+		</div>
+
 	</dashboard-card-content>
 </dashboard-card>

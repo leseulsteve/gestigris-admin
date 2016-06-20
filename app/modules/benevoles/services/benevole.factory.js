@@ -8,7 +8,7 @@ angular.module('interventions').factory('Benevole',
       _.assign(this, params);
       this._id = params._id || ++id;
       this.fullname = this.toString();
-      this.avatar = 'https://premium.wpmudev.org/forums/?bb_attachments=712464&bbat=47619&inline';
+      //this.avatar = 'https://premium.wpmudev.org/forums/?bb_attachments=712464&bbat=47619&inline';
     };
 
     Benevole.prototype.remove = function () {

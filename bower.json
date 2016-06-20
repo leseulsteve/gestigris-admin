@@ -3,7 +3,16 @@
   "version": "0.0.1",
   "dependencies": {
     "gestigris-common": "git+https://github.com/leseulsteve/gestigris-common.git",
-    "angular-drag-and-drop-lists": "~1.4.0"
+    "angular-drag-and-drop-lists": "~1.4.0",
+    "angular-flickity": "~1.1.2"
+  },
+  "overrides": {
+    "flickity": {
+      "main": [
+        "dist/flickity.pkgd.js",
+        "dist/flickity.min.css"
+      ]
+    }
   },
   "resolutions": {
     "angular-translate": "~2.9.1",

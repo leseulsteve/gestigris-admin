@@ -26,6 +26,7 @@ angular.module('conversations').factory('Conversation',
 
     var Conversation = function (params) {
       _.assign(this, params);
+      this.messages = [];
     };
 
     Conversation.findById = function () {

@@ -1,4 +1,4 @@
-dashboard-card {
+md-grid-tile figure > * {
   height: 100%;
   width: 100%;
 
@@ -12,6 +12,12 @@ dashboard-card {
 
     md-card-content {
       padding-top: 0;
+    }
+
+    md-list {
+      .md-caption {
+        line-height: 14px;
+      }
     }
 
     md-list-item > div {
