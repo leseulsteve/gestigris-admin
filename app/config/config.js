@@ -7,7 +7,8 @@ var ApplicationConfiguration = (function () {
   var applicationModuleVendorDependencies = [
     'gestigris-common',
     'dndLists',
-    'bc.Flickity'
+    'bc.Flickity',
+    'ngImgCrop'
   ];
 
   // Add a new vertical module

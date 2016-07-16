@@ -4,7 +4,8 @@
   "dependencies": {
     "gestigris-common": "git+https://github.com/leseulsteve/gestigris-common.git",
     "angular-drag-and-drop-lists": "~1.4.0",
-    "angular-flickity": "~1.1.2"
+    "angular-flickity": "~1.1.2",
+    "ngImgCropFullExtended": "~0.5.5"
   },
   "overrides": {
     "flickity": {

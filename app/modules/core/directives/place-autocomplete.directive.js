@@ -1,48 +1,40 @@
 'use strict';
 
 angular.module('core').directive('placeAutocomplete',
-  function($http) {
+  function ($http, PlaceAutocompleteFactory) {
     return {
       require: 'ngModel',
       restrict: 'E',
       scope: {},
       templateUrl: 'modules/core/views/place.autocomplete.html',
-      link: function(scope, element, attrs, ngModelCtrl) {
+      compile: function (iElement, iAttrs) {
 
+        if (iAttrs.mdFloatingLabel) {
+          iElement.find('md-autocomplete').attr('md-floating-label', iAttrs.mdFloatingLabel);
+        }
 
-        scope.querySearch = function(searchText) {
-          var req = {
-            method: 'GET',
-            url: 'http://photon.komoot.de/api/?q=' + searchText + '&lat=' + 46.823596 + '&lon=' + -71.227705,
-            headers: {
-              'Content-Type': 'text/html'
+        return function link(scope, element, attrs, ngModelCtrl) {
+
+          var mapzenKey = 'search-v5XrVqS';
+
+          scope.querySearch = function (searchText) {
+            var url = 'https://search.mapzen.com/v1/search?text=' + searchText + '&api_key=' + mapzenKey;
+            return $http.get(url).then(function (response) {
+              return response.data.features;
+            });
+          };
+
+          scope.selectedItemChange = function (mapzenItem) {
+            if (mapzenItem) {
+              $http.get('http://nominatim.openstreetmap.org/lookup?format=json&osm_ids=W' + mapzenItem.properties.id.replace('way:', '')).then(function (response) {
+                ngModelCtrl.$setViewValue(response.status === 200 && response.data.length === 1 ? PlaceAutocompleteFactory.convertResult(_.first(response.data), mapzenItem) : undefined);
+                ngModelCtrl.$render();
+              });
+            } else {
+              ngModelCtrl.$setViewValue(undefined);
             }
-          }
-
-          // return $http.get('https://search.mapzen.com/v1/search?text=' + searchText + '&focus.point.lat=' + 46.823596 + '&focus.point.lon=' + -71.227705 + '&api_key=search-v5XrVqS').then(function(response) {
-          //photon.komoot.de/api/?q=berlin&lat=52.3879&lon=13.0582
-          return $http(req).then(function(response) {
-            return response.data.features;
-          });
+          };
         };
-
-        scope.selectedItemChange = function(item) {
-          ngModelCtrl.$setViewValue({
-            coordinates: {
-              lat: item.geometry.coordinates[0],
-              long: item.geometry.coordinates[1]
-            },
-            address: {
-              street: item.properties,
-              arrondissement: '',
-              city: item.properties.locality,
-              city: item.properties.region,
-              postalCode: '',
-            },
-          });
-          console.log(item);
-        };
-
       }
     };
   });
