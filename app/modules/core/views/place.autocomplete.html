@@ -1,0 +1,12 @@
+<md-autocomplete ng-model-options="{ debounce: 500 }"
+                 md-search-text="searchText"
+                 md-items="item in querySearch(searchText)"
+                 md-selected-item-change="selectedItemChange(item)"
+                 md-item-text="item.properties.label">
+  <md-item-template>
+    <span md-highlight-text="searchText" md-highlight-flags="^i">{{ item.properties.label }}</span>
+  </md-item-template>
+  <md-not-found>
+    Aucun résultat n'a été trouvé.
+  </md-not-found>
+</md-autocomplete>

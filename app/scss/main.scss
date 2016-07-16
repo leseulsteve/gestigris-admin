@@ -18,6 +18,11 @@ md-dialog.md-dialog-fullscreen {
   border-radius: 0;
 }
 
+.md-select-value *:first-child {
+  margin-bottom: 4px;
+  line-height: 20px;
+}
+
 //input::-webkit-outer-spin-button,
 //input::-webkit-inner-spin-button,
 //input::-webkit-clear-button {

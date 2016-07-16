@@ -35,6 +35,7 @@
     "moment": false,
     "jQuery": false,
     "$": false,
-    "io": false
+    "io": false,
+    "google": false
   }
 }

@@ -1,0 +1,76 @@
+<md-dialog aria-label="Nouvel établissement" style="width:800px;">
+  <form novalidate name="etablissementForm"
+        ng-submit="nouvelEtablissementCtrl.create(etablissementForm, etablissement)">
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Nouvel établissement</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="nouvelEtablissementCtrl.dialog.hide()">
+          <md-icon md-svg-icon="navigation:close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content>
+      <div class="md-dialog-content">
+
+        <div layout="row" flex layout-align="start start" ng-init="addingType = false">
+
+          <md-input-container class="md-block" flex>
+            <label>Nom</label>
+            <input name="nom" ng-model="etablissement.nom" required>
+            <div ng-messages="etablissementForm.nom.$error">
+              <div ng-message="required">requis.</div>
+            </div>
+          </md-input-container>
+
+          <md-input-container ng-hide="addingType" flex="45">
+            <label>Type d'établissement</label>
+            <md-select name="etablissementType" ng-model="etablissement.type"
+                       ng-change="etablissement.typeDescription = undefined"
+                       ng-required="!addingType">
+              <md-option ng-repeat="type in nouvelEtablissementCtrl.etablissementTypes">
+                {{ type.toString() }}
+              </md-option>
+            </md-select>
+            <div ng-messages="etablissementForm.etablissementType.$error" style="height:24px;">
+              <div ng-message="required">requis.</div>
+            </div>
+          </md-input-container>
+          <md-input-container ng-show="addingType" flex="45">
+            <label style="margin-left:1px;">Nouveau type d'établissement</label>
+            <input name="typeDescription" ng-model="etablissement.typeDescription"
+                   ng-change="etablissement.type = undefined"
+                   ng-required="addingType">
+            <div ng-messages="etablissementForm.typeDescription.$error">
+              <div ng-message="required">requis.</div>
+            </div>
+          </md-input-container>
+          <md-button style="margin-top:18px; margin-left:0px;"
+                     class="md-icon-button md-primary" aria-label="Ajouter"
+                     ng-click="addingType = !addingType">
+            <md-icon md-svg-icon="{{ 'content:' + (addingType ? 'clear' : 'add') }}"></md-icon>
+            <md-tooltip>Ajouter</md-tooltip>
+          </md-button>
+
+        </div>
+        <div layout="row" flex>
+
+          <md-input-container>
+            <label>Type d'établissement</label>
+            <place-autocomplete ng-model="place"></place-autocomplete>
+          </md-input-container>
+        
+        </div>
+        {{place}}
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-button type="button" ng-click="nouvelEtablissementCtrl.dialog.hide()">
+        Annuler
+      </md-button>
+      <md-button type="submit" style="margin-right:20px;">
+        Envoyer
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>
