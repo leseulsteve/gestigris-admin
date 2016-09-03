@@ -1,5 +1,5 @@
 <md-dialog aria-label="Nouvel établissement" style="width:800px;">
-  <form novalidate name="etablissementForm"
+  <form novalidate name="etablissementForm" class="input-no-bottom-margin"
         ng-submit="nouvelEtablissementCtrl.create(etablissementForm, etablissement)">
     <md-toolbar>
       <div class="md-toolbar-tools">
@@ -10,140 +10,24 @@
         </md-button>
       </div>
     </md-toolbar>
-    <md-dialog-content>
-      <div class="md-dialog-content">
+    <md-dialog-content layout="column" flex >
+      <div layout="column" flex class="md-dialog-content">
 
-        <place-autocomplete ng-model="place" md-floating-label="Recherche"></place-autocomplete>
+        <place-autocomplete class="no-margin no-padding"
+                            ng-model="place"
+                            md-floating-label="Recherche"></place-autocomplete>
 
-        <md-tabs md-dynamic-height md-border-bottom>
-          <md-tab label="coordonnées">
-
-            <div layout="row" flex layout-align="start start" ng-init="addingType = false" style="margin-top:20px;">
-
-              <md-input-container class="md-block" flex>
-                <label>Nom</label>
-                <input name="name" ng-model="etablissement.name"
-                       ng-disabled="place === undefined"
-                       required>
-                <div ng-messages="etablissementForm.name.$error">
-                  <div ng-message="required">requis.</div>
-                </div>
-              </md-input-container>
-
-              <md-input-container ng-hide="addingType" flex="45">
-                <label>Type d'établissement</label>
-                <md-select name="etablissementType"
-                           ng-model="etablissement.type"
-                           ng-disabled="place === undefined"
-                           ng-change="etablissement.typeDescription = undefined"
-                           ng-required="!addingType">
-                  <md-option ng-repeat="type in nouvelEtablissementCtrl.etablissementTypes">
-                    {{ type.toString() }}
-                  </md-option>
-                </md-select>
-                <div ng-messages="etablissementForm.etablissementType.$error" style="height:24px;">
-                  <div ng-message="required">requis.</div>
-                </div>
-              </md-input-container>
-              <md-input-container ng-show="addingType" flex="45">
-                <label style="margin-left:1px;">Nouveau type d'établissement</label>
-                <input name="typeDescription" ng-model="etablissement.typeDescription"
-                       ng-change="etablissement.type = undefined"
-                       ng-required="addingType">
-                <div ng-messages="etablissementForm.typeDescription.$error">
-                  <div ng-message="required">requis.</div>
-                </div>
-              </md-input-container>
-              <md-button style="margin-top:18px; margin-left:0px;" flex="5"
-                         class="md-icon-button md-primary" aria-label="Ajouter"
-                         ng-disabled="place === undefined"
-                         ng-click="addingType = !addingType">
-                <md-icon md-svg-icon="{{ 'content:' + (addingType ? 'clear' : 'add') }}"></md-icon>
-                <md-tooltip>Ajouter</md-tooltip>
-              </md-button>
-
-            </div>
-            <div layout="row" flex layout-align="start start" ng-init="addingType = false">
-              
-              <md-input-container class="md-block" flex>
-                <label>Adresse</label>
-                <input name="adresse" ng-model="etablissement.address.street"
-                       ng-disabled="place === undefined"
-                       required>
-                <div ng-messages="etablissementForm.adresse.$error">
-                  <div ng-message="required">requis.</div>
-                </div>
-              </md-input-container>
-
-              <md-input-container ng-hide="addingType" flex="45">
-                <label>Arrondissenement</label>
-                <md-select name="arrondissenement"
-                           ng-model="etablissement.address.arrondissenement"
-                           ng-disabled="place === undefined"
-                           required>
-                  <md-option ng-repeat="arrondissenement in nouvelEtablissementCtrl.arrondissenements">
-                    {{ arrondissenement.toString() }}
-                  </md-option>
-                </md-select>
-                <div ng-messages="etablissementForm.arrondissenement.$error" style="height:24px;">
-                  <div ng-message="required">requis.</div>
-                </div>
-              </md-input-container>
-
-              <span flex="5"></span>
-            </div>
-            <div layout="row" flex layout-align="start start" ng-init="addingType = false">
-
-              <md-input-container ng-hide="addingType" flex="45">
-                <label>Ville</label>
-                <md-select name="ville"
-                           ng-model="etablissement.address.city"
-                           ng-disabled="place === undefined"
-                           required>
-                  <md-option ng-repeat="ville in nouvelEtablissementCtrl.villes">
-                    {{ ville.toString() }}
-                  </md-option>
-                </md-select>
-                <div ng-messages="etablissementForm.ville.$error" style="height:24px;">
-                  <div ng-message="required">requis.</div>
-                </div>
-              </md-input-container>
-
-              <md-input-container ng-hide="addingType" flex="45">
-                <label>Province</label>
-                <md-select name="province"
-                           ng-model="etablissement.address.province"
-                           ng-disabled="place === undefined"
-                           required>
-                  <md-option ng-repeat="province in nouvelEtablissementCtrl.provinces">
-                    {{ province.toString() }}
-                  </md-option>
-                </md-select>
-                <div ng-messages="etablissementForm.province.$error" style="height:24px;">
-                  <div ng-message="required">requis.</div>
-                </div>
-              </md-input-container>
-
-              <md-input-container class="md-block" flex="15">
-                <label>Code Postal</label>
-                <input name="postalCode" ng-model="etablissement.address.postalCode"
-                       ng-disabled="place === undefined"
-                       required>
-                <div ng-messages="etablissementForm.postalCode.$error">
-                  <div ng-message="required">requis.</div>
-                </div>
-              </md-input-container>
-
-              <span flex="5"></span>
-            </div>
+        <md-tabs layout="column" flex md-dynamic-height md-border-bottom>
+          <md-tab layout="column" flex label="coordonnées">
+            <ng-include src="'modules/etablissements/views/etablissement.form.html'"></ng-include>
           </md-tab>
           <md-tab label="carte">
             <etablissement-map height="400px" width="100%" etablissement="etablissement"></etablissement-map>
           </md-tab>
-          <md-tab label="image">
-            <div class="croparea">
-              <img-crop image="myImage" result-image="myCroppedImage" area-type="rectangle" aspect-ratio="4/3" result-image-size='{w: 1024,h: 768}'></img-crop>
-            </div>
+          <md-tab layout="column" flex label="image">
+              <div class="croparea">
+                <img-crop image="myImage" result-image="myCroppedImage" area-type="rectangle" aspect-ratio="4/3" result-image-size='{w: 1024,h: 768}'></img-crop>
+              </div>
           </md-tab>
         </md-tabs>
       </div>
@@ -153,7 +37,7 @@
         Annuler
       </md-button>
       <md-button type="submit" style="margin-right:20px;">
-        Envoyer
+        Créer
       </md-button>
     </md-dialog-actions>
   </form>

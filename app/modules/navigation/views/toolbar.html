@@ -15,6 +15,10 @@
 
 <md-toolbar md-scroll-shrink ng-style="!loadingRoute && { 'padding-top' : '5px' }" style="padding-bottom: 5px;">
   <div class="md-toolbar-tools" ng-init="searchToggled = false">
+   <md-button class="md-icon-button" aria-label="Menu principal"
+              ui-sref="home">
+      <md-icon md-svg-icon="action:view_quilt"></md-icon>
+    </md-button>
     <h2>Gestigris</h2>
     <span flex></span>
     <md-button class="md-icon-button" aria-label="Recherche"

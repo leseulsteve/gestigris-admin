@@ -6,7 +6,13 @@ angular.module('etablissements').config(
     SearchServiceProvider.register({
       factory: 'Etablissement',
       type: 'établissement',
-      icon: 'ETABLISSEMENTS.ICONS.ETABLISSEMENT'
+      icon: ETABLISSEMENTS.ICONS.ETABLISSEMENT,
+      dialog: {
+        templateUrl: 'modules/etablissements/views/etablissement.dialog.html',
+        controller: 'NouvelEtablissementController',
+        controllerAs: 'nouvelEtablissementCtrl',
+        itemName: 'etablissement'
+      }
     });
 
     FabSpeedDialServiceProvider.addItem({

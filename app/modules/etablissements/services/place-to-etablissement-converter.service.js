@@ -5,7 +5,8 @@ angular.module('core').factory('PlaceToEtablissementConverter',
 
     return {
 
-      convert: function (place) {
+      convert: function (place, lists) {
+        lists = lists;
         return {
           name: place.description,
           address: {

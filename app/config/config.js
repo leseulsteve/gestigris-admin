@@ -8,7 +8,8 @@ var ApplicationConfiguration = (function () {
     'gestigris-common',
     'dndLists',
     'bc.Flickity',
-    'ngImgCrop'
+    'ngImgCrop',
+    'ui.mask'
   ];
 
   // Add a new vertical module

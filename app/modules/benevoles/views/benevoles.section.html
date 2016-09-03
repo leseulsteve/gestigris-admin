@@ -1,16 +1,14 @@
-<md-dialog aria-label="Liste bénévoles" layout="column">
-
-	<dashboard-fullscreen-header-card></dashboard-fullscreen-header-card>
+<div layout="column" flex>
 	
-	<md-subheader class="filter-bar">
+	<!--<md-subheader class="filter-bar">
 		<md-input-container md-no-float class="md-block md-icon-right">
       <md-icon md-svg-icon="action:search"></md-icon>
       <input ng-model="search" placeholder="recherche..." ng-change="benevolesSectionCtrl.doSearch(search)" ng-model-options="{ debounce: 1000 }">
       <md-icon md-svg-icon="content:clear" ng-show="search" ng-click="search = undefined;benevolesSectionCtrl.clearSearch()"></md-icon>
     </md-input-container>
-	</md-subheader>
+	</md-subheader>-->
 	
-	<md-dialog-content layout="row" flex ng-if="!benevolesSectionCtrl.emptySearchResults">
+	<div layout="row" flex ng-if="!benevolesSectionCtrl.emptySearchResults">
 
 		<md-card layout="column" flex="30" flex-gt-lg="20" class="card-list">
 			
@@ -45,14 +43,14 @@
 
 		</div>
 	
-	</md-dialog-content>
+	</div>
 
-	<md-dialog-content layout="row" flex layout-align="center center" ng-if="benevolesSectionCtrl.emptySearchResults">
+	<div layout="row" flex layout-align="center center" ng-if="benevolesSectionCtrl.emptySearchResults">
 		<div layout="column" flex layout-align="center center">
 			<md-icon md-svg-icon="social:mood_bad" style="height:280px;width:280px"></md-icon>
 			<h1 class="md-display-1">Aucun résultat</h1>
 			<small class=".md-caption">C'est quoi cette recherche?</small>
 		</div>
-	</md-dialog-content>
+	</div>
 
-</md-dialog>
+</div>

@@ -14,9 +14,9 @@ angular.module('etablissements').directive('etablissementsDashboardCard',
           $state.go('etablissements');
         };
 
-        //Etablissement.count().then(function (etablissements) {
-        ctrl.nbEtablissements = 8; //etablissements.length;
-        //});
+        Etablissement.count().then(function (nb) {
+          ctrl.nbEtablissements = nb;
+        });
       }
     };
   });

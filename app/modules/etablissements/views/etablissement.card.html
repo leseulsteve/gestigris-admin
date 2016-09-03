@@ -1,12 +1,12 @@
-	<md-card ng-show="interventionFicheCtrl.plageIntervention" style="min-height:200px">
+	<md-card style="min-height:200px">
 	  <div layout="row">
 			<etablissement-image style="width:270px"
-													 etablissement="interventionFicheCtrl.etablissement">
+													 etablissement="etablissement">
 			</etablissement-image>
-			<div ng-if="showMap" flex>
+			<div flex>
 				<etablissement-map height="200px"
 													 width="100%"
-													 etablissement="interventionFicheCtrl.etablissement">
+													 etablissement="etablissement">
 				</etablissement-map>
 			</div>
 		</div>
