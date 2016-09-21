@@ -7,6 +7,9 @@ angular.module('etablissements').directive('etablissementCard',
       scope: {
         etablissement: '=',
       },
-      templateUrl: 'modules/etablissements/views/etablissement.card.html'
+      templateUrl: 'modules/etablissements/views/etablissement.card.html',
+      compile: function (iElement) {
+        iElement.attr('flex', '').attr('layout', 'column');
+      }
     };
   });

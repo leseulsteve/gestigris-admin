@@ -1,4 +1,4 @@
-<div> 
+<form name="etablissementForm"> 
   <div layout="row" flex layout-align="start start"
        style="margin-top: 16px;"
        ng-init="addingType = false">
@@ -6,6 +6,8 @@
     <md-input-container class="md-block" flex>
       <label>Nom</label>
       <input name="name" ng-model="etablissement.name"
+             ng-model-options="{ updateOn: 'blur' }"
+             ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
              ng-disabled="etablissement === undefined"
              required>
       <div ng-messages="etablissementForm.name.$error">
@@ -15,10 +17,12 @@
 
     <span flex="5"></span>
 
-    <!--<md-input-container ng-hide="addingType" flex="45">
+    <md-input-container ng-hide="addingType" flex="45">
       <label>Type d'établissement</label>
       <md-select name="etablissementType"
                  ng-model="etablissement.type"
+                 ng-model-options="{ updateOn: 'blur' }"
+                 ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
                  ng-disabled="etablissement === undefined"
                  ng-required="!addingType">
         <md-option ng-repeat="type in etablissementFormCtrl.etablissementTypes"
@@ -29,10 +33,13 @@
       <div ng-messages="etablissementForm.etablissementType.$error">
         <div ng-message="required">requis.</div>
       </div>
-    </md-input-container>-->
+    </md-input-container>
+
     <md-input-container ng-show="addingType" flex="45">
       <label style="margin-left:1px;">Nouveau type d'établissement</label>
       <input name="typeDescription" ng-model="etablissement.typeDescription"
+             ng-model-options="{ updateOn: 'blur' }"
+             ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
              ng-required="addingType">
       <div ng-messages="etablissementForm.typeDescription.$error">
         <div ng-message="required">requis.</div>
@@ -130,4 +137,4 @@
 
     <span flex="5"></span>
   </div>
-</div>
+</form>
