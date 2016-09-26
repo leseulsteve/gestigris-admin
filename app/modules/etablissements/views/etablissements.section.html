@@ -1,13 +1,5 @@
 <div layout="column" flex>
 	
-	<!--<md-subheader class="filter-bar">
-		<md-input-container md-no-float class="md-block md-icon-right">
-      <md-icon md-svg-icon="action:search"></md-icon>
-      <input ng-model="search" placeholder="recherche..." ng-change="benevolesSectionCtrl.doSearch(search)" ng-model-options="{ debounce: 1000 }">
-      <md-icon md-svg-icon="content:clear" ng-show="search" ng-click="search = undefined;benevolesSectionCtrl.clearSearch()"></md-icon>
-    </md-input-container>
-	</md-subheader>-->
-	
 	<div layout="row" flex>
 
 		<md-card layout="column" flex="30" flex-gt-lg="20" class="card-list">
@@ -23,7 +15,7 @@
 			        <h3>{{ item.toString() }}</h3>
 			        <p>{{ item.type.name }} </p>
 			      </div>
-			    <md-divider ng-if="!$last"></md-divider>	      
+			    <md-divider ng-if="!$last"></md-divider>
 			    </md-list-item>
 		    </md-list>
 
@@ -34,14 +26,12 @@
 		<div flex="70" flex-gt-lg="80" layout="column">
 
 			<div layout="row" flex layout-align="center center" ng-hide="etablissement">
-
 				<md-progress-circular md-diameter="280"  md-mode="indeterminate"></md-progress-circular>
-
 			</div>
 			
-			<etablissement-card etablissement="etablissement"></etablissement-card>
+			<etablissement-card ng-if="etablissement" etablissement="etablissement"></etablissement-card>
 
 		</div>
-	
+		
 	</div>
 </div>

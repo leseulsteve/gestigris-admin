@@ -37,7 +37,9 @@
 
     <md-input-container ng-show="addingType" flex="45">
       <label style="margin-left:1px;">Nouveau type d'établissement</label>
-      <input name="typeDescription" ng-model="etablissement.typeDescription"
+      <input name="typeDescription"
+             focus-on="addingType"
+             ng-model="etablissement.typeDescription"
              ng-model-options="{ updateOn: 'blur' }"
              ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
              ng-required="addingType">
@@ -58,7 +60,10 @@
     
     <md-input-container class="md-block" flex>
       <label>Adresse</label>
-      <input name="adresse" ng-model="etablissement.address.street"
+      <input name="adresse"
+             ng-model="etablissement.address.street"
+             ng-model-options="{ updateOn: 'blur' }"
+             ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
              ng-disabled="etablissement === undefined"
              required>
       <div ng-messages="etablissementForm.adresse.$error">
@@ -72,6 +77,8 @@
       <label>Arrondissenement</label>
       <md-select name="arrondissement"
                  ng-model="etablissement.address.arrondissement"
+                 ng-model-options="{ updateOn: 'blur' }"
+                 ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
                  ng-disabled="etablissement === undefined"
                  required>
         <md-option ng-repeat="arrondissement in etablissementFormCtrl.arrondissements"
@@ -92,10 +99,12 @@
       <label>Ville</label>
       <md-select name="ville"
                  ng-model="etablissement.address.city"
+                 ng-model-options="{ updateOn: 'blur' }"
+                 ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
                  ng-disabled="etablissement === undefined"
                  required>
         <md-option ng-repeat="ville in etablissementFormCtrl.villes"
-                   ng-value="ville" ng-selected="ville._id === etablissement.address.ville._id">
+                   ng-value="ville" ng-selected="ville._id === etablissement.address.city._id">
           {{ ville.toString() }}
         </md-option>
       </md-select>
@@ -110,6 +119,8 @@
       <label>Province</label>
       <md-select name="province"
                  ng-model="etablissement.address.province"
+                 ng-model-options="{ updateOn: 'blur' }"
+                 ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
                  ng-disabled="etablissement === undefined"
                  required>
         <md-option ng-repeat="province in etablissementFormCtrl.provinces"
@@ -126,7 +137,10 @@
 
     <md-input-container class="md-block" flex="15">
       <label>Code Postal</label>
-      <input name="postalCode" ng-model="etablissement.address.postalCode"
+      <input name="postalCode"
+             ng-model="etablissement.address.postalCode"
+             ng-model-options="{ updateOn: 'blur' }"
+             ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
              ui-mask="A9A 9A9"
              ng-disabled="etablissement === undefined"
              required>
@@ -137,4 +151,15 @@
 
     <span flex="5"></span>
   </div>
+
+  <md-input-container class="md-block" flex="15">
+      <label>Téléphone</label>
+      <input name="telephone"
+             ng-model="etablissement.telephone"
+             ng-model-options="{ updateOn: 'blur' }"
+             ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
+             ui-mask="999-999-9999"
+             ng-disabled="etablissement === undefined">
+    </md-input-container>
+
 </form>

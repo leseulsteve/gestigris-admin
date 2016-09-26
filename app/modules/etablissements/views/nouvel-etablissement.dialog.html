@@ -18,16 +18,13 @@
                             md-floating-label="Recherche"></place-autocomplete>
 
         <md-tabs layout="column" flex md-dynamic-height md-border-bottom>
-          <md-tab layout="column" flex label="coordonnées">
-            <ng-include src="'modules/etablissements/views/etablissement.form.html'"></ng-include>
+          <md-tab layout="column" flex label="Informations">
+            <ng-include src="'modules/etablissements/views/etablissement.form.html'" ng-controller="EtablissementFromCtrl as etablissementFormCtrl"></ng-include>
           </md-tab>
           <md-tab label="carte">
             <etablissement-map height="400px" width="100%" etablissement="etablissement"></etablissement-map>
           </md-tab>
-          <md-tab layout="column" flex label="image">
-              <div class="croparea">
-                <img-crop image="myImage" result-image="myCroppedImage" area-type="rectangle" aspect-ratio="4/3" result-image-size='{w: 1024,h: 768}'></img-crop>
-              </div>
+          <md-tab layout="column" flex label="contacts">
           </md-tab>
         </md-tabs>
       </div>

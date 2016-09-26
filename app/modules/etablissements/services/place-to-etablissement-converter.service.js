@@ -1,13 +1,13 @@
 'use strict';
 
 angular.module('core').factory('PlaceToEtablissementConverter',
-  function () {
+  function (Etablissement) {
 
     return {
 
       convert: function (place, lists) {
         lists = lists;
-        return {
+        return new Etablissement({
           name: place.description,
           address: {
             street: (place.address.houseNumber ? place.address.houseNumber + ' ' : '') + place.address.street,
@@ -21,7 +21,7 @@ angular.module('core').factory('PlaceToEtablissementConverter',
           osmType: place.osmType,
           placeId: place.placeId,
           type: place.type
-        };
+        });
       }
     };
   });

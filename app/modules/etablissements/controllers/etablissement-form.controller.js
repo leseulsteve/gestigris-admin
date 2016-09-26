@@ -1,35 +1,12 @@
 'use strict';
 
 angular.module('etablissements').controller('EtablissementFromCtrl',
-  function ($scope, EtablissementType, Ville, Province, Pays, Arrondissement, PlaceToEtablissementConverter) {
+  function ($scope, EtablissementType, Ville, Province, Arrondissement, PlaceToEtablissementConverter) {
 
-    var ctrl = this;
-
-    var isNew = _.isUndefined($scope.etablissement);
-    console.log($scope.etablissement);
-    var newEtablissementTypes = [];
-
-    function saveEtablissement() {
-      return $scope.etablissement.save();
-    }
-
-    function createNewEtablissementType() {
-      return EtablissementType.create({
-        description: $scope.etablissement.typeDescription
-      }).then(function (newEtablissementType) {
-        console.log('NEW ETABLISSEMENT TYPE', newEtablissementType);
-        newEtablissementTypes.push(newEtablissementType);
-        $scope.etablissement.type = newEtablissementType._id;
-      });
-    }
-
-    ctrl.saveEtablissement = function (form) {
-      if (form.$valid && !isNew) {
-        return $scope.addingType && _.isUndefined(_.find(newEtablissementTypes, 'description', $scope.etablissement.typeDescription)) ? createNewEtablissementType().then(function () {
-          return saveEtablissement();
-        }) : saveEtablissement();
-      }
-    };
+    var ctrl = this,
+      isNew = _.isUndefined($scope.etablissement._id),
+      createdEtablissementType,
+      oldEtablissementType;
 
     EtablissementType.find().then(function (etablissementTypes) {
       ctrl.etablissementTypes = etablissementTypes;
@@ -43,32 +20,56 @@ angular.module('etablissements').controller('EtablissementFromCtrl',
       ctrl.provinces = provinces;
     });
 
-    Pays.find().then(function (pays) {
-      ctrl.pays = pays;
-    });
-
     Arrondissement.find().then(function (arrondissements) {
       ctrl.arrondissements = arrondissements;
-      $scope.$watch('place', function (place) {
-        angular.extend($scope, {
-          etablissement: place ? PlaceToEtablissementConverter.convert(place, {
+      if (isNew) {
+        $scope.$watch('place', function (place) {
+          _.assign($scope.etablissement, place ? PlaceToEtablissementConverter.convert(place, {
             arrondissements: arrondissements
-          }) : $scope.etablissement
+          }) : {});
         });
-      });
+      }
     });
+
+    function saveEtablissement() {
+      return $scope.etablissement.save().then(function () {
+        console.log('etablissement sauvegardé!');
+      });
+    }
+
+    function createNewEtablissementType() {
+      return EtablissementType.create({
+        name: $scope.etablissement.typeDescription
+      }).then(function (newEtablissementType) {
+        console.log('NEW ETABLISSEMENT TYPE', newEtablissementType);
+        createdEtablissementType = newEtablissementType;
+        oldEtablissementType = $scope.etablissement.type;
+        $scope.etablissement.type = newEtablissementType;
+      });
+    }
 
     ctrl.toggleAddingType = function () {
       $scope.addingType = !$scope.addingType;
-      $scope.etablissement[$scope.addingType ? 'type' : 'typeDescription'] = undefined;
-      if (!$scope.addingType) {
-        _.forEach(newEtablissementTypes, function (newEtablissementType) {
-          if (newEtablissementType._id !== $scope.etablissement.type) {
-            console.log('SUPRESSION', newEtablissementType);
-            newEtablissementType.remove();
-          }
+      if (!$scope.addingType && createdEtablissementType) {
+        createdEtablissementType.remove().then(function () {
+          createdEtablissementType = undefined;
+          console.log('EtablissementType deleted');
         });
+        $scope.etablissement.type = oldEtablissementType;
+        saveEtablissement();
       }
+      $scope.etablissement.typeDescription = undefined;
     };
 
+    function needToCreateEtablissementType() {
+      return $scope.addingType && (_.isUndefined(createdEtablissementType) || $scope.etablissement.typeDescription.toLowerCase() !== createdEtablissementType.name.toLowerCase());
+    }
+
+    ctrl.saveEtablissement = function (form) {
+      if (form.$valid && !isNew) {
+        return needToCreateEtablissementType() ? createNewEtablissementType().then(function () {
+          return saveEtablissement();
+        }) : saveEtablissement();
+      }
+    };
   });
