@@ -1,0 +1,100 @@
+<md-dialog aria-label="{{ contactDialogCtrl.contact._id ? 'Modification' : 'Nouveau contact' }}" style="width:800px;">
+  <form name="contactForm" class="input-no-bottom-margin"
+        autocomplete="off" novalidate
+        ng-submit="contactDialogCtrl.submit(contactForm, contactDialogCtrl.contact)">
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>{{ contactDialogCtrl.contact._id ? 'Modification' : 'Nouveau contact' }}</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="contactDialogCtrl.cancel()">
+          <md-icon md-svg-icon="navigation:close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <div layout="row" flex>
+          
+          <md-input-container class="md-block" flex="45">
+            <label>Prénom</label>
+            <input name="firstname" ng-model="contactDialogCtrl.contact.firstname" required>
+            <div ng-messages="contactForm.firstname.$error">
+              <div ng-message="required">requis.</div>
+            </div>
+          </md-input-container>
+
+          <div flex="5"></div>
+
+          <md-input-container class="md-block" flex="50">
+            <label>Nom de famille</label>
+            <input name="lastname" ng-model="contactDialogCtrl.contact.lastname" required>
+            <div ng-messages="contactForm.lastname.$error">
+              <div ng-message="required">requis.</div>
+            </div>
+          </md-input-container>
+
+        </div>
+        <div layout="row" flex>
+
+          <md-input-container ng-hide="contactDialogCtrl.addingPoste" flex="45">
+            <label>Poste</label>
+            <md-select name="poste"
+                       ng-model="contactDialogCtrl.contact.poste"
+                       ng-model-options="{ updateOn: 'blur' }"
+                       ng-required="!contactDialogCtrl.addingPoste">
+              <md-option ng-repeat="poste in contactDialogCtrl.postes"
+                         ng-value="poste" ng-selected="poste._id === contactDialogCtrl.contact.poste._id">
+                {{ poste.toString() }}
+              </md-option>
+            </md-select>
+            <div ng-messages="contactForm.poste.$error">
+              <div ng-message="required">requis.</div>
+            </div>
+          </md-input-container>
+
+          <md-input-container ng-show="contactDialogCtrl.addingPoste" flex="45">
+            <label style="margin-left:1px;">Nouveau poste</label>
+            <input name="posteDescription"
+                   focus-on="contactDialogCtrl.addingPoste"
+                   ng-model="contactDialogCtrl.contact.posteDescription"
+                   ng-required="contactDialogCtrl.addingPoste">
+            <div ng-messages="contactForm.posteDescription.$error">
+              <div ng-message="required">requis.</div>
+            </div>
+          </md-input-container>
+          <md-button style="margin:18px 0px;" flex="5"
+                     class="md-icon-button md-primary" aria-label="Ajouter"
+                     ng-click="contactDialogCtrl.switchPosteSelection(contactDialogCtrl.contact)">
+            <md-icon md-svg-icon="{{ 'content:' + (contactDialogCtrl.addingPoste ? 'clear' : 'add') }}"></md-icon>
+            <md-tooltip>Ajouter</md-tooltip>
+          </md-button>
+
+          <md-input-container class="md-block" flex="50"
+                              md-is-error="contactForm.email.$invalid && contactForm.$submitted">
+            <label>Courriel</label>
+            <input name="email" email-validation ng-model="contactDialogCtrl.contact.email" required>
+            <div ng-messages="contactForm.email.$error" md-auto-hide="false">
+              <div ng-message="required">requis.</div>
+              <div ng-message="emailValidation">courriel invalide.</div>
+            </div>
+          </md-input-container>
+
+        </div>
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-button type="button" class="md-warn"
+                 ng-click="contactDialogCtrl.remove()"
+                 ng-if="contactDialogCtrl.contact._id">
+        Supprimer
+      </md-button>
+      <span flex></span>
+      <md-button type="button" ng-click="contactDialogCtrl.cancel()">
+        Annuler
+      </md-button>
+      <md-button type="submit" class="md-primary" style="margin-right:20px;">
+        {{ contactDialogCtrl.contact._id ? 'Sauvegarder' : 'Créer' }} 
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

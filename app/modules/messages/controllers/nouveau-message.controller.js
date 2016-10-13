@@ -1,29 +1,33 @@
 'use strict';
 
 angular.module('messages').controller('NouveauMessageController',
-  function ($scope, Benevole) {
+  function (Benevole, Toast) {
 
     var ctrl = this;
 
-    $scope.message = {
+    ctrl.message = {
       destinataires: ctrl.receivers || []
     };
 
     ctrl.searchDestinataires = function (query) {
       return Benevole.search(query).then(function (results) {
-        return _.difference(results, $scope.message.destinataires);
+        return _.difference(results, ctrl.message.destinataires);
       });
     };
 
-    ctrl.send = function (messageForm) {
-      messageForm.destinataires.$setValidity('required', $scope.message.destinataires.length > 0);
-      console.log(messageForm.destinataires);
-      if (messageForm.$valid) {
-        console.log('SEND MESSAGE');
-        if (ctrl.dialog) {
-          ctrl.dialog.hide();
-        }
-      }
-    };
+    ctrl.cancel = ctrl.dialog.cancel;
 
+    ctrl.send = function (messageForm) {
+
+      messageForm.destinataires.$setValidity('required', ctrl.message.destinataires.length > 0);
+
+      if (messageForm.$invalid) {
+        return ctrl.dialog.shake();
+      }
+
+      ctrl.dialog.hide().then(function () {
+        Toast.show('Message envoyé');
+      });
+
+    };
   });

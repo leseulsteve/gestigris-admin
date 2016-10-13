@@ -3,21 +3,18 @@
 angular.module('messages').service('MessageDialog',
   function (Dialog) {
 
-    return {
+    var dialog = new Dialog({
+      controller: 'NouveauMessageController',
+      controllerAs: 'nouveauMessageCtrl',
+      templateUrl: 'modules/messages/views/nouveau-message.dialog.html'
+    });
 
-      show: function ($event, params) {
-
-        var dialog = new Dialog({
-          controller: 'NouveauMessageController',
-          controllerAs: 'nouveauMessageCtrl',
-          templateUrl: 'modules/messages/views/nouveau-message.dialog.html',
-          locals: {
-            receivers: params.receivers
-          },
-          keepLastDialog: params.keepLastDialog
-        });
-
-        return dialog.show($event);
-      }
+    this.show = function ($event, params) {
+      return dialog.show($event, {
+        locals: {
+          receivers: params.receivers,
+          dialog: dialog
+        }
+      });
     };
   });

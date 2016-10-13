@@ -11,6 +11,11 @@ angular.module('contacts').factory('Contact',
       });
     };
 
+    Contact.post('find', function (next) {
+      this.fullname = this.toString();
+      next();
+    });
+
     Contact.prototype.toString = function () {
       return this.firstname + ' ' + this.lastname;
     };

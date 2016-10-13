@@ -4,7 +4,7 @@
       <div class="md-toolbar-tools">
         <h2>Nouveau message</h2>
         <span flex></span>
-        <md-button class="md-icon-button" ng-click="nouveauMessageCtrl.dialog.hide()">
+        <md-button class="md-icon-button" ng-click="nouveauMessageCtrl.cancel()">
           <md-icon md-svg-icon="navigation:close" aria-label="Close dialog"></md-icon>
         </md-button>
       </div>
@@ -12,11 +12,11 @@
     <md-dialog-content>
       <div class="md-dialog-content">
 
-        <md-contact-chips ng-model="message.destinataires" name="destinataires"
+        <md-contact-chips ng-model="nouveauMessageCtrl.message.destinataires" name="destinataires"
                           md-contacts="nouveauMessageCtrl.searchDestinataires($query)"
                           md-contact-name="fullname"
                           md-contact-image="avatar"
-                          md-contact-email="role"
+                          md-contact-email="email"
                           md-require-match="true"
                           md-highlight-flags="i"
                           placeholder="Destinataire(s)">
@@ -27,7 +27,7 @@
 
         <md-input-container class="md-block">
           <label>Sujet</label>
-          <input name="subject" ng-model="message.subject" required>
+          <input name="subject" ng-model="nouveauMessageCtrl.message.subject" required>
           <div ng-messages="messageForm.subject.$error">
             <div ng-message="required">requis.</div>
           </div>
@@ -35,7 +35,7 @@
 
         <md-input-container class="md-block">
           <label>Message</label>
-          <textarea name="body" ng-model="message.body" rows="5" required></textarea>
+          <textarea name="body" ng-model="nouveauMessageCtrl.message.body" rows="5" required></textarea>
           <div ng-messages="messageForm.body.$error">
             <div ng-message="required">requis.</div>
           </div>
@@ -44,10 +44,10 @@
       </div>
     </md-dialog-content>
     <md-dialog-actions layout="row">
-      <md-button type="button" ng-click="nouveauMessageCtrl.dialog.hide()">
+      <md-button type="button" ng-click="nouveauMessageCtrl.cancel()">
         Annuler
       </md-button>
-      <md-button type="submit" style="margin-right:20px;">
+      <md-button type="submit" class="md-primary" style="margin-right:20px;">
         Envoyer
       </md-button>
     </md-dialog-actions>

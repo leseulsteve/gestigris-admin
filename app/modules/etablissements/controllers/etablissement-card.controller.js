@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('etablissements').controller('EtablissementCardCtrl',
-  function ($scope, Contact, MessageDialog) {
+  function ($scope, Contact, MessageDialog, ContactDialog) {
 
     var ctrl = this;
 
@@ -9,20 +9,18 @@ angular.module('etablissements').controller('EtablissementCardCtrl',
       ctrl.contacts = contacts;
     });
 
-    ctrl.addContact = function (etablissement) {
-      Contact.create({
-        firstname: 'Steve',
-        lastname: 'Boisvert',
-        courriel: 'leseulsteve@gmail.com',
-        etablissement: [etablissement._id]
-      }).then(function (contact) {
-        console.log(contact);
-        ctrl.contacts.push(contact);
+    ctrl.addContact = function ($event, etablissement) {
+      ContactDialog.new($event, {
+        etablissement: etablissement,
+        contacts: ctrl.contacts
       });
     };
 
     ctrl.detailsContact = function ($event, contact) {
-      console.log('DETAILS', contact);
+      ContactDialog.edit($event, {
+        contact: contact,
+        contacts: ctrl.contacts
+      });
     };
 
     ctrl.sendMessageToContact = function ($event, contact) {

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('core').factory('Dialog',
-  function ($mdDialog) {
+  function ($mdDialog, $document, $animate) {
 
     var lastDialogs = [];
 
@@ -19,12 +19,19 @@ angular.module('core').factory('Dialog',
       }
     };
 
-    Dialog.prototype.show = function ($event) {
+    Dialog.prototype.show = function ($event, params) {
       var dialog = _.assign(this.config, {
         targetEvent: $event
-      });
+      }, params);
       lastDialogs.push(dialog);
       return $mdDialog.show(dialog);
+    };
+
+    Dialog.prototype.shake = function () {
+      var dialog = $document.find('md-dialog');
+      $animate.addClass(dialog, 'shake-it').then(function () {
+        $animate.removeClass(dialog, 'shake-it');
+      });
     };
 
     Dialog.prototype.hide = function (item) {
@@ -35,6 +42,10 @@ angular.module('core').factory('Dialog',
           $mdDialog.show(lastDialog);
         }
       });
+    };
+
+    Dialog.prototype.cancel = function () {
+      $mdDialog.cancel();
     };
 
     return Dialog;
