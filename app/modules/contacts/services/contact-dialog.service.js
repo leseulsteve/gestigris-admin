@@ -47,7 +47,7 @@ angular.module('contacts').service('ContactDialog',
         });
       }
 
-      return q.when();
+      return $q.when();
     }
 
     this.new = function ($event, params) {
