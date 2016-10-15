@@ -7,11 +7,10 @@
 			<md-content layout="column" flex>
 		
 				<md-list flex layout="column">
-					<md-list-item class="md-2-line"
-												ng-class="{ active : item._id === etablissement._id }"
+					<md-list-item class="md-2-line" ui-sref-active="active"
 												ng-repeat="item in etablissementsSectionCtrl.etablissements"
-												ng-click="etablissementsSectionCtrl.showEtablissement(item)">
-			      <div class="md-list-item-text">
+												ng-click="undefined">
+			      <div class="md-list-item-text" ui-sref="etablissements.fiche({ etablissementId: item._id })">
 			        <h3>{{ item.toString() }}</h3>
 			        <p>{{ item.type.name }} </p>
 			      </div>

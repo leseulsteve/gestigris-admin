@@ -7,11 +7,9 @@ angular.module('etablissements').config(
       factory: 'Etablissement',
       type: 'établissement',
       icon: ETABLISSEMENTS.ICONS.ETABLISSEMENT,
-      dialog: {
-        templateUrl: 'modules/etablissements/views/etablissement.dialog.html',
-        controller: 'NouvelEtablissementController',
-        controllerAs: 'nouvelEtablissementCtrl',
-        itemName: 'etablissement'
+      resultState: {
+        name: 'etablissements.fiche',
+        param: 'etablissementId'
       }
     });
 
