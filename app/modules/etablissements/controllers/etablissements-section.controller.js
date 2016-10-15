@@ -13,11 +13,8 @@ angular.module('etablissements').controller('EtablissementsSectionController',
         $scope.etablissement = undefined;
 
         $q.all([
-
           $timeout(angular.noop, 700),
-
           Etablissement.findById(etablissement._id)
-
         ]).then(function(results) {
           $scope.etablissement = _.last(results);
         });

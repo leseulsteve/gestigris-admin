@@ -32,16 +32,13 @@ angular.module('etablissements').controller('EtablissementFromCtrl',
     });
 
     function saveEtablissement() {
-      return $scope.etablissement.save().then(function () {
-        console.log('etablissement sauvegardé!');
-      });
+      return $scope.etablissement.save();
     }
 
     function createNewEtablissementType() {
       return EtablissementType.create({
         name: $scope.etablissement.typeDescription
       }).then(function (newEtablissementType) {
-        console.log('NEW ETABLISSEMENT TYPE', newEtablissementType);
         createdEtablissementType = newEtablissementType;
         oldEtablissementType = $scope.etablissement.type;
         $scope.etablissement.type = newEtablissementType;
@@ -53,7 +50,6 @@ angular.module('etablissements').controller('EtablissementFromCtrl',
       if (!$scope.addingType && createdEtablissementType) {
         createdEtablissementType.remove().then(function () {
           createdEtablissementType = undefined;
-          console.log('EtablissementType deleted');
         });
         $scope.etablissement.type = oldEtablissementType;
         saveEtablissement();

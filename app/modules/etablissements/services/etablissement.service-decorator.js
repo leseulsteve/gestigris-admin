@@ -16,7 +16,6 @@ angular.module('etablissements').config(
       };
 
       Etablissement.post('create', function (next) {
-        console.log(this);
         $rootScope.$broadcast('Etablissement:new', this);
         next();
       });
