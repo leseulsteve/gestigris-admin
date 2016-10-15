@@ -7,11 +7,11 @@ angular.module('etablissements').config(
 
     state('etablissements', {
       url: '/etablissements',
-      template: '<ui-view/>',
+      template: '<ui-view layout="column" flex></ui-view>',
       resolve: {
-        etablissements: function($q, $timeout, Etablissement) {
+        etablissements: function($q, $timeout, Etablissement, PARAMS) {
           return $q.all([
-            $timeout(angular.noop, 700),
+            $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
             Etablissement.find()
           ]).then(function(results) {
             return _.last(results);

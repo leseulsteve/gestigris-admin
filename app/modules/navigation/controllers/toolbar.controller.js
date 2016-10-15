@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('interventions').controller('ToolbarController',
-  function () {
+  function() {
 
     // var ctrl = this;
 
@@ -20,5 +20,8 @@ angular.module('interventions').controller('ToolbarController',
      ctrl.showSidenav = function () {
        $rootScope.$broadcast('sidenav:toggle');
      };*/
-
+     console.log(44545);
+    this.test = function() {
+      console.log(343434);
+    };
   });

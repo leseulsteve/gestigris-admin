@@ -1,29 +1,20 @@
 <div layout="column" flex>
 	
-	<!--<md-subheader class="filter-bar">
-		<md-input-container md-no-float class="md-block md-icon-right">
-      <md-icon md-svg-icon="action:search"></md-icon>
-      <input ng-model="search" placeholder="recherche..." ng-change="benevolesSectionCtrl.doSearch(search)" ng-model-options="{ debounce: 1000 }">
-      <md-icon md-svg-icon="content:clear" ng-show="search" ng-click="search = undefined;benevolesSectionCtrl.clearSearch()"></md-icon>
-    </md-input-container>
-	</md-subheader>-->
-	
-	<div layout="row" flex ng-if="!benevolesSectionCtrl.emptySearchResults">
+	<div layout="row" flex>
 
 		<md-card layout="column" flex="30" flex-gt-lg="20" class="card-list">
 			
 			<md-content layout="column" flex>
 		
 				<md-list flex layout="column">
-					<md-list-item class="md-2-line"
-												ng-class="{ active : benevole._id === benevolesSectionCtrl.currentProfile._id }"
-												ng-repeat="benevole in benevolesSectionCtrl.benevoles"
-												ng-click="benevolesSectionCtrl.showProfile(benevole)">
-			      <div class="md-list-item-text">
-			        <h3>{{ benevole.toString() }}</h3>
-			        <p>{{ benevole.role }} </p>
+					<md-list-item class="md-2-line" ui-sref-active="active"
+												ng-repeat="item in benevolesSectionCtrl.benevoles"
+												ng-click="undefined">
+			      <div class="md-list-item-text" ui-sref="benevoles.fiche({ benevoleId: item._id })">
+			        <h3>{{ item.toString() }}</h3>
+			        <p>{{ item.getRoleDescription() }} </p>
 			      </div>
-			    <md-divider ng-if="!$last"></md-divider>	      
+			    <md-divider ng-if="!$last"></md-divider>
 			    </md-list-item>
 		    </md-list>
 
@@ -31,26 +22,15 @@
 
 		</md-card>
 
-		<div flex="70" flex-gt-lg="80"  layout="column">
+		<div flex="70" flex-gt-lg="80" layout="column">
 
-			<div layout="row" flex layout-align="center center" ng-hide="benevolesSectionCtrl.currentProfile">
-
+			<div layout="row" flex layout-align="center center" ng-hide="benevole">
 				<md-progress-circular md-diameter="280"  md-mode="indeterminate"></md-progress-circular>
-
 			</div>
 			
-			<benevole-fiche benevole="benevolesSectionCtrl.currentProfile" ng-show="benevolesSectionCtrl.currentProfile" layout="column" flex></benevole-fiche>
+			<benevole-card ng-if="benevole" benevole="benevole"></benevole-card>
 
 		</div>
-	
+		
 	</div>
-
-	<div layout="row" flex layout-align="center center" ng-if="benevolesSectionCtrl.emptySearchResults">
-		<div layout="column" flex layout-align="center center">
-			<md-icon md-svg-icon="social:mood_bad" style="height:280px;width:280px"></md-icon>
-			<h1 class="md-display-1">Aucun résultat</h1>
-			<small class=".md-caption">C'est quoi cette recherche?</small>
-		</div>
-	</div>
-
 </div>

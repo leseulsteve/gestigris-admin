@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('etablissements').controller('EtablissementsSectionController',
-  function($rootScope, $scope, $q, $timeout, etablissements, Etablissement, $stateParams) {
+  function($rootScope, $scope, $q, $timeout, etablissements, Etablissement, $stateParams, PARAMS) {
 
     var ctrl = this;
 
@@ -13,7 +13,7 @@ angular.module('etablissements').controller('EtablissementsSectionController',
         $scope.etablissement = undefined;
 
         $q.all([
-          $timeout(angular.noop, 700),
+          $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
           Etablissement.findById(etablissement._id)
         ]).then(function(results) {
           $scope.etablissement = _.last(results);

@@ -1,17 +1,25 @@
 'use strict';
 
 angular.module('benevoles').config(
-  function (SearchServiceProvider, benevoleConstants, RightPanelProvider) {
+  function (SearchServiceProvider, FabSpeedDialServiceProvider, RightPanelProvider, BENEVOLES) {
 
     SearchServiceProvider.register({
       factory: 'Benevole',
       type: 'Bénévole',
-      icon: benevoleConstants.USER_ICON_NAME,
+      icon: BENEVOLES.ICONS.BENEVOLE,
+      resultState: {
+        name: 'benevoles.fiche',
+        param: 'benevoleId'
+      }
+    });
+
+    FabSpeedDialServiceProvider.addItem({
+      tooltip: 'bénévole',
+      icon: BENEVOLES.ICONS.BENEVOLE,
       dialog: {
-        controller: 'BenevoleFicheController',
-        controllerAs: 'benevoleFicheCtrl',
-        templateUrl: 'modules/benevoles/views/benevole-fiche.dialog.html',
-        itemName: 'benevole'
+        templateUrl: 'modules/benevoles/views/nouveau-benevole.dialog.html',
+        controller: 'NouveauBenevoleController',
+        controllerAs: 'nouveauBenevoleCtrl'
       }
     });
 

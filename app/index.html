@@ -99,15 +99,16 @@
         <script src="modules/sockets/sockets.module.js"></script>
         <script src="modules/users/users.module.js"></script>
         <script src="config/constants.js"></script>
-        <script src="modules/benevoles/config/benevole.constants.js"></script>
         <script src="modules/benevoles/config/benevoles.config.js"></script>
+        <script src="modules/benevoles/config/benevoles.constants.js"></script>
         <script src="modules/benevoles/config/benevoles.routes.js"></script>
         <script src="modules/conversations/config/conversations.routes.js"></script>
+        <script src="modules/core/config/core.constants.js"></script>
         <script src="modules/dashboard/config/core.routes.js"></script>
         <script src="modules/employes/config/employes.config.js"></script>
-        <script src="modules/etablissements/config/etablissement.routes.js"></script>
         <script src="modules/etablissements/config/etablissements.config.js"></script>
         <script src="modules/etablissements/config/etablissements.constants.js"></script>
+        <script src="modules/etablissements/config/etablissements.routes.js"></script>
         <script src="modules/interventions/config/interventions.config.js"></script>
         <script src="modules/interventions/config/interventions.constants.js"></script>
         <script src="modules/interventions/config/interventions.routes.js"></script>
@@ -115,6 +116,7 @@
         <script src="modules/messages/config/messages.constants.js"></script>
         <script src="modules/sockets/config/socket.run.js"></script>
         <script src="modules/users/config/user-auth.config.js"></script>
+        <script src="modules/benevoles/services/benevole-role.factory.js"></script>
         <script src="modules/benevoles/services/benevole.factory.js"></script>
         <script src="modules/contacts/services/contact-dialog.service.js"></script>
         <script src="modules/contacts/services/contacts.factory.js"></script>
@@ -128,6 +130,7 @@
         <script src="modules/core/services/toast.service.js"></script>
         <script src="modules/employes/services/employe.factory.js"></script>
         <script src="modules/etablissements/services/etablissement.service-decorator.js"></script>
+        <script src="modules/etablissements/services/place-autocomplete.factory.js"></script>
         <script src="modules/etablissements/services/place-to-etablissement-converter.service.js"></script>
         <script src="modules/events/services/event.service.js"></script>
         <script src="modules/interventions/services/intervention-tag.factory.js"></script>
@@ -139,7 +142,8 @@
         <script src="modules/sockets/services/socket.factory.js"></script>
         <script src="modules/sockets/services/socket.provider.js"></script>
         <script src="modules/users/services/user.factory.js"></script>
-        <script src="modules/benevoles/directives/benevole-fiche.directive.js"></script>
+        <script src="modules/benevoles/directives/benevole-card.directive.js"></script>
+        <script src="modules/benevoles/directives/benevole-form.directive.js"></script>
         <script src="modules/benevoles/directives/benevoles-dashboard-card.directive.js"></script>
         <script src="modules/conversations/directives/conversation-image.directive.js"></script>
         <script src="modules/conversations/directives/conversation-side-nav-list.directive.js"></script>
@@ -147,6 +151,7 @@
         <script src="modules/conversations/directives/conversations-card.directive.js"></script>
         <script src="modules/core/directives/email-validation.directive.js"></script>
         <script src="modules/core/directives/hidden-input.directive.js"></script>
+        <script src="modules/core/directives/on-long-touch.js"></script>
         <script src="modules/core/directives/place-autocomplete.directive.js"></script>
         <script src="modules/core/directives/right-panel.directive.js"></script>
         <script src="modules/dashboard/directives/dashboard-card-content.directive.js"></script>
@@ -167,8 +172,10 @@
         <script src="modules/navigation/directives/toolbar.directive.js"></script>
         <script src="modules/search/directives/search-bar.directive.js"></script>
         <script src="modules/users/directives/click-for-details-avatar.directive.js"></script>
-        <script src="modules/benevoles/controllers/benevole-fiche.controller.js"></script>
+        <script src="modules/benevoles/controllers/benevole-card.controller.js"></script>
+        <script src="modules/benevoles/controllers/benevole-form.controller.js"></script>
         <script src="modules/benevoles/controllers/benevoles-section.controller.js"></script>
+        <script src="modules/benevoles/controllers/nouveau-benevole.controller.js"></script>
         <script src="modules/conversations/controllers/conversation-fiche.controller.js"></script>
         <script src="modules/conversations/controllers/conversation.controller.js"></script>
         <script src="modules/conversations/controllers/conversations-section.controller.js"></script>

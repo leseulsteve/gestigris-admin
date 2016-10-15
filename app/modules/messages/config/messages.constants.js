@@ -5,3 +5,8 @@ angular.module('messages').constant('MESSAGES', {
     MESSAGE: 'communication:message'
   }
 });
+
+angular.module('messages').run(
+	function($rootScope, MESSAGES) {
+		$rootScope.MESSAGES = MESSAGES;
+	});

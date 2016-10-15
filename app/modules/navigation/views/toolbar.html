@@ -1,25 +1,10 @@
-<!--<md-toolbar md-scroll-shrink ng-style="!loadingRoute && { 'padding-top' : '5px' }" style="padding-bottom: 5px;">
-  <div class="md-toolbar-tools">
-  	<md-button class="md-icon-button" aria-label="Menu" ng-hide="$mdMedia('gt-md')" ng-click="toolbarCtrl.showSidenav()">
-      <md-icon md-svg-icon="navigation:menu"></md-icon>
-    </md-button>
-    <h2>{{ toolbarCtrl.title }}</h2>
-    <span flex></span>
-    <md-button class="md-icon-button" aria-label="Menu"
-    					 ng-repeat="tool in toolbarCtrl.tools"
-    					 ng-click="toolbarCtrl.handleAction($event, tool.action)">
-      <md-icon md-svg-icon="{{ tool.icon }}"></md-icon>
-    </md-button>
-  </div>
-</md-toolbar>-->
-
 <md-toolbar md-scroll-shrink ng-style="!loadingRoute && { 'padding-top' : '5px' }" style="padding-bottom: 5px;">
   <div class="md-toolbar-tools" ng-init="searchToggled = false">
    <md-button class="md-icon-button" aria-label="Menu principal"
-              ui-sref="home">
+              ui-sref="home" on-long-touch="toolbarCtrl.test($event)">
       <md-icon md-svg-icon="action:view_quilt"></md-icon>
     </md-button>
-    <h2>Gestigris</h2>
+    <h2>Gestigris</h2>{{toolbarCtrl.test}}
     <span flex></span>
     <md-button class="md-icon-button" aria-label="Recherche"
                ng-click="searchToggled = !searchToggled">

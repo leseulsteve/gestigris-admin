@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('benevoles').controller('BenevoleFicheController',
+angular.module('benevoles').controller('BenevoleCardController',
   function ($scope, $mdDialog, $mdToast, MessageDialog) {
 
     var ctrl = this;
@@ -10,8 +10,7 @@ angular.module('benevoles').controller('BenevoleFicheController',
     ctrl.sendMessage = function ($event, benevole) {
 
       MessageDialog.show($event, {
-        receivers: [benevole],
-        keepLastDialog: true
+        receivers: [benevole]
       });
     };
 
