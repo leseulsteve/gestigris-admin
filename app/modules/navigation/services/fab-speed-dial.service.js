@@ -13,13 +13,12 @@ angular.module('navigation').provider('FabSpeedDialService',
 
       $get: function () {
 
-        var FabSpeedDialService = {};
+        return {
 
-        FabSpeedDialService.getItems = function () {
-          return items;
+          getItems: function () {
+            return items;
+          }
         };
-
-        return FabSpeedDialService;
 
       }
     };

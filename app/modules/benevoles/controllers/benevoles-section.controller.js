@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('benevoles').controller('BenevolesSectionController',
-  function($rootScope, $scope, $q, $timeout, benevoles, Benevole, $stateParams, PARAMS) {
+  function ($rootScope, $scope, $q, $timeout, benevoles, Benevole, $stateParams, PARAMS) {
 
     var ctrl = this;
 
@@ -15,21 +15,21 @@ angular.module('benevoles').controller('BenevolesSectionController',
         $q.all([
           $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
           Benevole.findById(benevole._id)
-        ]).then(function(results) {
+        ]).then(function (results) {
           $scope.benevole = _.last(results);
         });
       }
-    };
+    }
 
-    var listener = $rootScope.$on('Etablissement:new', function($event, benevole) {
-      var index = _.sortedIndex(ctrl.benevoles, function(benevole) {
+    var listener = $rootScope.$on('Etablissement:new', function ($event, benevole) {
+      var index = _.sortedIndex(ctrl.benevoles, function (benevole) {
         return benevole.toString();
       });
       ctrl.benevoles.splice(index, 0, benevole);
       showBenevole(ctrl.benevoles[index]);
     });
 
-    $scope.$on('destroy', function() {
+    $scope.$on('destroy', function () {
       listener();
     });
 

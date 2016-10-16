@@ -16,11 +16,7 @@ angular.module('benevoles').config(
     FabSpeedDialServiceProvider.addItem({
       tooltip: 'bénévole',
       icon: BENEVOLES.ICONS.BENEVOLE,
-      dialog: {
-        templateUrl: 'modules/benevoles/views/nouveau-benevole.dialog.html',
-        controller: 'NouveauBenevoleController',
-        controllerAs: 'nouveauBenevoleCtrl'
-      }
+      dialog: BENEVOLES.DIALOGS.ADD_BENEVOLE
     });
 
     RightPanelProvider.register({

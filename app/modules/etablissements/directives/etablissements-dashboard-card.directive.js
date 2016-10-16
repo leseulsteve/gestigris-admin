@@ -6,12 +6,21 @@ angular.module('etablissements').directive('etablissementsDashboardCard',
       restrict: 'E',
       templateUrl: 'modules/etablissements/views/etablissements.dashboard-card.html',
       controllerAs: 'etablissementsDashboardCardCtrl',
-      controller: function (Etablissement, $state) {
+      controller: function (Etablissement, $state, Dialog, ETABLISSEMENTS) {
 
         var ctrl = this;
 
-        ctrl.handleClick = function () {
-          $state.go('etablissements');
+        ctrl.handleClick = function ($event) {
+          if (ctrl.nbEtablissements) {
+            return $state.go('etablissements');
+          }
+          var dialog = new Dialog(ETABLISSEMENTS.DIALOGS.ADD_ETABLISSEMENT);
+          dialog.show($event).then(function (etablissement) {
+            ctrl.nbEtablissements++;
+            $state.go('etablissements.fiche', {
+              etablissementId: etablissement._id
+            });
+          });
         };
 
         Etablissement.count().then(function (nb) {

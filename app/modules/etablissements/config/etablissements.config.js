@@ -16,11 +16,7 @@ angular.module('etablissements').config(
     FabSpeedDialServiceProvider.addItem({
       tooltip: 'établissement',
       icon: ETABLISSEMENTS.ICONS.ETABLISSEMENT,
-      dialog: {
-        templateUrl: 'modules/etablissements/views/nouvel-etablissement.dialog.html',
-        controller: 'NouvelEtablissementController',
-        controllerAs: 'nouvelEtablissementCtrl'
-      }
+      dialog: ETABLISSEMENTS.DIALOGS.ADD_ETABLISSEMENT
     });
 
   });
