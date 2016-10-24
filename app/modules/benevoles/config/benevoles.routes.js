@@ -1,24 +1,25 @@
 'use strict';
 
 angular.module('benevoles').config(
-  function($stateProvider, PARAMS) {
+  function ($stateProvider, PARAMS) {
 
     $stateProvider.
 
     state('benevoles', {
-      url: '/benevoles',
+      url: '/benevoles/:filters',
       template: '<ui-view layout="column" flex></ui-view>',
       resolve: {
-        benevoles: function($q, $timeout, Benevole) {
+        benevoles: function ($q, $timeout, Benevole, $stateParams) {
+          console.log(JSON.parse($stateParams.filters));
           return $q.all([
             $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
-            Benevole.find()
-          ]).then(function(results) {
+            Benevole.find(JSON.parse($stateParams.filters))
+          ]).then(function (results) {
             return _.last(results);
           });
         }
       },
-      controller: function($state, $location, benevoles) {
+      controller: function ($state, $location, benevoles) {
         if ($location.path().split('/').length === 2) {
           $state.go('benevoles.fiche', {
             benevoleId: _.first(benevoles)._id

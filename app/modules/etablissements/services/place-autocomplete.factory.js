@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('etablissements').factory('PlaceAutocompleteFactory',
+angular.module('core').factory('PlaceAutocompleteFactory',
   function () {
 
     var maps = {

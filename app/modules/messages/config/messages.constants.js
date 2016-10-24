@@ -7,6 +7,6 @@ angular.module('messages').constant('MESSAGES', {
 });
 
 angular.module('messages').run(
-	function($rootScope, MESSAGES) {
-		$rootScope.MESSAGES = MESSAGES;
-	});
+  function ($rootScope, MESSAGES) {
+    $rootScope.MESSAGES = MESSAGES;
+  });

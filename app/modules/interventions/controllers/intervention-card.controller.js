@@ -79,8 +79,7 @@ angular.module('interventions').controller('InterventionCardController',
     var addParticipantDialog = new Dialog({
       templateUrl: 'modules/interventions/views/add-participant.dialog.html',
       controller: 'AddParticipantController',
-      controllerAs: 'addParticipantCtrl',
-      keepLastDialog: true
+      controllerAs: 'addParticipantCtrl'
     });
 
     ctrl.addParticipant = function ($event) {

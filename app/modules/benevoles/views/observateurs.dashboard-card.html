@@ -1,0 +1,13 @@
+<md-card ng-click="observateursDashboardCardCtrl.handleClick()" ng-show="observateursDashboardCardCtrl.nbObservateurs !== undefined">
+	<md-card-content flex layout="column" layout-align="center center" class="text-center">
+		<md-icon flex style="height:50; width:50px" md-svg-icon="{{ BENEVOLES.ICONS.OBSERVATEUR }}"></md-icon>
+	  <div flex>
+	  	<div class="md-display-1">{{ observateursDashboardCardCtrl.nbObservateurs }}</div>
+		  <ng-pluralize class="md-title"
+		  							count="observateursDashboardCardCtrl.nbObservateurs"
+	                 	when="{'one': 'observateur',
+	                     		 'other': 'observateurs'}">
+			</ng-pluralize>
+		</div>
+	</md-card-content>
+</md-card>

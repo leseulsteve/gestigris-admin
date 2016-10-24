@@ -5,7 +5,8 @@ angular.module('benevoles').directive('benevoleForm',
     return {
       restrict: 'E',
       scope: {
-        benevole: '='
+        benevole: '=',
+        autoSave: '='
       },
       templateUrl: 'modules/benevoles/views/benevole.form.html',
       controllerAs: 'benevoleFormCtrl',

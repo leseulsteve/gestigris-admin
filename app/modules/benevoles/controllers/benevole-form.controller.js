@@ -1,22 +1,20 @@
 'use strict';
 
 angular.module('benevoles').controller('BenevoleFromCtrl',
-  function(BenevoleRole) {
+  function ($scope, BenevoleRole) {
 
     var ctrl = this;
 
-    BenevoleRole.find().then(function(benevoleRoles) {
-      ctrl.benevoleRoles = benevoleRoles
+    ctrl.isNew = _.isUndefined($scope.benevole._id);
+
+    BenevoleRole.find().then(function (benevoleRoles) {
+      ctrl.benevoleRoles = benevoleRoles;
     });
 
-    ctrl.isNew = function() {
-      return !_.isUndefined(ctrl.benevole._id);
-    }
-
-    ctrl.saveProfile = function(userProfileForm) {
-
-      if (userProfileForm.$valid) {
-
+    ctrl.saveBenevole = function (form) {
+      if ($scope.autoSave && form.$valid) {
+        return $scope.benevole.save();
       }
     };
+
   });

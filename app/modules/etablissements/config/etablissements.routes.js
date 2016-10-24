@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('etablissements').config(
-  function($stateProvider) {
+  function ($stateProvider) {
 
     $stateProvider.
 
@@ -9,16 +9,16 @@ angular.module('etablissements').config(
       url: '/etablissements',
       template: '<ui-view layout="column" flex></ui-view>',
       resolve: {
-        etablissements: function($q, $timeout, Etablissement, PARAMS) {
+        etablissements: function ($q, $timeout, Etablissement, PARAMS) {
           return $q.all([
             $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
             Etablissement.find()
-          ]).then(function(results) {
+          ]).then(function (results) {
             return _.last(results);
           });
         }
       },
-      controller: function($state, $location, etablissements) {
+      controller: function ($state, $location, etablissements) {
         if ($location.path().split('/').length === 2) {
           $state.go('etablissements.fiche', {
             etablissementId: _.first(etablissements)._id

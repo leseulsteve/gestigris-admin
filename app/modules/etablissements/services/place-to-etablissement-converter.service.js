@@ -9,9 +9,12 @@ angular.module('core').factory('PlaceToEtablissementConverter',
         lists = lists;
         return new Etablissement({
           name: place.description,
-          address: {
+          address: place.address ? {
             street: (place.address.houseNumber ? place.address.houseNumber + ' ' : '') + place.address.street,
             postalCode: place.address.postalCode
+          } : {
+            street: '',
+            postalCode: ''
           },
           coordinates: {
             lat: parseFloat(place.coordinates.lat),

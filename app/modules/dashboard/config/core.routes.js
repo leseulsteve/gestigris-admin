@@ -1,17 +1,13 @@
 'use strict';
 
 angular.module('dashboard').config(
-  function ($stateProvider, $urlRouterProvider) {
-
-    $urlRouterProvider.otherwise('/');
+  function ($stateProvider) {
 
     $stateProvider.
 
     state('home', {
       url: '/',
       title: 'Gestigris',
-      templateUrl: 'modules/dashboard/views/dashboard.html',
-      controller: 'DashboardController',
-      controllerAs: 'dashboardCtrl'
+      templateUrl: 'modules/dashboard/views/dashboard.html'
     });
   });

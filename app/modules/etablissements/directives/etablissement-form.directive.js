@@ -5,7 +5,9 @@ angular.module('etablissements').directive('etablissementForm',
     return {
       restrict: 'E',
       scope: {
-        etablissement: '='
+        etablissement: '=',
+        disabledForm: '=ngDisabled',
+        autoSave: '='
       },
       templateUrl: 'modules/etablissements/views/etablissement.form.html',
       controllerAs: 'etablissementFormCtrl',

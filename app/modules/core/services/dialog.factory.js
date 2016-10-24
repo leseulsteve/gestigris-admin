@@ -3,28 +3,20 @@
 angular.module('core').factory('Dialog',
   function ($mdDialog, $document, $animate) {
 
-    var lastDialogs = [];
-
     var Dialog = function (params) {
       this.config = _.assign({
         parent: angular.element(document.body),
-        bindToController: true
+        bindToController: true,
+        locals: _.assign({
+          dialog: this
+        }, params.locals)
       }, params);
-      this.config.locals = _.assign({
-        dialog: this
-      }, this.config.locals);
-
-      if (!params.keepLastDialog) {
-        lastDialogs.pop();
-      }
     };
 
     Dialog.prototype.show = function ($event, params) {
-      var dialog = _.assign(this.config, {
+      return $mdDialog.show(_.assign(this.config, {
         targetEvent: $event
-      }, params);
-      lastDialogs.push(dialog);
-      return $mdDialog.show(dialog);
+      }, params));
     };
 
     Dialog.prototype.shake = function () {
@@ -35,13 +27,7 @@ angular.module('core').factory('Dialog',
     };
 
     Dialog.prototype.hide = function (item) {
-      return $mdDialog.hide(item).then(function () {
-        lastDialogs.pop();
-        var lastDialog = _.last(lastDialogs);
-        if (lastDialog) {
-          $mdDialog.show(lastDialog);
-        }
-      });
+      return $mdDialog.hide(item);
     };
 
     Dialog.prototype.cancel = function () {

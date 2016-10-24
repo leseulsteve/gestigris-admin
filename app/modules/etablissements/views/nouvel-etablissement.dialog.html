@@ -1,6 +1,6 @@
 <md-dialog aria-label="Nouvel établissement" style="width:800px;">
-  <form novalidate name="etablissementForm" class="input-no-bottom-margin"
-        ng-submit="nouvelEtablissementCtrl.create(etablissementForm, etablissement)">
+  <form novalidate name="form" class="input-no-bottom-margin"
+        ng-submit="nouvelEtablissementCtrl.create(form, etablissement)">
     <md-toolbar>
       <div class="md-toolbar-tools">
         <h2>Nouvel établissement</h2>
@@ -19,7 +19,7 @@
 
         <md-tabs layout="column" flex md-dynamic-height md-border-bottom>
           <md-tab layout="column" flex label="Informations">
-            <ng-include src="'modules/etablissements/views/etablissement.form.html'" ng-controller="EtablissementFromCtrl as etablissementFormCtrl"></ng-include>
+            <etablissement-form etablissement="etablissement" ng-disabled="place === undefined"></etablissement-form>
           </md-tab>
           <md-tab label="carte">
             <etablissement-map height="400px" width="100%" etablissement="etablissement"></etablissement-map>

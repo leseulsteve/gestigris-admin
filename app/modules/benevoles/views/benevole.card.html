@@ -26,7 +26,7 @@
 
 	<div layout="column" flex>
 
-		<md-tabs flex class="md-accent">
+		<md-tabs flex class="md-accent" md-selected="1">
       <md-tab label="activités" layout-fill>
         <md-tab-body>
         	<md-content layout-padding layout="column" flex ng-include="'modules/benevoles/views/benevole.infos.html'"></md-content>
@@ -35,7 +35,7 @@
       <md-tab label="profil" layout-fill>
         <md-tab-body>
         	<md-content layout-padding layout="column" flex>
-        		<benevole-form benevole="benevole"></benevole-form>
+        		<benevole-form benevole="benevole" auto-save="true"></benevole-form>
 		  		</md-content>
         </md-tab-body>
       </md-tab>

@@ -1,4 +1,4 @@
-<form name="etablissementForm"> 
+<ng-form name="etablissementForm" auto-save-form="autoSave" novalidate> 
   <div layout="row" flex layout-align="start start"
        style="margin-top: 16px;"
        ng-init="addingType = false">
@@ -8,7 +8,7 @@
       <input name="name" ng-model="etablissement.name"
              ng-model-options="{ updateOn: 'blur' }"
              ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
-             ng-disabled="etablissement === undefined"
+             ng-disabled="disabledForm"
              required>
       <div ng-messages="etablissementForm.name.$error">
         <div ng-message="required">requis.</div>
@@ -21,9 +21,8 @@
       <label>Type d'établissement</label>
       <md-select name="etablissementType"
                  ng-model="etablissement.type"
-                 ng-model-options="{ updateOn: 'blur' }"
                  ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
-                 ng-disabled="etablissement === undefined"
+                 ng-disabled="disabledForm"
                  ng-required="!addingType">
         <md-option ng-repeat="type in etablissementFormCtrl.etablissementTypes"
                    ng-value="type" ng-selected="type._id === etablissement.type._id">
@@ -49,7 +48,7 @@
     </md-input-container>
     <md-button style="margin-top:18px; margin-left:0px;" flex="5"
                class="md-icon-button md-primary" aria-label="Ajouter"
-               ng-disabled="etablissement === undefined"
+               ng-disabled="disabledForm"
                ng-click="etablissementFormCtrl.toggleAddingType()">
       <md-icon md-svg-icon="{{ 'content:' + (addingType ? 'clear' : 'add') }}"></md-icon>
       <md-tooltip>Ajouter</md-tooltip>
@@ -64,7 +63,7 @@
              ng-model="etablissement.address.street"
              ng-model-options="{ updateOn: 'blur' }"
              ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
-             ng-disabled="etablissement === undefined"
+             ng-disabled="disabledForm"
              required>
       <div ng-messages="etablissementForm.adresse.$error">
         <div ng-message="required">requis.</div>
@@ -73,25 +72,41 @@
 
     <span flex="5"></span>
 
-    <md-input-container flex="45">
+    <md-input-container ng-hide="addingCommission" flex="45">
       <label>Commission Scolaire</label>
-      <!--<md-select name="arrondissement"
-                 ng-model="etablissement.address.arrondissement"
-                 ng-model-options="{ updateOn: 'blur' }"
+      <md-select name="commissionScolaire"
+                 ng-model="etablissement.commissionScolaire"
                  ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
-                 ng-disabled="etablissement === undefined"
-                 required>
-        <md-option ng-repeat="arrondissement in etablissementFormCtrl.arrondissements"
-                   ng-value="arrondissement" ng-selected="arrondissement._id === etablissement.address.arrondissement._id">
-          {{ arrondissement.toString() }}
+                 ng-disabled="disabledForm">
+        <md-option ng-repeat="commissionScolaire in etablissementFormCtrl.commissionsScolaires"
+                   ng-value="commissionScolaire" ng-selected="commissionScolaire._id === etablissement.commissionScolaire._id">
+          {{ commissionScolaire.toString() }}
         </md-option>
       </md-select>
-      <div ng-messages="etablissementForm.arrondissement.$error">
+      <div ng-messages="etablissementForm.commissionScolaire.$error">
         <div ng-message="required">requis.</div>
-      </div>-->
+      </div>
     </md-input-container>
 
-    <span flex="5"></span>
+    <md-input-container ng-show="addingCommission" flex="45">
+      <label style="margin-left:1px;">Nouvelle commission scolaire</label>
+      <input name="typeDescription"
+             focus-on="addingCommission"
+             ng-model="etablissement.commissionDescription"
+             ng-model-options="{ updateOn: 'blur' }"
+             ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)">
+      <div ng-messages="etablissementForm.typeDescription.$error">
+        <div ng-message="required">requis.</div>
+      </div>
+    </md-input-container>
+    <md-button style="margin-top:18px; margin-left:0px;" flex="5"
+               class="md-icon-button md-primary" aria-label="Ajouter"
+               ng-disabled="disabledForm"
+               ng-click="etablissementFormCtrl.toggleAddingCommission()">
+      <md-icon md-svg-icon="{{ 'content:' + (addingCommission ? 'clear' : 'add') }}"></md-icon>
+      <md-tooltip>Ajouter</md-tooltip>
+    </md-button>
+
   </div>
   <div layout="row" flex layout-align="start start">
 
@@ -99,9 +114,8 @@
       <label>Ville</label>
       <md-select name="ville"
                  ng-model="etablissement.address.city"
-                 ng-model-options="{ updateOn: 'blur' }"
                  ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
-                 ng-disabled="etablissement === undefined"
+                 ng-disabled="disabledForm"
                  required>
         <md-option ng-repeat="ville in etablissementFormCtrl.villes"
                    ng-value="ville" ng-selected="ville._id === etablissement.address.city._id">
@@ -119,9 +133,8 @@
       <label>Province</label>
       <md-select name="province"
                  ng-model="etablissement.address.province"
-                 ng-model-options="{ updateOn: 'blur' }"
                  ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
-                 ng-disabled="etablissement === undefined"
+                 ng-disabled="disabledForm"
                  required>
         <md-option ng-repeat="province in etablissementFormCtrl.provinces"
                    ng-value="province" ng-selected="province._id === etablissement.address.province._id">
@@ -142,7 +155,7 @@
              ng-model-options="{ updateOn: 'blur' }"
              ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
              ui-mask="A9A 9A9"
-             ng-disabled="etablissement === undefined"
+             ng-disabled="disabledForm"
              required>
       <div ng-messages="etablissementForm.postalCode.$error">
         <div ng-message="required">requis.</div>
@@ -159,7 +172,7 @@
              ng-model-options="{ updateOn: 'blur' }"
              ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
              ui-mask="999-999-9999"
-             ng-disabled="etablissement === undefined">
+             ng-disabled="disabledForm">
     </md-input-container>
 
-</form>
+</ng-form>

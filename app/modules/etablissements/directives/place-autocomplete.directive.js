@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('core').directive('placeAutocomplete',
-  function ($http, PlaceAutocompleteFactory) {
+angular.module('etablissements').directive('placeAutocomplete',
+  function ($http, PlaceAutocompleteFactory, ETABLISSEMENTS) {
     return {
       require: 'ngModel',
       restrict: 'E',
@@ -15,12 +15,9 @@ angular.module('core').directive('placeAutocomplete',
 
         return function link(scope, element, attrs, ngModelCtrl) {
 
-          var mapzenKey = 'search-v5XrVqS';
-
           scope.querySearch = function (searchText) {
-            var url = 'https://search.mapzen.com/v1/search?text=' + searchText + '&api_key=' + mapzenKey;
+            var url = 'https://search.mapzen.com/v1/search?text=' + searchText + '&api_key=' + ETABLISSEMENTS.MAPZEN_KEY;
             return $http.get(url).then(function (response) {
-              console.log(response.data.features);
               return response.data.features;
             });
           };
@@ -28,8 +25,18 @@ angular.module('core').directive('placeAutocomplete',
           scope.selectedItemChange = function (mapzenItem) {
             if (mapzenItem) {
               $http.get('http://nominatim.openstreetmap.org/lookup?format=json&osm_ids=W' + mapzenItem.properties.id.replace('way:', '')).then(function (response) {
-                console.log(response.data);
-                ngModelCtrl.$setViewValue(response.status === 200 && response.data.length === 1 ? PlaceAutocompleteFactory.convertResult(_.first(response.data), mapzenItem) : undefined);
+
+                if (response.status === 200 && response.data.length >  0) {
+                  ngModelCtrl.$setViewValue(PlaceAutocompleteFactory.convertResult(_.first(response.data), mapzenItem));
+                } else  {
+                  ngModelCtrl.$setViewValue({
+                    description: mapzenItem.properties.name,
+                    coordinates: {
+                      lat: _.last(mapzenItem.geometry.coordinates),
+                      long: _.first(mapzenItem.geometry.coordinates)
+                    }
+                  });
+                }
                 ngModelCtrl.$render();
               });
             } else {
