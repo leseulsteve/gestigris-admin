@@ -2,8 +2,14 @@
 
 angular.module('benevoles').constant('BENEVOLES', {
   ICONS: {
-    BENEVOLE: 'action:account_circle',
-    OBSERVATEUR: 'image:remove_red_eye'
+    BENEVOLE: 'action:account_circle'
+  },
+  DIALOGS: {
+    ADD_BENEVOLE: {
+      templateUrl: 'modules/benevoles/views/nouveau-benevole.dialog.html',
+      controller: 'NouveauBenevoleController',
+      controllerAs: 'nouveauBenevoleCtrl'
+    }
   }
 });
 

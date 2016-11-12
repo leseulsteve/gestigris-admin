@@ -1,8 +1,7 @@
 'use strict';
 
 angular.module('etablissements').controller('EtablissementFromCtrl',
-  function ($q, $scope, EtablissementType, Ville, Province, CommissionScolaire) {
-
+  function ($scope, EtablissementType, Ville, Province,CommissionScolaire,  PlaceToEtablissementConverter) {
     var ctrl = this,
       isNew = _.isUndefined($scope.etablissement._id),
       createdEtablissementType,
@@ -25,6 +24,12 @@ angular.module('etablissements').controller('EtablissementFromCtrl',
     Province.find().then(function (provinces) {
       ctrl.provinces = provinces;
     });
+
+    if (isNew) {
+      $scope.$watch('place', function (place) {
+        _.assign($scope.etablissement, place ? PlaceToEtablissementConverter.convert(place) : {});
+      });
+    }
 
     function saveEtablissement() {
       if ($scope.autoSave) {

@@ -9,11 +9,10 @@ angular.module('benevoles').config(
       url: '/benevoles/:filters',
       template: '<ui-view layout="column" flex></ui-view>',
       resolve: {
-        benevoles: function ($q, $timeout, Benevole, $stateParams) {
-          console.log(JSON.parse($stateParams.filters));
+        benevoles: function ($q, $timeout, Benevole) {
           return $q.all([
             $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
-            Benevole.find(JSON.parse($stateParams.filters))
+            Benevole.find()
           ]).then(function (results) {
             return _.last(results);
           });

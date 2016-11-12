@@ -1,12 +1,14 @@
-<md-card ng-click="etablissementsDashboardCardCtrl.handleClick()" ng-show="etablissementsDashboardCardCtrl.nbEtablissements !== undefined">
+<md-card ng-click="etablissementsDashboardCardCtrl.handleClick($event)">
 	<md-card-content flex layout="column" layout-align="center center" class="text-center">
 		<md-icon flex style="height:50; width:50px" md-svg-icon="{{ ETABLISSEMENTS.ICONS.ETABLISSEMENT }}"></md-icon>
 	  <div flex>
-	  	<div class="md-display-1">{{ etablissementsDashboardCardCtrl.nbEtablissements }}</div>
+	  	<div class="md-display-1" ng-if="etablissementsDashboardCardCtrl.nbEtablissements">
+	  		{{ etablissementsDashboardCardCtrl.nbEtablissements }}
+	  	</div>
 		  <ng-pluralize class="md-title"
 		  							count="etablissementsDashboardCardCtrl.nbEtablissements"
-	                 	when="{'0': 'Aucun établissement.',
-	                     'one': 'établissement',
+	                 	when="{'0': 'Ajouter un établissement',
+	                     'one': '1 établissement',
 	                     'other': 'établissements'}">
 			</ng-pluralize>
 		</div>

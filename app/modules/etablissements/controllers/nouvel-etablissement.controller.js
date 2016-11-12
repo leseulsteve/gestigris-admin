@@ -15,7 +15,7 @@ angular.module('etablissements').controller('NouvelEtablissementController',
 
       if (form.$valid) {
         return Etablissement.create(params).then(function (etablissement) {
-          ctrl.dialog.hide();
+          ctrl.dialog.hide(etablissement);
           $mdToast.show(
             $mdToast.simple()
             .action('voir')

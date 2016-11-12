@@ -20,9 +20,9 @@ angular.module('benevoles').controller('BenevolesSectionController',
         });
       }
     }
-
-    var listener = $rootScope.$on('Benevole:new', function ($event, newBenevole) {
-      _.sortedPush(ctrl.benevoles, newBenevole, function (benevole) {
+    
+    var listener = $rootScope.$on('Benevole:new', function ($event, benevole) {
+      var index = _.sortedIndex(ctrl.benevoles, function (benevole) {
         return benevole.toString();
       });
     });

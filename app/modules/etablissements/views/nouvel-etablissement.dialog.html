@@ -5,7 +5,7 @@
       <div class="md-toolbar-tools">
         <h2>Nouvel établissement</h2>
         <span flex></span>
-        <md-button class="md-icon-button" ng-click="nouvelEtablissementCtrl.dialog.hide()">
+        <md-button class="md-icon-button" ng-click="nouvelEtablissementCtrl.dialog.cancel()">
           <md-icon md-svg-icon="navigation:close" aria-label="Close dialog"></md-icon>
         </md-button>
       </div>
@@ -28,7 +28,7 @@
       </div>
     </md-dialog-content>
     <md-dialog-actions layout="row">
-      <md-button type="button" ng-click="nouvelEtablissementCtrl.dialog.hide()">
+      <md-button type="button" ng-click="nouvelEtablissementCtrl.dialog.cancel()">
         Annuler
       </md-button>
       <md-button type="submit" style="margin-right:20px;">

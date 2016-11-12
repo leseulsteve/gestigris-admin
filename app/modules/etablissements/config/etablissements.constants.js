@@ -5,6 +5,13 @@ angular.module('etablissements').constant('ETABLISSEMENTS', {
     ETABLISSEMENT: 'social:school'
   },
   MAPZEN_KEY: 'search-v5XrVqS'
+  DIALOGS: {
+    ADD_ETABLISSEMENT: {
+      templateUrl: 'modules/etablissements/views/nouvel-etablissement.dialog.html',
+      controller: 'NouvelEtablissementController',
+      controllerAs: 'nouvelEtablissementCtrl'
+    }
+  }
 });
 
 angular.module('etablissements').run(
