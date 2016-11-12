@@ -1,12 +1,13 @@
 <ng-form name="userProfileForm" auto-save-form="autoSave" novalidate autocomplete="off">
 
-	<div layout="row">
+	<div layout="row" layout-wrap>
 
-		<div layout="column" flex="40" layout-align="center center">
+		<div ng-if="benevoleFormCtrl.isNew"
+         layout="column" flex="40" layout-align="center center">
 			<avatar class="profile" user="benevole" click-to-update></avatar>
 		</div>
 
-		<span flex="10"></span>
+		<span flex="10" ng-if="benevoleFormCtrl.isNew"></span>
 
 		<div layout="column" flex="40">
 
@@ -36,13 +37,11 @@
 
    	</div>
 
-  </div>
+    <span flex="10" ng-if="!benevoleFormCtrl.isNew"></span>
 
-  <div layout="row">
-
-  	<md-input-container flex="40">
-    	<label>Rôle</label>
-    	<md-select name="role"
+    <md-input-container flex="40">
+      <label>Rôle</label>
+      <md-select name="role"
                  ng-model="benevole.role"
                  ng-change="benevoleFormCtrl.saveBenevole(userProfileForm)"
                  required>
@@ -52,52 +51,49 @@
         </md-option>
       </md-select>
       <ng-messages for="userProfileForm.role.$error">
-				<ng-message when="required">requis.</ng-message>
-			</ng-messages>
-  	</md-input-container>
+        <ng-message when="required">requis.</ng-message>
+      </ng-messages>
+    </md-input-container>
 
-  	<span flex="10"></span>
+    <span flex="10" ng-if="benevoleFormCtrl.isNew"></span>
 
-  	<md-input-container flex="40">
-    	<label>Date de naissance</label>
-    	<input type="date" name="dateNaissance"
-             ng-model="benevole.dateNaissance"
-    				 ng-model-options="{ updateOn: 'blur' }"
-             ng-change="benevoleFormCtrl.saveBenevole(userProfileForm)"
-    				 required>
-    	<ng-messages for="userProfileForm.dateNaissance.$error" ng-show="userProfileForm.dateNaissance.$touched || userProfileForm.dateNaissance.$dirty">
-				<ng-message when="required">requis.</ng-message>
-        <ng-message when="date">date invalide.</ng-message>
-			</ng-messages>
-  	</md-input-container>
+    <div layout="column" flex="40">
 
+      <md-input-container flex>
+        <label>Date de naissance</label>
+        <input type="date" name="dateNaissance"
+               ng-model="benevole.dateNaissance"
+               ng-model-options="{ updateOn: 'blur' }"
+               ng-change="benevoleFormCtrl.saveBenevole(userProfileForm)"
+               required>
+        <ng-messages for="userProfileForm.dateNaissance.$error" ng-show="userProfileForm.dateNaissance.$touched || userProfileForm.dateNaissance.$dirty">
+          <ng-message when="required">requis.</ng-message>
+          <ng-message when="date">date invalide.</ng-message>
+        </ng-messages>
+      </md-input-container>
+
+      <md-input-container flex>
+        <label>Courriel</label>
+        <input type="email" name="email"
+               ng-model="benevole.email"
+               ng-model-options="{ updateOn: 'blur' }"
+               ng-change="benevoleFormCtrl.saveBenevole(userProfileForm)"
+               required>
+        <ng-messages for="userProfileForm.email.$error" ng-show="userProfileForm.email.$touched || userProfileForm.email.$dirty">
+          <ng-message when="required">requis.</ng-message>
+          <ng-message when="email">courriel invalide.</ng-message>
+        </ng-messages>
+      </md-input-container>
+
+    </div>
+  
   </div>
 
   <div layout="row">
-
-  	<span flex="40"></span>
-
-  	<span flex="10"></span>
-
-  	<md-input-container flex="40">
-    	<label>Courriel</label>
-    	<input type="email" name="email"
-             ng-model="benevole.email"
-             ng-model-options="{ updateOn: 'blur' }"
-             ng-change="benevoleFormCtrl.saveBenevole(userProfileForm)"
-    				 required>
-    	<ng-messages for="userProfileForm.email.$error" ng-show="userProfileForm.email.$touched || userProfileForm.email.$dirty">
-				<ng-message when="required">requis.</ng-message>
-        <ng-message when="email">courriel invalide.</ng-message>
-			</ng-messages>
-  	</md-input-container>
-
-  </div>
-
-   <div layout="row">
+    
    	<input style="display:none">
   	<md-input-container flex="40">
-    	<label>{{ userProfileForm.isNew ? 'Mot de passe' : 'Nouveau mot de passe' }}</label>
+    	<label>{{ benevoleFormCtrl.isNew ? 'Mot de passe' : 'Nouveau mot de passe' }}</label>
     	<input name="password" type="password" autocomplete="new-password" 
     				 ng-model="benevole.password"
              ng-model-options="{ updateOn: 'blur' }"

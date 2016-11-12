@@ -20,6 +20,11 @@ angular.module('etablissements').config(
         next();
       });
 
+      Etablissement.post('remove', function (next) {
+        $rootScope.$broadcast('Etablissement:remove', this);
+        next();
+      });
+
       return Etablissement;
     });
 

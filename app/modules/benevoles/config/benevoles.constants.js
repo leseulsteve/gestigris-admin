@@ -2,7 +2,8 @@
 
 angular.module('benevoles').constant('BENEVOLES', {
   ICONS: {
-    BENEVOLE: 'action:account_circle'
+    BENEVOLE: 'action:account_circle',
+    OBSERVATEUR: 'action:visibility'
   },
   DIALOGS: {
     ADD_BENEVOLE: {

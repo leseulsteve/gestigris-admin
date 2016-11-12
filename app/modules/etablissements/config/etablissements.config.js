@@ -1,7 +1,13 @@
 'use strict';
 
 angular.module('etablissements').config(
-  function (SearchServiceProvider, FabSpeedDialServiceProvider, ETABLISSEMENTS) {
+  function (ToolbarMenuServiceProvider, SearchServiceProvider, FabSpeedDialServiceProvider, ETABLISSEMENTS) {
+
+    ToolbarMenuServiceProvider.addItem({
+      title: 'Établissements',
+      icon: ETABLISSEMENTS.ICONS.ETABLISSEMENT,
+      route: 'etablissements'
+    });
 
     SearchServiceProvider.register({
       factory: 'Etablissement',

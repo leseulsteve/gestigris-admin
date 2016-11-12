@@ -4,7 +4,7 @@ angular.module('etablissements').constant('ETABLISSEMENTS', {
   ICONS: {
     ETABLISSEMENT: 'social:school'
   },
-  MAPZEN_KEY: 'search-v5XrVqS'
+  MAPZEN_KEY: 'search-v5XrVqS',
   DIALOGS: {
     ADD_ETABLISSEMENT: {
       templateUrl: 'modules/etablissements/views/nouvel-etablissement.dialog.html',

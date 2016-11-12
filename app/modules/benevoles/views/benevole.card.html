@@ -7,7 +7,7 @@
 				<md-icon md-svg-icon="communication:message"></md-icon>
 				<md-tooltip>Message</md-tooltip>
 			</md-button>
-			<md-button class="md-icon-button" ng-click="benevoleCardCtrl.deleteBenevole($event, benevole)">
+			<md-button class="md-icon-button" ng-click="benevoleCardCtrl.deleteBenevole($event, benevole)" ng-disabled="true">
 				<md-icon md-svg-icon="action:delete"></md-icon>
 				<md-tooltip>Supprimer</md-tooltip>
 			</md-button>
@@ -15,7 +15,7 @@
 		<span flex></span>
 		<div layout="row" class="fiche-title-over-custom-tabs">
 			<div layout="row" layout-align="center start">
-				<avatar></avatar>
+				<avatar user="benevole"></avatar>
 			</div>
 			<div layout="column" layout-align="center start">
 				<span class="md-title">{{ benevole.toString() }}</span>

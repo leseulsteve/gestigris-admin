@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('etablissements').controller('EtablissementFromCtrl',
-  function ($scope, EtablissementType, Ville, Province,CommissionScolaire,  PlaceToEtablissementConverter) {
+  function ($scope, $q, EtablissementType, Ville, Province, CommissionScolaire, PlaceToEtablissementConverter) {
     var ctrl = this,
       isNew = _.isUndefined($scope.etablissement._id),
       createdEtablissementType,

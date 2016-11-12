@@ -1,10 +1,29 @@
 <md-toolbar md-scroll-shrink ng-style="!loadingRoute && { 'padding-top' : '5px' }" style="padding-bottom: 5px;">
-  <div class="md-toolbar-tools" ng-init="searchToggled = false">
-   <md-button class="md-icon-button" aria-label="Menu principal"
-              ui-sref="home" on-long-touch="toolbarCtrl.test($event)">
-      <md-icon md-svg-icon="action:view_quilt"></md-icon>
-    </md-button>
-    <h2>Gestigris</h2>{{toolbarCtrl.test}}
+  <div class="md-toolbar-tools" style="padding-left: 0px;"
+       ng-init="searchToggled = false">
+    <md-menu>
+      <md-button aria-label="Menu principal" class="md-icon-button"
+                 ui-sref="home" ng-click="null"
+                 on-long-touch="$mdOpenMenu($event)">
+        <md-icon md-menu-origin md-svg-icon="action:view_quilt"></md-icon>
+      </md-button>
+      <md-menu-content width="4">
+        <md-menu-item ng-repeat="menuItem in toolbarCtrl.menuItems">
+          <md-button ui-sref="{{ menuItem.route }}">
+            <md-icon md-svg-icon="{{ menuItem.icon }}" md-menu-align-target></md-icon>
+            {{ menuItem.title }}
+          </md-button>
+        </md-menu-item>
+        <md-menu-divider></md-menu-divider>
+        <md-menu-item>
+          <md-button>
+            <md-icon md-svg-icon="action:account_box"></md-icon>
+            Profil d'utilisateur
+          </md-button>
+        </md-menu-item>
+      </md-menu-content>
+    </md-menu>
+    <h2>Gestigris</h2>
     <span flex></span>
     <md-button class="md-icon-button" aria-label="Recherche"
                ng-click="searchToggled = !searchToggled">

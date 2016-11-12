@@ -1,9 +1,8 @@
 'use strict';
 
 angular.module('interventions').controller('ToolbarController',
-  function () {
+  function (ToolbarMenuService) {
 
-    this.test = function () {
-      console.log(343434);
-    };
+    this.menuItems = ToolbarMenuService.getItems();
+
   });

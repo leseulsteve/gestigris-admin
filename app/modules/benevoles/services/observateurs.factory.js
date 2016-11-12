@@ -19,9 +19,9 @@ angular.module('benevoles').factory('Observateur',
       });
     };
 
-    Observateur.getObservateurRoleFilter = function () {
+    Observateur.find = function (query) {
       return $q.when(init).then(function (observateurRoleFilter) {
-        return observateurRoleFilter;
+        return Benevole.find(_.assign({}, query, observateurRoleFilter));
       });
     };
 

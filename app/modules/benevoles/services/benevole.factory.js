@@ -1,12 +1,22 @@
 'use strict';
 
 angular.module('benevoles').factory('Benevole',
-  function ($q, $timeout, Schema) {
+  function ($rootScope, $q, $timeout, Schema) {
 
     var Benevole = new Schema('benevole');
 
     Benevole.post('find', function (next) {
       this.dateNaissance = new Date(this.dateNaissance);
+      next();
+    });
+
+    Benevole.post('create', function (next) {
+      $rootScope.$broadcast('Benevole:new', this);
+      next();
+    });
+
+    Benevole.post('remove', function (next) {
+      $rootScope.$broadcast('Benevole:remove', this);
       next();
     });
 

@@ -10,6 +10,7 @@
 					<md-list-item class="md-2-line" ui-sref-active="active"
 												ng-repeat="item in benevolesSectionCtrl.benevoles"
 												ng-click="undefined">
+						<avatar user="item"></avatar>
 			      <div class="md-list-item-text" ui-sref="benevoles.fiche({ benevoleId: item._id })">
 			        <h3>{{ item.toString() }}</h3>
 			        <p>{{ item.getRoleDescription() }} </p>

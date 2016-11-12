@@ -1,0 +1,21 @@
+<md-dialog aria-label="Observateurs" style="width:800px;">
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2>Observateurs</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="observateurProgressCtrl.dialog.cancel()">
+        <md-icon md-svg-icon="navigation:close" aria-label="Close dialog"></md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content layout="column" flex>
+    AFFICHER PROGRESSION DES OBSERVATEURS</br>
+    {{ observateurProgressCtrl.observateurs}}
+  </md-dialog-content>
+  <md-dialog-actions layout="row">
+    <md-button class="md-raised md-primary" style="margin-right:20px;"
+               ng-click="observateurProgressCtrl.dialog.cancel()">
+      Fermer
+    </md-button>
+  </md-dialog-actions>
+</md-dialog>

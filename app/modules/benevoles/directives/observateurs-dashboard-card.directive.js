@@ -13,18 +13,26 @@ angular.module('benevoles').directive('observateursDashboardCard',
           }
         });
       },
-      controller: function (Observateur, $state) {
+      controller: function (Observateur, Dialog) {
 
         var ctrl = this;
 
-        Observateur.getObservateurRoleFilter().then(function (filter) {
-          console.log(filter);
-          ctrl.handleClick = function () {
-            $state.go('benevoles', {
-              filters: JSON.stringify(filter)
-            });
-          };
+        var dialog = new Dialog({
+          controller: 'ObservateurProgressController',
+          controllerAs: 'observateurProgressCtrl',
+          templateUrl: 'modules/benevoles/views/observateurs-progress.dialog.html'
         });
+
+        ctrl.handleClick = function ($event) {
+          Observateur.find().then(function (observateurs) {
+            return dialog.show($event, {
+              locals: {
+                observateurs: observateurs,
+                dialog: dialog
+              }
+            });
+          });
+        };
 
         Observateur.count().then(function (count) {
           ctrl.nbObservateurs = count;

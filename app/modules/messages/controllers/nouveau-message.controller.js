@@ -1,9 +1,13 @@
 'use strict';
 
 angular.module('messages').controller('NouveauMessageController',
-  function (Benevole, Toast) {
+  function (Benevole, Message, $mdToast) {
 
     var ctrl = this;
+
+    var toast = $mdToast.simple()
+      .action('annuler')
+      .textContent('Le message a été envoyé!');
 
     ctrl.message = {
       destinataires: ctrl.receivers || []
@@ -26,8 +30,11 @@ angular.module('messages').controller('NouveauMessageController',
       }
 
       ctrl.dialog.hide().then(function () {
-        Toast.show('Message envoyé');
+        $mdToast.show(toast).then(function (response) {
+          if (_.isUndefined(response)) {
+            Message.create(ctrl.message);
+          }
+        });
       });
-
     };
   });

@@ -1,15 +1,15 @@
 'use strict';
 
 angular.module('benevoles').config(
-  function ($stateProvider, PARAMS) {
+  function ($stateProvider) {
 
     $stateProvider.
 
     state('benevoles', {
-      url: '/benevoles/:filters',
+      url: '/benevoles',
       template: '<ui-view layout="column" flex></ui-view>',
       resolve: {
-        benevoles: function ($q, $timeout, Benevole) {
+        benevoles: function ($q, $timeout, Benevole, PARAMS) {
           return $q.all([
             $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
             Benevole.find()

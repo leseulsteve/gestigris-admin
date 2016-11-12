@@ -31,7 +31,7 @@
 		            <h3>{{ contact.toString() }}</h3>
 		            <h4>{{ contact.poste.description }}</h4>
  								<md-icon md-svg-icon="communication:email" class="md-secondary"
- 												 aria-alabel="Envois d'un message"
+ 												 aria-label="Envois d'un message"
  												 ng-click="etablissementCardCtrl.sendMessageToContact($event, contact)">
  								</md-icon>
 		          </div>
@@ -46,14 +46,14 @@
 		          <label>Notes administratives</label>
 		          <textarea ng-model="etablissement.notes.admin"
 		          				  ng-model-options="{ updateOn: 'blur' }"
-             					  ng-change="etablissementCardCtrl.saveEtablissement(etablissementForm)"
+             					  ng-change="etablissementCardCtrl.saveEtablissement(etablissementNoteForm)"
              					  keep-line-breaks></textarea>
 		        </md-input-container>
 		        <md-input-container class="md-block">
 		          <label>Notes publiques</label>
 		          <textarea ng-model="etablissement.notes.public"
 		          					ng-model-options="{ updateOn: 'blur' }"
-             					  ng-change="etablissementCardCtrl.saveEtablissement(etablissementForm)"
+             					  ng-change="etablissementCardCtrl.saveEtablissement(etablissementNoteForm)"
              					  keep-line-breaks></textarea>
 		        </md-input-container>
 		      </form>

@@ -1,7 +1,13 @@
 'use strict';
 
 angular.module('benevoles').config(
-  function (SearchServiceProvider, FabSpeedDialServiceProvider, RightPanelProvider, BENEVOLES) {
+  function (ToolbarMenuServiceProvider, SearchServiceProvider, FabSpeedDialServiceProvider, RightPanelProvider, BENEVOLES) {
+
+    ToolbarMenuServiceProvider.addItem({
+      title: 'Benevoles',
+      icon: BENEVOLES.ICONS.BENEVOLE,
+      route: 'benevoles'
+    });
 
     SearchServiceProvider.register({
       factory: 'Benevole',

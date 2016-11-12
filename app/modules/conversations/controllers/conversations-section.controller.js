@@ -1,43 +1,43 @@
 'use strict';
 
 angular.module('conversations').controller('ConversationsSectionController',
-  function ($scope, Conversation, $mdDialog) {
+  function () {
 
-    var ctrl = this;
+    /*    var ctrl = this;
 
-    Conversation.getGeneral().then(function (conversations) {
-      ctrl.conversations = conversations;
-    });
+        Conversation.getGeneral().then(function (conversations) {
+          ctrl.conversations = conversations;
+        });
 
-    ctrl.create = function ($event) {
+        ctrl.create = function ($event) {
 
-      $scope.conversation = {
-        type: 'general'
-      };
+          $scope.conversation = {
+            type: 'general'
+          };
 
-      $mdDialog.show({
-        templateUrl: 'modules/conversations/views/conversation.form.html',
-        parent: angular.element(document.body),
-        targetEvent: $event,
-        scope: $scope,
-        preserveScope: true
-      }).then(function () {
+          $mdDialog.show({
+            templateUrl: 'modules/conversations/views/conversation.form.html',
+            parent: angular.element(document.body),
+            targetEvent: $event,
+            scope: $scope,
+            preserveScope: true
+          }).then(function () {
 
-        Conversation.create($scope.conversation)
-          .then(function (conversation) {
-            ctrl.conversations.unshift(conversation);
+            Conversation.create($scope.conversation)
+              .then(function (conversation) {
+                ctrl.conversations.unshift(conversation);
+              });
           });
-      });
-    };
+        };
 
-    ctrl.summitForm = function (form) {
-      if (form.$valid) {
-        $mdDialog.hide();
-      }
-    };
+        ctrl.summitForm = function (form) {
+          if (form.$valid) {
+            $mdDialog.hide();
+          }
+        };
 
-    ctrl.cancel = function () {
-      $mdDialog.cancel();
-    };
+        ctrl.cancel = function () {
+          $mdDialog.cancel();
+        };*/
 
   });
