@@ -1,4 +1,4 @@
-<ng-form name="etablissementForm" auto-save-form="autoSave" novalidate> 
+<ng-form name="etablissementForm" auto-save-form="autoSave" novalidate>
   <div layout="row" flex layout-align="start start"
        style="margin-top: 16px;"
        ng-init="addingType = false">
@@ -56,7 +56,7 @@
 
   </div>
   <div layout="row" flex layout-align="start start">
-    
+
     <md-input-container class="md-block" flex>
       <label>Adresse</label>
       <input name="adresse"
@@ -165,14 +165,9 @@
     <span flex="5"></span>
   </div>
 
-  <md-input-container class="md-block" flex="15">
-      <label>Téléphone</label>
-      <input name="telephone"
-             ng-model="etablissement.telephone"
-             ng-model-options="{ updateOn: 'blur' }"
-             ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
-             ui-mask="999-999-9999"
-             ng-disabled="disabledForm">
-    </md-input-container>
+  <telephone-input flex="50" ng-model="etablissement.telephones"
+                   ng-disabled="disabledForm"
+                   ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)">
+  </telephone-input>
 
 </ng-form>

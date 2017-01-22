@@ -1,44 +1,71 @@
 'use strict';
 
 angular.module('interventions').factory('Intervention',
-  function ($q, Moment, Benevole, InterventionTag, $mdToast, Etablissement, $timeout) {
+  function ($q, Schema, Moment, DemandeParticipation, Benevole, InterventionTag, $mdToast) {
 
-    var id = 1;
-    var Intervention = function (params) {
-      _.assign(this, params);
-      this._id = id++;
-      this.tags = _.map(this.tags, function (tag) {
-        return new InterventionTag(tag);
-      });
-      this.date.start = this.date.start.seconds(0).millisecond(0);
-      this.date.end = this.date.end.add(45, 'minute').seconds(0).millisecond(0);
-      this.local = '12121';
-      this.responsable = 'Ginette Larue';
-      this.meetingPlace = 'Secrétaria principal';
-    };
+    var Intervention = new Schema('intervention');
 
-    /*  Intervention.post('find', function(next) {
-        this.tags = _.maps(this.tags, function(tag) {
-          return new InterventionTag(tag);
-        });
+    Intervention.post('find', function (next) {
+      this.date = {
+        start: new Moment(this.date.start),
+        end: new Moment(this.date.end)
+      };
+
+      DemandeParticipation.getByInterventionId(this._id).then(function (demandes) {
+        this.demandesParticipations = demandes;
         next();
-      });*/
+      }.bind(this));
+    });
 
-    Intervention.prototype.getDateRange = function () {
-      return this.date;
+    Intervention.findByPlageId = function (plageId) {
+      return Intervention.find({
+        plage: plageId
+      });
     };
 
     Intervention.prototype.getBenevoles = function (type) {
-      var that = this;
-      return Benevole.find().then(function (benevoles) {
-        switch (type) {
-        case 'participants':
-          that.participants = _.take(benevoles, Math.floor(Math.random() * 3) + 0);
-          return angular.copy(that.participants);
-        case 'interested':
-          return _.take(benevoles, Math.floor(Math.random() * 10) + 2);
+      return Benevole.find({
+        _id: {
+          $in: _.map(_.filter(this.demandesParticipations, function (demande) {
+            return type === 'participants' ? demande.isAccepted() : !demande.isAccepted();
+          }), 'benevole')
         }
       });
+    };
+
+    ///
+
+    Intervention.prototype.removeBenevoleFromParticipants = function (benevole) {
+      benevole = benevole;
+      return $q.when();
+      //return _.find(this.demandesParticipations, 'benevole', benevole._id).remove();
+    };
+
+    Intervention.prototype.isBooked = function () {
+      return true;
+    };
+
+    ////
+
+    Intervention.getUrgents = function () {
+      return Intervention.find({
+        'date.start': {
+          $gte: new Moment().subtract(1, 'week')
+        }
+      });
+    };
+
+    Intervention.getByDate = function (date) {
+      return Intervention.find({
+        date: {
+          start: date.startOf('day'),
+          end: date.endOf('day')
+        }
+      });
+    };
+
+    Intervention.prototype.getDateRange = function () {
+      return this.date;
     };
 
     Intervention.prototype.addParticipant = function (benevole) {
@@ -63,69 +90,6 @@ angular.module('interventions').factory('Intervention',
       }));
     };
 
-    var interventions = _.map([{
-      plage: 1,
-      date: {
-        start: new Moment(),
-        end: new Moment()
-      },
-      tags: [{
-        _id: 1,
-        description: 'secondaire 3'
-      }],
-      participants: [{}, {}, {}],
-      isBooked: function () {
-        return true;
-      }
-    }, {
-      plage: 1,
-      date: {
-        start: new Moment(),
-        end: new Moment()
-      },
-      tags: [{
-        _id: 1,
-        description: 'secondaire 3'
-      }],
-      demandes: [{}, {}, {}],
-      participants: [{}, {}, {}],
-      isBooked: function () {
-        return false;
-      }
-    }, {
-      plage: 1,
-      date: {
-        start: new Moment(),
-        end: new Moment()
-      },
-      tags: [{
-        _id: 1,
-        description: 'secondaire 3'
-      }],
-      demandes: [{}, {}, {}],
-      participants: [{}, {}, {}],
-      isBooked: function () {
-        return false;
-      }
-    }, {
-      plage: 2,
-      date: {
-        start: new Moment(),
-        end: new Moment()
-      },
-      tags: [{
-        _id: 1,
-        description: 'secondaire 3'
-      }],
-      demandes: [{}, {}, {}],
-      participants: [{}, {}, {}],
-      isBooked: function () {
-        return false;
-      }
-    }], function (params) {
-      return new Intervention(params);
-    });
-
     Intervention.prototype.toString = function () {
       return this.etablissement ? this.etablissement.toString() : undefined;
     };
@@ -140,39 +104,6 @@ angular.module('interventions').factory('Intervention',
 
     Intervention.prototype.getStateIcon = function () {
       return 'navigation:check';
-    };
-
-    Intervention.findByPlageId = function () {
-      return $timeout(function () {
-        return Etablissement.findById('55f2151edb35ddb304bcba84').then(function (etablissement) {
-          return _.map(interventions, function (intervention) {
-            return _.assign(intervention, {
-              etablissement: etablissement
-            });
-          });
-        });
-      }, 1500);
-
-    };
-
-    Intervention.getUrgents = function () {
-      return Intervention.findByPlageId().then(function (interventions) {
-        return _.take(interventions, 3);
-      });
-    };
-
-    // Pour le module EVENTS
-    Intervention.getByDate = function (date) {
-      return Intervention.findByPlageId().then(function (interventions) {
-        return _.map(interventions, function (intervention) {
-          return _.assign(intervention, {
-            date: {
-              start: date,
-              end: date
-            }
-          });
-        });
-      });
     };
 
     return Intervention;

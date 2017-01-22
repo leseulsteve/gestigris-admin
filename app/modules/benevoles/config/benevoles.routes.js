@@ -18,11 +18,25 @@ angular.module('benevoles').config(
           });
         }
       },
-      controller: function ($state, $location, benevoles) {
+      controller: function ($state, $location, Dialog, BENEVOLES, benevoles) {
         if ($location.path().split('/').length === 2) {
-          $state.go('benevoles.fiche', {
-            benevoleId: _.first(benevoles)._id
-          });
+          if (benevoles.length === 0) {
+            var dialog = new Dialog(BENEVOLES.DIALOGS.ADD_BENEVOLE);
+            dialog.show()
+              .then(function (benevole) {
+                benevoles.unshift(benevole);
+                $state.go('benevoles.fiche', {
+                  benevoleId: benevole._id
+                });
+              })
+              .catch(function () {
+                $state.go('home');
+              });
+          } else {
+            $state.go('benevoles.fiche', {
+              benevoleId: _.first(benevoles)._id
+            });
+          }
         }
       }
     }).

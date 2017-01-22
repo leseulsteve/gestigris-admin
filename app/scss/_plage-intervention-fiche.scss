@@ -5,16 +5,6 @@ plage-intervention-fiche {
     height: 200px;
   }
 
-  .plage-card {
-    @media screen and (min-width: 768px) {
-      margin: 16px;
-    }
-
-    @media screen and (min-width: 1024px) {
-      margin: 24px;
-    }
-  }
-
   participant-avatar, .dndPlaceholder {
     display: block;
   }

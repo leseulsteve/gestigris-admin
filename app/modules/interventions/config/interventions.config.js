@@ -7,9 +7,9 @@ angular.module('interventions').config(
       tooltip: 'plage d\'intervention',
       icon: INTERVENTIONS.ICONS.PLAGE,
       dialog: {
-        templateUrl: 'modules/messages/views/nouveau-message.dialog.html',
-        controller: 'NouveauMessageController',
-        controllerAs: 'nouveauMessageCtrl'
+        templateUrl: 'modules/interventions/views/nouvelle-plage-intervention.dialog.html',
+        controller: 'NouvellePlageInterventionController',
+        controllerAs: 'nouvellePlageCtrl'
       }
     });
 

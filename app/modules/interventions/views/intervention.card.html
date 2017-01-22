@@ -1,7 +1,7 @@
 <md-card>
 	<form name="interventionForm">
 	  <md-card-title>
-	    
+
 	    <div class="md-headline" layout="row" layout-align="start center">
 
 	    	<div class="value" ng-mouseover="showStart = true" ng-hide="showStart">
@@ -23,13 +23,13 @@
 	    		<input type="time" step="60" aria-label="end" name="end"
 	    				 	 ng-model="interventionCardCtrl.end">
 	    	</md-input-container>
-	    	
+
 	    </div>
 
 	    <span flex></span>
 
 	    <md-icon md-svg-icon="action:done"></md-icon>
-			
+
 	  </md-card-title>
 
 		<md-chips ng-model="intervention.tags" name="tags"
@@ -51,8 +51,8 @@
 	  </md-chips>
 
 	  <md-card-content layout="column" layout-gt-xs="row">
-			<div layout="column" flex-gt-xs="50">	
-				
+			<div layout="column" flex-gt-xs="50">
+
 				<div class="hidden-input-group" layout="row">
 					<div>
 						<div>local:</div>
@@ -63,11 +63,11 @@
 						<hidden-input ng-model="intervention.local"
 												  name="local">
 						</hidden-input>
-						<hidden-input ng-model="intervention.responsable"
-													name="responsable">
+						<hidden-input ng-model="intervention.responsableGroupe"
+													name="responsableGroupe">
 						</hidden-input>
-	    			<hidden-input ng-model="intervention.meetingPlace"
-													name="meetingPlace">
+	    			<hidden-input ng-model="intervention.lieuRencontre"
+													name="lieuRencontre">
 						</hidden-input>
 					</div>
 				</div>
@@ -79,8 +79,9 @@
 	        		<span flex></span>
 	        		<div class="toolbar-fab-buttons">
 		        		<md-button class="md-fab md-mini" aria-label="Suppression bénévole"
-		        							 ng-show="showGarbage">
-		          		<md-icon md-svg-icon="action:delete"></md-icon>
+		        							 ng-show="showGarbage" id="garbage"
+													 ng-mouseover="interventionCardCtrl.removeParticipant()">
+		          		<md-icon md-svg-icon="action:delete" dnd-list="[]" dnd-drop="interventionCardCtrl.droppedInGargabe(item)"></md-icon>
 		        		</md-button>
 		        		<md-button class="md-fab md-mini" aria-label="Ajout bénévole"
 					    						 ng-click="interventionCardCtrl.addParticipant($event)">
@@ -106,7 +107,7 @@
 					</div>
 				</md-card>
 			</div>
-			
+
 			<md-card flex-gt-xs="50">
 				<md-toolbar>
 	      	<div class="md-toolbar-tools">
@@ -116,7 +117,7 @@
 				<md-content class="benevole-list" layout="row" layout-wrap layout-margin
 										dnd-list="interventionCardCtrl.interested"
 										dnd-allowed-types="[intervention._id]"
-										dnd-drop="interventionCardCtrl.dropped(item)">
+										dnd-drop="interventionCardCtrl.droppedInInterested(item)">
 					<participant-avatar ng-repeat="benevole in interventionCardCtrl.interested"
 															benevole="benevole" intervention="intervention"
 															click-for-details-avatar
@@ -129,5 +130,5 @@
 			</md-card>
 
 		</md-card-content>
-	</form>	
+	</form>
 </md-card>

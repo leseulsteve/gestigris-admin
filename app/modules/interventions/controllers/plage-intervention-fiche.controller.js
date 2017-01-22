@@ -5,13 +5,18 @@ angular.module('interventions').controller('PlageFicheController',
 
     var ctrl = this;
 
+    var unwatch = $scope.$watch('plage', function (plage) {
+      if (plage) {
+        plage.getInterventions().then(function (interventions) {
+          ctrl.interventions = interventions;
+        });
+        unwatch();
+      }
+    });
+
     function populatePlage(plage) {
       plage.getConversation().then(function (conversation) {
         ctrl.conversation = conversation;
-      });
-
-      plage.getEtablissement().then(function (etablissement) {
-        ctrl.etablissement = etablissement;
       });
 
       return Intervention.findByPlageId(plage._id).then(function (interventions) {
@@ -22,9 +27,5 @@ angular.module('interventions').controller('PlageFicheController',
     populatePlage($scope.plage).then(function () {
       ctrl.plage = $scope.plage;
     });
-
-    ctrl.close = function () {
-      $state.go('home');
-    };
 
   });

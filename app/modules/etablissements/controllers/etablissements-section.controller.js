@@ -53,15 +53,15 @@ angular.module('etablissements').controller('EtablissementsSectionController',
       });
     });
 
-    var selectedBenevole = _.find(ctrl.etablissements, ['_id', $stateParams.etablissementId]);
-    if (selectedBenevole) {
-      showEtablissement(selectedBenevole);
-    } else {
-      $state.go('etablissements.fiche', {
-        etablissementId: _.first(ctrl.etablissements)._id
-      }, {
-        notify: false
-      });
-      showEtablissement(_.first(ctrl.etablissements));
+    var selectedEtablissement = _.find(ctrl.etablissements, ['_id', $stateParams.etablissementId]);
+    if (selectedEtablissement) {
+      return showEtablissement(selectedEtablissement);
     }
+    $state.go('etablissements.fiche', {
+      etablissementId: _.first(ctrl.etablissements)._id
+    }, {
+      notify: false
+    });
+    showEtablissement(_.first(ctrl.etablissements));
+
   });

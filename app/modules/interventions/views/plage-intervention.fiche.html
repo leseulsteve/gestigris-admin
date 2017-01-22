@@ -1,11 +1,11 @@
-<div layout="column" flex>
-		
+<md-card layout="column" flex>
+
 	<div layout="column" layout-padding class="fiche-header">
 		<div layout="row">
 			<span flex></span>
-			<md-button class="md-icon-button" ng-click="plageFicheCtrl.close()">
-				<md-icon md-svg-icon="navigation:close"></md-icon>
-				<md-tooltip>Fermer</md-tooltip>
+			<md-button class="md-icon-button" ng-click="benevoleCardCtrl.deleteBenevole($event, benevole)" ng-disabled="true">
+				<md-icon md-svg-icon="action:delete"></md-icon>
+				<md-tooltip>Supprimer</md-tooltip>
 			</md-button>
 		</div>
 		<span flex></span>
@@ -16,22 +16,21 @@
 			</div>
 		</div>
 	</div>
-	<md-content layout="column" flex style="overflow:visible">
 
-		<md-tabs layout-fill class="custom-tabs md-accent">
-      <md-tab layout-fill>
-        <md-tab-label>Interventions</md-tab-label>
+	<div layout="column" flex>
+
+		<md-tabs flex class="md-accent">
+      <md-tab label="Interventions" layout-fill>
         <md-tab-body>
-        	<md-content flex class="layout-bg"> 
-        		<intervention-card class="plage-card"
-                               ng-repeat="intervention in plageFicheCtrl.interventions">
-            </intervention-card>
-        	</md-content>
+					<md-content flex class="layout-bg">
+						<intervention-card class="plage-card"
+															 ng-repeat="intervention in plageFicheCtrl.interventions">
+						</intervention-card>
+					</md-content>
         </md-tab-body>
       </md-tab>
-      <md-tab>
-        <md-tab-label>Conversation</md-tab-label>
-        <md-tab-body>
+    <!--  <md-tab label="Conversation" layout-fill>
+				<md-tab-body>
           <div class="layout-bg" layout="column" flex>
         		<md-card class="plage-card" layout="column" flex>
         			<md-card-title layout="column" style="max-height:155px;height:155px;padding-bottom:0px">
@@ -51,8 +50,7 @@
           </div>
         </md-tab-body>
       </md-tab>
-      <md-tab>
-        <md-tab-label>Infos</md-tab-label>
+			<md-tab label="Infos" layout-fill>
         <md-tab-body>
         	<md-content flex class="layout-bg">
         		<md-card class="plage-card">
@@ -83,7 +81,8 @@
             </etablissement-card>
 		  		</md-content>
         </md-tab-body>
-      </md-tab>
+      </md-tab>-->
     </md-tabs>
-    </md-content>
-	</div>
+  </div>
+
+</md-card>

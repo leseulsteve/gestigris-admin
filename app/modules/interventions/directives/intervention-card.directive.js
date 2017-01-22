@@ -9,9 +9,7 @@ angular.module('interventions').directive('interventionCard',
       controller: 'InterventionCardController',
       controllerAs: 'interventionCardCtrl',
       link: function (scope, element) {
-        if (scope.intervention.isBooked()) {
-          element.addClass('booked');
-        }
+        element.toggleClass('booked', scope.intervention.isBooked());
       }
     };
   });

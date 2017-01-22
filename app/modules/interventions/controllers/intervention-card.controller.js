@@ -5,12 +5,14 @@ angular.module('interventions').controller('InterventionCardController',
 
     var ctrl = this;
 
-    ctrl.start = new Date($scope.intervention.date.start);
+    // Initialisation...
+
+    ctrl.start = new Date($scope.intervention.date.start.seconds(0).milliseconds(0));
     ctrl.setStartDate = function () {
       $scope.intervention.date.start = new Moment(ctrl.start);
       $scope.showStart = false;
     };
-    ctrl.end = new Date($scope.intervention.date.end);
+    ctrl.end = new Date($scope.intervention.date.end.seconds(0).milliseconds(0));
     ctrl.setEndDate = function () {
       $scope.intervention.date.end = new Moment(ctrl.end);
       $scope.showEnd = false;
@@ -28,6 +30,7 @@ angular.module('interventions').controller('InterventionCardController',
       });
     });
 
+    // Tags
     ctrl.chipSeparatorKeys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA, 186];
 
     ctrl.transformChip = function (chip) {
@@ -43,19 +46,19 @@ angular.module('interventions').controller('InterventionCardController',
       });
     };
 
-    ctrl.dropped = function (item) {
+    // Dragon drop
+
+    ctrl.droppedInInterested = function (item) {
+      console.log(item);
       return new Benevole(item);
     };
 
     ctrl.droppedInParticipants = function (item) {
 
-      var wasntInParticipants = _.isUndefined(_.find(ctrl.participants, function (participant) {
-        return participant._id === item._id;
-      }));
-
       var benevole = new Benevole(item);
 
-      if (wasntInParticipants) {
+      if (_.isUndefined(_.find(ctrl.participants, ['_id', item._id]))) {
+
         $scope.intervention.addParticipant(benevole).catch(function () {
           _.pull(ctrl.participants, benevole);
           ctrl.interested.splice(_.sortedIndexBy(ctrl.interested, benevole, function (benevole) {
@@ -67,13 +70,13 @@ angular.module('interventions').controller('InterventionCardController',
       return benevole;
     };
 
-    ctrl.toogleGarbage = function (value) {
-      console.log(value);
-      $scope.showGarbage = value;
+    ctrl.droppedInGargabe = function (item) {
+      $scope.intervention.removeBenevoleFromParticipants(item);
+      return true;
     };
 
-    ctrl.removeParticipant = function ($event) {
-      console.log($event);
+    ctrl.toogleGarbage = function (value) {
+      $scope.showGarbage = value;
     };
 
     var addParticipantDialog = new Dialog({
@@ -92,9 +95,5 @@ angular.module('interventions').controller('InterventionCardController',
         });
       });
     };
-
-    $scope.$on('$destroy', function () {
-      console.log('SAVE PLAGE');
-    });
 
   });
