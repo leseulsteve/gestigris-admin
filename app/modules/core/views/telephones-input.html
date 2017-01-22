@@ -1,0 +1,30 @@
+<div layout="column">
+  <div layout="row" flex layout-align="start center">
+    <h4>Téléphones</h4>
+    <md-button class="md-icon-button" ng-click="telephones.push({})">
+      <md-icon md-svg-icon="content:add"></md-icon>
+    </md-button>
+  </div>
+  <div layout="row" flex ng-repeat="telephone in telephones" class="no-margin">
+    <md-input-container class="md-block" flex="60">
+      <input name="telephone"
+             ng-model="telephone.no"
+             ng-model-options="{ updateOn: 'blur' }"
+             ng-change="ngChange()"
+             ui-mask="999-999-9999"
+             ng-disabled="ngDisabled">
+    </md-input-container>
+    <span flex="5"></span>
+    <md-input-container class="md-block" flex="20">
+      <label>Détails</label>
+      <input name="telephone"
+             ng-model="telephone.description"
+             ng-model-options="{ updateOn: 'blur' }"
+             ng-change="ngChange()"
+             ng-disabled="ngDisabled">
+    </md-input-container>
+    <md-button class="md-icon-button" ng-click="telephoneInputCtrl.removePhone($index)">
+      <md-icon md-svg-icon="content:remove"></md-icon>
+    </md-button>
+  </div>
+</div>
