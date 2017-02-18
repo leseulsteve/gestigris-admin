@@ -28,7 +28,23 @@
 
 	    <span flex></span>
 
-	    <md-icon md-svg-icon="action:done"></md-icon>
+	    <md-icon class="status-icon" md-svg-icon="action:done"></md-icon>
+
+			<md-menu md-position-mode="target-right target">
+        <md-button aria-label="Options" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+          <md-icon md-menu-origin md-svg-icon="navigation:more_vert"></md-icon>
+        </md-button>
+        <md-menu-content width="4">
+          <md-menu-item>
+            <md-button ng-click="interventionCardCtrl.removeIntervention($event, $index, intervention)">
+                <div layout="row" flex>
+                  <p flex>Supression</p>
+                  <md-icon md-menu-align-target md-svg-icon="action:delete" style="margin: auto 3px auto 0;"></md-icon>
+                </div>
+            </md-button>
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
 
 	  </md-card-title>
 
@@ -81,7 +97,7 @@
 		        		<md-button class="md-fab md-mini" aria-label="Suppression bénévole"
 		        							 ng-show="showGarbage" id="garbage"
 													 ng-mouseover="interventionCardCtrl.removeParticipant()">
-		          		<md-icon md-svg-icon="action:delete" dnd-list="[]" dnd-drop="interventionCardCtrl.droppedInGargabe(item)"></md-icon>
+		          		<md-icon md-svg-icon="action:delete" dnd-list="[]" dnd-drop="interventionCardCtrl.droppedInGarbage(item)"></md-icon>
 		        		</md-button>
 		        		<md-button class="md-fab md-mini" aria-label="Ajout bénévole"
 					    						 ng-click="interventionCardCtrl.addParticipant($event)">

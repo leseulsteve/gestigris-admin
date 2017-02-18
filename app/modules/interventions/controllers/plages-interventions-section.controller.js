@@ -7,8 +7,6 @@ angular.module('interventions').controller('PlagesInterventionsSectionController
 
     ctrl.plages = plages;
 
-    console.log(plages);
-
     function showPlage(plage) {
       if (_.isUndefined($scope.plage) || plage._id !== $scope.plage._id) {
 

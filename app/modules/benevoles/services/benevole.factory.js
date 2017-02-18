@@ -29,7 +29,7 @@ angular.module('benevoles').factory('Benevole',
     };
 
     Benevole.search = function (term) {
-      return this.find().then(function (benevoles) {
+      return Benevole.find().then(function (benevoles) {
         return _.filter(benevoles, function (benevole) {
           return _.includes(benevole.toString().toLowerCase(), term.toLowerCase());
         });

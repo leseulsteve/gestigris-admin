@@ -28,4 +28,25 @@ angular.module('interventions').controller('PlageFicheController',
       ctrl.plage = $scope.plage;
     });
 
+    ctrl.addIntervention = function () {
+      var existingIntervention = _.first(ctrl.interventions);
+      Intervention.create(_.assign({
+        date: {
+          start: {
+            type: new Date()
+          },
+          end: {
+            type: new Date()
+          }
+        },
+        plage: ctrl.plage._id
+      }, _.omit(existingIntervention, ['createdAt', 'updatedAt', '_id']))).then(function (intervention) {
+        ctrl.interventions.unshift(intervention);
+      });
+    };
+
+    ctrl.removeIntervention = function ($index) {
+      ctrl.interventions.splice($index, 1);
+    };
+
   });

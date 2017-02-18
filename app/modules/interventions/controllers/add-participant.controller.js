@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module('interventions').controller('AddParticipantController',
-  function ($scope, Benevole, benevoleConstants) {
+  function ($scope, Benevole, BENEVOLES) {
 
     var ctrl = this;
 
-    ctrl.icon = benevoleConstants.USER_ICON_NAME;
+    ctrl.icon = BENEVOLES.ICONS.BENEVOLE;
 
     $scope.message = {};
 

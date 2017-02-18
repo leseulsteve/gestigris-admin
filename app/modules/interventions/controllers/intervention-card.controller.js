@@ -1,9 +1,10 @@
 'use strict';
 
 angular.module('interventions').controller('InterventionCardController',
-  function ($scope, $mdConstant, InterventionTag, Benevole, Moment, Dialog) {
+  function ($scope, $element, $mdConstant, InterventionTag, Benevole, Moment, Dialog, RemoveInterventionDialog) {
 
-    var ctrl = this;
+    var ctrl = this,
+      plageInterventionFicheCtrl = $element.controller('plageInterventionFiche');
 
     // Initialisation...
 
@@ -49,8 +50,9 @@ angular.module('interventions').controller('InterventionCardController',
     // Dragon drop
 
     ctrl.droppedInInterested = function (item) {
-      console.log(item);
-      return new Benevole(item);
+      var benevole = new Benevole(item);
+      $scope.intervention.addInterested(benevole);
+      return benevole;
     };
 
     ctrl.droppedInParticipants = function (item) {
@@ -70,7 +72,7 @@ angular.module('interventions').controller('InterventionCardController',
       return benevole;
     };
 
-    ctrl.droppedInGargabe = function (item) {
+    ctrl.droppedInGarbage = function (item) {
       $scope.intervention.removeBenevoleFromParticipants(item);
       return true;
     };
@@ -93,6 +95,14 @@ angular.module('interventions').controller('InterventionCardController',
         $scope.intervention.addParticipant(benevole).catch(function () {
           _.pull(ctrl.participants, benevole);
         });
+      });
+    };
+
+    ctrl.removeIntervention = function ($event, $index, intervention) {
+      RemoveInterventionDialog.show($event, {
+        intervention: intervention
+      }).then(function () {
+        plageInterventionFicheCtrl.removeIntervention($index);
       });
     };
 

@@ -1,0 +1,28 @@
+<md-dialog aria-label="Suppression d'une intervention" style="width:500px">
+  <form name="form" novalidate ng-submit="removeInterventionDialogCtrl.remove(form, reason)">
+    <md-dialog-content>
+      <div class="md-dialog-content">
+
+        <h3>Suppression de {{ removeInterventionDialogCtrl.intervention.toString() }}</h3>
+
+        <md-input-container class="md-block">
+          <label>Raison</label>
+          <textarea name="reason" ng-model="reason" rows="5" required></textarea>
+          <div class="hint">Sera envoyé aux bénévoles</div>
+          <div ng-messages="form.reason.$error" ng-if="!showHints">
+            <div ng-message="required">Ce champ est requis.</div>
+          </div>
+        </md-input-container>
+
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-button type="button" ng-click="removeInterventionDialogCtrl.dialog.cancel()">
+       annuler
+      </md-button>
+      <md-button type="submit" class="md-primary">
+        ajouter
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

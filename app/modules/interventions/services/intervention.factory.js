@@ -33,13 +33,72 @@ angular.module('interventions').factory('Intervention',
       });
     };
 
-    ///
+    Intervention.prototype.addInterested = function (benevole) {
+      var demandeParticipation = _.find(this.demandesParticipations, ['benevole', benevole._id]);
+
+      if (demandeParticipation) {
+        return _.assign(demandeParticipation, {
+          accepted: false
+        }).save().then(function () {
+          return benevole;
+        });
+      }
+
+      return DemandeParticipation.create({
+        benevole: benevole._id,
+        intervention: this._id,
+      }).then(function () {
+        return benevole;
+      });
+    };
+
+    Intervention.prototype.addParticipant = function (benevole) {
+
+      var that = this;
+
+      var toast = $mdToast.simple()
+        .textContent('Demande de confirmation envoyé à ' + benevole.toString() + '!')
+        .action('annuler')
+        .highlightAction(true);
+
+      return $mdToast.show(toast).then(function (response) {
+
+        if (_.isUndefined(response)) {
+          var demandeParticipation = _.find(that.demandesParticipations, ['benevole', benevole._id]);
+
+          // Était déjà intéressé.
+          if (demandeParticipation) {
+            return _.assign(demandeParticipation, {
+              accepted: true
+            }).save().then(function () {
+              return benevole;
+            });
+          }
+
+          // N'était pas intéressé.
+          return DemandeParticipation.create({
+            benevole: benevole._id,
+            intervention: that._id,
+            accepted: true
+          }).then(function () {
+            return benevole;
+          });
+        }
+
+        // Changer d'idée.
+        if (response === 'ok') {
+          return $q.reject();
+        }
+      });
+    };
 
     Intervention.prototype.removeBenevoleFromParticipants = function (benevole) {
       benevole = benevole;
       return $q.when();
-      //return _.find(this.demandesParticipations, 'benevole', benevole._id).remove();
+      //return _.find(this.demandesParticipations, ['benevole', benevole._id]).remove();
     };
+
+    ///
 
     Intervention.prototype.isBooked = function () {
       return true;
@@ -66,21 +125,6 @@ angular.module('interventions').factory('Intervention',
 
     Intervention.prototype.getDateRange = function () {
       return this.date;
-    };
-
-    Intervention.prototype.addParticipant = function (benevole) {
-      var deffered = $q.defer();
-
-      var toast = $mdToast.simple()
-        .textContent('Demande de confirmation envoyé à ' + benevole.toString() + '!')
-        .action('annuler')
-        .highlightAction(true);
-
-      $mdToast.show(toast).then(function (response) {
-        return response === 'ok' ? deffered.reject() : deffered.resolve(benevole);
-      });
-
-      return deffered.promise;
     };
 
     Intervention.prototype.isConfirmed = function (benevole) {
