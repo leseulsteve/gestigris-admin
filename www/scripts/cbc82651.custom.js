@@ -114,7 +114,7 @@ ApplicationConfiguration.registerModule('users');
 ;
 "use strict";
 
-angular.module('core')
+angular.module('gestigris-common')
 
 .constant('ENV', 'development')
 

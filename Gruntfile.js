@@ -217,7 +217,7 @@ module.exports = function (grunt) {
 
     ngconstant: {
       options: {
-        name: 'core',
+        name: 'gestigris-common',
         wrap: '"use strict";\n\n{%= __ngModule %}',
         space: '  ',
         dest: '<%= paths.app %>/config/constants.js',
