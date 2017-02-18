@@ -229,7 +229,18 @@ module.exports = function (grunt) {
           APP: {
             name: 'Administration',
             version: 'BETA-1'
-          }
+          },
+          API_URL: 'http://localhost:9011'
+        }
+      },
+      production: {
+        constants: {
+          ENV: 'development',
+          APP: {
+            name: 'Administration',
+            version: 'BETA-1'
+          },
+          API_URL: 'http://138.197.154.99:90/ws'
         }
       }
     },
@@ -562,6 +573,7 @@ module.exports = function (grunt) {
     'clean:dist',
     'concurrent:dist',
     'autoprefixer:dist',
+    'ngconstant:production',
     'inject:prod',
     'useminPrepare',
     'concat',
