@@ -2,26 +2,65 @@
 
 	<div layout="row" flex>
 
-		<md-card layout="column" flex="30" flex-gt-lg="20" class="card-list">
+		<div layout="column" flex="30" flex-gt-lg="20">
 
-			<md-content layout="column" flex>
+			<md-card layout="column" style="display:block">
 
-				<md-list flex layout="column">
-					<md-list-item class="md-2-line" ui-sref-active="active"
-												ng-repeat="item in plagesInterventionsSectionCtrl.plages"
-												ng-click="undefined">
-			      <div class="md-list-item-text" ui-sref="interventions.fiche({ plageId: item._id })">
-			        <h3>{{ item.etablissement.toString() }}</h3>
-			        <p>{{ item.date.format('dddd DD MMMM') }} </p>
-			      </div>
-						<md-icon md-svg-icon="action:done"></md-icon>
-			    <md-divider ng-if="!$last"></md-divider>
-			    </md-list-item>
-		    </md-list>
+				<md-card-content>
 
-			</md-content>
+					<div layout="row" style="height:50px">
+						<div layout="column" flex style="position:relative">
+	    				<label class="md-caption">De</label>
+	    				<md-datepicker style="position:absolute;left:-18px;top:14px;"
+														 ng-model="search.date.start"
+													   ng-change="plagesInterventionsSectionCtrl.updateSearch(search)">
+							</md-datepicker>
+						</div>
+						<div layout="column" flex style="position:relative">
+	    				<label class="md-caption">À</label>
+							<md-datepicker style="position:absolute;left:-21px;top:14px;padding-right:0px;"
+														 ng-model="search.date.end"
+														 ng-change="plagesInterventionsSectionCtrl.updateSearch(search)">
+							</md-datepicker>
+						</div>
+					</div>
 
-		</md-card>
+					<md-input-container md-no-float class="md-icon-float md-block no-errors-spacer">
+						<md-icon md-svg-icon="action:search"></md-icon>
+        		<input placeholder="recherche..."
+									 ng-model="search.etablissementName"
+									 ng-model-options="{ debounce: PARAMS.DEBOUNCE_TIME }"
+									 ng-change="plagesInterventionsSectionCtrl.updateSearch(search)">
+      		</md-input-container>
+
+				</md-card-content>
+
+
+
+			</md-card>
+
+			<md-card layout="column" class="card-list">
+
+				<md-content layout="column" flex>
+
+					<md-list flex layout="column">
+						<md-list-item class="md-2-line" ui-sref-active="active"
+													ng-repeat="item in plagesInterventionsSectionCtrl.plages"
+													ng-click="undefined">
+				      <div class="md-list-item-text" ui-sref="interventions.fiche({ plageId: item._id })">
+				        <h3>{{ item.etablissement.toString() }}</h3>
+				        <p>{{ item.date.format('dddd DD MMMM') }} </p>
+				      </div>
+							<md-icon md-svg-icon="action:done"></md-icon>
+				    <md-divider ng-if="!$last"></md-divider>
+				    </md-list-item>
+			    </md-list>
+
+				</md-content>
+
+			</md-card>
+
+		</div>
 
 		<div flex="70" flex-gt-lg="80" layout="column">
 

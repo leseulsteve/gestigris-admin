@@ -27,9 +27,7 @@ angular.module('benevoles').config(
 
     RightPanelProvider.register({
       panelName: 'benevole',
-      templateUrl: 'modules/benevoles/views/benevole.fiche.html',
-      controller: 'BenevoleFicheController',
-      controllerAs: 'benevoleFicheCtrl',
+      template: '<benevole-card benevole="benevole"></benevole-card>',
       itemName: 'benevole'
     });
 

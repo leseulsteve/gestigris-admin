@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('interventions').controller('PlageFicheController',
-  function ($scope, $q, $state, PlageIntervention, Intervention) {
+  function ($scope, $q, $state, Toast, PlageIntervention, Intervention) {
 
     var ctrl = this;
 
@@ -26,6 +26,26 @@ angular.module('interventions').controller('PlageFicheController',
 
     populatePlage($scope.plage).then(function () {
       ctrl.plage = $scope.plage;
+    });
+
+    ctrl.saveInterventions = function (showToast) {
+      $q.all(_.map(ctrl.interventions, function (intervention) {
+        return intervention.save().then(function (intervention) {
+          return intervention.tags;
+        });
+      })).then(function (tags) {
+        _.assign(ctrl.plage, {
+          tags: _.uniq(_.flatten(tags))
+        }).save().then(function () {
+          if (showToast) {
+            Toast.show('Sauvegardé!');
+          }
+        });
+      });
+    };
+
+    $scope.$on('$destroy', function () {
+      ctrl.saveInterventions(false);
     });
 
     ctrl.addIntervention = function () {

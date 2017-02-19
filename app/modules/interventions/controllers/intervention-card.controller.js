@@ -6,7 +6,7 @@ angular.module('interventions').controller('InterventionCardController',
     var ctrl = this,
       plageInterventionFicheCtrl = $element.controller('plageInterventionFiche');
 
-    // Initialisation...
+    // Heures début et fin..
 
     ctrl.start = new Date($scope.intervention.date.start.seconds(0).milliseconds(0));
     ctrl.setStartDate = function () {
@@ -18,6 +18,8 @@ angular.module('interventions').controller('InterventionCardController',
       $scope.intervention.date.end = new Moment(ctrl.end);
       $scope.showEnd = false;
     };
+
+    // Set participants et intéressés
 
     $scope.intervention.getBenevoles('participants').then(function (benevoles) {
       ctrl.participants = _.sortBy(benevoles, function (benevole) {
@@ -32,18 +34,42 @@ angular.module('interventions').controller('InterventionCardController',
     });
 
     // Tags
+
     ctrl.chipSeparatorKeys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA, 186];
 
-    ctrl.transformChip = function (chip) {
-      return _.isObject(chip) ? chip : new InterventionTag({
-        description: chip,
-        isNew: true
-      });
+    InterventionTag.find({
+      _id: {
+        $in: $scope.intervention.tags
+      }
+    }).then(function (tags) {
+      ctrl.tags = tags;
+    });
+
+    ctrl.removeChip = function (chip) {
+      _.pull($scope.intervention.tags, chip._id);
     };
 
-    ctrl.searchTags = function (query) {
-      return InterventionTag.find(query).then(function (results) {
-        return _.differenceBy(results, $scope.intervention.tags, '_id');
+    ctrl.transformChip = function (chip) {
+
+      function assignTag(tag) {
+        $scope.intervention.tags.push(tag._id);
+      }
+
+      if (_.isString(chip)) {
+        var tag = new InterventionTag({
+          name: chip
+        });
+        tag.save().then(assignTag);
+        return tag;
+      }
+
+      assignTag(chip);
+      return chip;
+    };
+
+    ctrl.searchTags = function (params) {
+      return InterventionTag.searchByName(params).then(function (results) {
+        return _.differenceBy(results, ctrl.tags, '_id');
       });
     };
 

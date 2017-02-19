@@ -3,16 +3,16 @@
 angular.module('etablissements').config(
   function ($provide) {
 
-    $provide.decorator('Etablissement', function ($delegate, $rootScope) {
+    $provide.decorator('Etablissement', function ($delegate, $rootScope, SearchFieldQueryBuilder) {
 
       var Etablissement = $delegate;
 
       Etablissement.search = function (term) {
-        return this.find().then(function (etablissements) {
-          return _.filter(etablissements, function (etablissement) {
-            return _.includes(etablissement.toString().toLowerCase(), term.toLowerCase());
-          });
-        });
+        return Etablissement.searchByName(term);
+      };
+
+      Etablissement.searchByName = function (params) {
+        return Etablissement.find(SearchFieldQueryBuilder.build(params));
       };
 
       Etablissement.post('create', function (next) {

@@ -1,22 +1,24 @@
 'use strict';
 
 angular.module('interventions').config(
-  function (FabSpeedDialServiceProvider, INTERVENTIONS, SearchServiceProvider, EventServiceProvider) {
+  function (ToolbarMenuServiceProvider, FabSpeedDialServiceProvider, SearchServiceProvider, EventServiceProvider, INTERVENTIONS) {
+
+    ToolbarMenuServiceProvider.addItem({
+      title: 'Interventions',
+      icon: INTERVENTIONS.ICONS.PLAGE,
+      route: 'interventions'
+    });
 
     FabSpeedDialServiceProvider.addItem({
       tooltip: 'plage d\'intervention',
       icon: INTERVENTIONS.ICONS.PLAGE,
-      dialog: {
-        templateUrl: 'modules/interventions/views/nouvelle-plage-intervention.dialog.html',
-        controller: 'NouvellePlageInterventionController',
-        controllerAs: 'nouvellePlageCtrl'
-      }
+      dialog: INTERVENTIONS.DIALOGS.ADD_PLAGE
     });
 
     SearchServiceProvider.register({
       factory: 'PlageIntervention',
       type: 'plage d\'intervention',
-      icon: INTERVENTIONS.ICONS.PLAGE,
+      icon: INTERVENTIONS.ICONS.PLAGE
     });
 
     EventServiceProvider.register({

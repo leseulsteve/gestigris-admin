@@ -10,7 +10,9 @@ angular.module('navigation').provider('ToolbarMenuService',
       $get: function () {
         return {
           getItems: function () {
-            return items;
+            return _.sortBy(items, function (item) {
+              return _.deburr(item.title);
+            });
           }
         };
       }

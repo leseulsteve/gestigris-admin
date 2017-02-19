@@ -49,6 +49,12 @@ md-dialog.md-dialog-fullscreen {
   height: 680px;
 }
 
+md-input-container.no-errors-spacer {
+  .md-errors-spacer {
+    display: none;
+  }
+}
+
 .no-margin md-input-container {
   margin-top: 0;
   margin-bottom: 0;

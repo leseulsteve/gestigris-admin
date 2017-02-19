@@ -11,6 +11,29 @@ angular.module('interventions').factory('PlageIntervention',
       next();
     });
 
+    PlageIntervention.formatFilters = function (filters) {
+      var query = {};
+      if (filters.date) {
+        _.assign(query, {
+          date: {
+            $gte: filters.date.start,
+            $lte: filters.date.end
+          }
+        });
+      }
+      if (filters.etablissementName) {
+        return Etablissement.searchByName(filters.etablissementName).then(function (etablissements) {
+          return _.assign(query, {
+            etablissement: {
+              $in: _.map(etablissements, '_id')
+            }
+          });
+        });
+      } else {
+        return $q.when(query);
+      }
+    };
+
     PlageIntervention.prototype.getInterventions = function () {
       return Intervention.findByPlageId(this._id);
     };

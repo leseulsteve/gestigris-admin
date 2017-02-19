@@ -5,7 +5,7 @@ angular.module('conversations').config(
 
     ToolbarMenuServiceProvider.addItem({
       title: 'Messagerie',
-      icon: CONVERSATIONS.ICONS.CONVERSATIONS,
+      icon: CONVERSATIONS.ICONS.CONVERSATION,
       route: 'conversations'
     });
 

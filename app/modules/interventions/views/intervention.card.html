@@ -1,4 +1,4 @@
-<md-card>
+	<md-card>
 	<form name="interventionForm">
 	  <md-card-title>
 
@@ -7,10 +7,11 @@
 	    	<div class="value" ng-mouseover="showStart = true" ng-hide="showStart">
 	    		{{ intervention.getDateRange().start.format('H:mm') }}
 	    	</div>
-	    	<md-input-container ng-show="showStart" ng-mouseleave="interventionCardCtrl.setStartDate()"
-	    											layout="row" layout-align="start center">
-		    	<input type="time" step="60" aria-label="start" name="start"
-		    				 ng-model="interventionCardCtrl.start">
+	    	<md-input-container ng-show="showStart"
+	    											layout="row" layout-align="start center"
+														ng-mouseleave="interventionCardCtrl.setStartDate()">
+		    	<input type="time" step="60" aria-label="start"
+								 ng-model="interventionCardCtrl.start">
 	    	</md-input-container>
 
 	    	&nbsp-&nbsp
@@ -48,20 +49,21 @@
 
 	  </md-card-title>
 
-		<md-chips ng-model="intervention.tags" name="tags"
+		<md-chips ng-model="interventionCardCtrl.tags"
 							md-autocomplete-snap
 							md-separator-key="interventionCardCtrl.chipSeparatorKeys"
-	      			md-transform-chip="interventionCardCtrl.transformChip($chip)">
+	      			md-transform-chip="interventionCardCtrl.transformChip($chip)"
+							md-on-remove="interventionCardCtrl.removeChip($chip)">
 			<md-autocomplete md-selected-item="selectedItem"
 				          		 md-search-text="searchText"
 				          		 md-items="tag in interventionCardCtrl.searchTags(searchText)"
-				          		 md-item-text="tag.description"
+				          		 md-item-text="tag.name"
 				          		 placeholder="Ajout mot clef">
-				<span md-highlight-text="searchText">{{ tag.description }}</span>
+				<span md-highlight-text="searchText">{{ tag.toString() }}</span>
 			</md-autocomplete>
 	    <md-chip-template>
 	      <span>
-	        <strong>{{ $chip.description }}</strong>
+	        <strong>{{ $chip.toString() }}</strong>
 	      </span>
 	    </md-chip-template>
 	  </md-chips>
@@ -76,15 +78,9 @@
 						<div>lieu de rencontre:</div>
 					</div>
 					<div>
-						<hidden-input ng-model="intervention.local"
-												  name="local">
-						</hidden-input>
-						<hidden-input ng-model="intervention.responsableGroupe"
-													name="responsableGroupe">
-						</hidden-input>
-	    			<hidden-input ng-model="intervention.lieuRencontre"
-													name="lieuRencontre">
-						</hidden-input>
+						<hidden-input ng-model="intervention.local"></hidden-input>
+						<hidden-input ng-model="intervention.responsableGroupe"></hidden-input>
+	    			<hidden-input ng-model="intervention.lieuRencontre"></hidden-input>
 					</div>
 				</div>
 

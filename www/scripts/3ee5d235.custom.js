@@ -152,9 +152,7 @@ angular.module('benevoles').config(
 
     RightPanelProvider.register({
       panelName: 'benevole',
-      templateUrl: 'modules/benevoles/views/benevole.fiche.html',
-      controller: 'BenevoleFicheController',
-      controllerAs: 'benevoleFicheCtrl',
+      template: '<benevole-card benevole="benevole"></benevole-card>',
       itemName: 'benevole'
     });
 
@@ -240,7 +238,7 @@ angular.module('conversations').config(
 
     ToolbarMenuServiceProvider.addItem({
       title: 'Messagerie',
-      icon: CONVERSATIONS.ICONS.CONVERSATIONS,
+      icon: CONVERSATIONS.ICONS.CONVERSATION,
       route: 'conversations'
     });
 
@@ -308,8 +306,14 @@ angular.module('core').config(
 'use strict';
 
 angular.module('core').constant('PARAMS', {
-  MIN_LOADING_TIME: 700
+  MIN_LOADING_TIME: 700,
+  DEBOUNCE_TIME: 700
 });
+
+angular.module('core').run(
+  ['$rootScope', 'PARAMS', function ($rootScope, PARAMS) {
+    $rootScope.PARAMS = PARAMS;
+  }]);
 ;
 'use strict';
 
@@ -430,22 +434,24 @@ angular.module('etablissements').config(
 'use strict';
 
 angular.module('interventions').config(
-  ['FabSpeedDialServiceProvider', 'INTERVENTIONS', 'SearchServiceProvider', 'EventServiceProvider', function (FabSpeedDialServiceProvider, INTERVENTIONS, SearchServiceProvider, EventServiceProvider) {
+  ['ToolbarMenuServiceProvider', 'FabSpeedDialServiceProvider', 'SearchServiceProvider', 'EventServiceProvider', 'INTERVENTIONS', function (ToolbarMenuServiceProvider, FabSpeedDialServiceProvider, SearchServiceProvider, EventServiceProvider, INTERVENTIONS) {
+
+    ToolbarMenuServiceProvider.addItem({
+      title: 'Interventions',
+      icon: INTERVENTIONS.ICONS.PLAGE,
+      route: 'interventions'
+    });
 
     FabSpeedDialServiceProvider.addItem({
       tooltip: 'plage d\'intervention',
       icon: INTERVENTIONS.ICONS.PLAGE,
-      dialog: {
-        templateUrl: 'modules/interventions/views/nouvelle-plage-intervention.dialog.html',
-        controller: 'NouvellePlageInterventionController',
-        controllerAs: 'nouvellePlageCtrl'
-      }
+      dialog: INTERVENTIONS.DIALOGS.ADD_PLAGE
     });
 
     SearchServiceProvider.register({
       factory: 'PlageIntervention',
       type: 'plage d\'intervention',
-      icon: INTERVENTIONS.ICONS.PLAGE,
+      icon: INTERVENTIONS.ICONS.PLAGE
     });
 
     EventServiceProvider.register({
@@ -462,8 +468,20 @@ angular.module('interventions').config(
 angular.module('interventions').constant('INTERVENTIONS', {
   ICONS: {
     PLAGE: 'action:event'
+  },
+  DIALOGS: {
+    ADD_PLAGE: {
+      templateUrl: 'modules/interventions/views/nouvelle-plage-intervention.dialog.html',
+      controller: 'NouvellePlageInterventionController',
+      controllerAs: 'nouvellePlageCtrl'
+    }
   }
 });
+
+angular.module('interventions').run(
+  ['$rootScope', 'INTERVENTIONS', function ($rootScope, INTERVENTIONS) {
+    $rootScope.INTERVENTIONS = INTERVENTIONS;
+  }]);
 ;
 'use strict';
 
@@ -475,20 +493,26 @@ angular.module('interventions').config(
     state('interventions', {
       url: '/plage-interventions',
       template: '<ui-view layout="column" flex></ui-view>',
+      params: {
+        filters: null
+      },
       resolve: {
-        plages: ['$q', '$timeout', 'PlageIntervention', 'PARAMS', function ($q, $timeout, PlageIntervention, PARAMS) {
+        plages: ['$q', '$timeout', 'PlageIntervention', 'PARAMS', '$stateParams', function ($q, $timeout, PlageIntervention, PARAMS, $stateParams) {
           return $q.all([
             $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
-            PlageIntervention.find()
+            ($stateParams.filters ? PlageIntervention.formatFilters($stateParams.filters) : $q.when({})).then(function (query) {
+              return PlageIntervention.find(query);
+            })
           ]).then(function (results) {
             return _.last(results);
           });
         }]
       },
-      controller: ['$state', '$location', 'plages', function ($state, $location, plages) {
-        if ($location.path().split('/').length === 2) {
+      controller: ['$state', '$location', 'plages', '$stateParams', function ($state, $location, plages, $stateParams) {
+        if ($location.path().split('/').length === 2 && plages.length) {
           $state.go('interventions.fiche', {
-            plageId: _.first(plages)._id
+            plageId: _.first(plages)._id,
+            filters: $stateParams.filters
           });
         }
       }]
@@ -497,6 +521,9 @@ angular.module('interventions').config(
     state('interventions.fiche', {
       url: '/:plageId',
       title: 'Plages d\'interventions',
+      params: {
+        filters: null
+      },
       templateUrl: 'modules/interventions/views/plages-interventions.section.html',
       controller: 'PlagesInterventionsSectionController',
       controllerAs: 'plagesInterventionsSectionCtrl'
@@ -1041,6 +1068,28 @@ angular.module('core').provider('RightPanel',
 ;
 'use strict';
 
+angular.module('core').service('SearchFieldQueryBuilder',
+  function () {
+
+    function getRegex(term) {
+      return {
+        'searchField': {
+          $regex: '\\b' + _.deburr(term).toLowerCase() // \\b car l'expression doit représenter le début d'un mot
+        }
+      };
+    }
+
+    this.build = function (expression) {
+      var splittedSearchTermsString = expression.split(' ');
+
+      return splittedSearchTermsString.length === 1 ? getRegex(_.first(splittedSearchTermsString)) : {
+        $and: _.map(splittedSearchTermsString, getRegex)
+      };
+    };
+  });
+;
+'use strict';
+
 angular.module('core').service('Toast',
   ['$mdToast', function ($mdToast) {
 
@@ -1122,16 +1171,16 @@ angular.module('etablissements').factory('CommissionScolaire',
 angular.module('etablissements').config(
   ['$provide', function ($provide) {
 
-    $provide.decorator('Etablissement', ['$delegate', '$rootScope', function ($delegate, $rootScope) {
+    $provide.decorator('Etablissement', ['$delegate', '$rootScope', 'SearchFieldQueryBuilder', function ($delegate, $rootScope, SearchFieldQueryBuilder) {
 
       var Etablissement = $delegate;
 
       Etablissement.search = function (term) {
-        return this.find().then(function (etablissements) {
-          return _.filter(etablissements, function (etablissement) {
-            return _.includes(etablissement.toString().toLowerCase(), term.toLowerCase());
-          });
-        });
+        return Etablissement.searchByName(term);
+      };
+
+      Etablissement.searchByName = function (params) {
+        return Etablissement.find(SearchFieldQueryBuilder.build(params));
       };
 
       Etablissement.post('create', function (next) {
@@ -1323,34 +1372,16 @@ angular.module('interventions').factory('DemandeParticipation',
 'use strict';
 
 angular.module('interventions').factory('InterventionTag',
-  ['$q', function ($q) {
+  ['Schema', 'SearchFieldQueryBuilder', function (Schema, SearchFieldQueryBuilder) {
 
-    var id = 1;
-    var InterventionTag = function (params)  {
-      _.assign(this, params);
-      this._id = params._id || id++;
+    var InterventionTag = new Schema('intervention-tag');
+
+    InterventionTag.searchByName = function (params) {
+      return InterventionTag.find(SearchFieldQueryBuilder.build(params));
     };
 
-    var tags = _.map([{
-      description: 'secondaire 3'
-    }, {
-      description: 'anglophones'
-    }], function (params) {
-      return new InterventionTag(params);
-    });
-
-    InterventionTag.prototype.save = function () {
-      var deffered = $q.defer();
-      tags.push(this);
-      this.isNew = false;
-      deffered.resolve(this);
-      return deffered.promise;
-    };
-
-    InterventionTag.find = function () {
-      var deffered = $q.defer();
-      deffered.resolve(tags);
-      return deffered.promise;
+    InterventionTag.prototype.toString = function () {
+      return this.name;
     };
 
     return InterventionTag;
@@ -1526,6 +1557,29 @@ angular.module('interventions').factory('PlageIntervention',
       next();
     });
 
+    PlageIntervention.formatFilters = function (filters) {
+      var query = {};
+      if (filters.date) {
+        _.assign(query, {
+          date: {
+            $gte: filters.date.start,
+            $lte: filters.date.end
+          }
+        });
+      }
+      if (filters.etablissementName) {
+        return Etablissement.searchByName(filters.etablissementName).then(function (etablissements) {
+          return _.assign(query, {
+            etablissement: {
+              $in: _.map(etablissements, '_id')
+            }
+          });
+        });
+      } else {
+        return $q.when(query);
+      }
+    };
+
     PlageIntervention.prototype.getInterventions = function () {
       return Intervention.findByPlageId(this._id);
     };
@@ -1675,7 +1729,9 @@ angular.module('navigation').provider('ToolbarMenuService',
       $get: function () {
         return {
           getItems: function () {
-            return items;
+            return _.sortBy(items, function (item) {
+              return _.deburr(item.title);
+            });
           }
         };
       }
@@ -2275,18 +2331,28 @@ angular.module('core').directive('onLongTouch',
 'use strict';
 
 angular.module('core').directive('rightPanel',
-  ['$rootScope', '$controller', '$mdSidenav', function ($rootScope, $controller, $mdSidenav) {
+  ['$rootScope', '$controller', '$mdSidenav', '$templateCache', function ($rootScope, $controller, $mdSidenav, $templateCache) {
     return {
       restrict: 'E',
       templateUrl: 'modules/core/views/right-panel.html',
       link: function (scope) {
         $rootScope.$on('Right-Panel:show', function ($event, panel) {
+          if (panel.template) {
+            panel.templateUrl = 'right-panel-template.html';
+            $templateCache.put(panel.templateUrl, panel.template);
+          }
+
           scope.templateUrl = panel.templateUrl;
+
           scope[panel.itemName] = panel.item;
           scope.title = panel.item.toString();
-          scope[panel.controllerAs] = $controller(panel.controller, {
-            $scope: scope
-          });
+
+          if (panel.controller) {
+            scope[panel.controllerAs] = $controller(panel.controller, {
+              $scope: scope
+            });
+          }
+
           $mdSidenav('right-panel').toggle();
 
         });
@@ -2466,6 +2532,49 @@ angular.module('interventions').directive('interventionCard',
       link: function (scope, element) {
         element.toggleClass('booked', scope.intervention.isBooked());
       }
+    };
+  });
+;
+'use strict';
+
+angular.module('interventions').directive('interventionsDashboardCard',
+  function () {
+    return {
+      restrict: 'E',
+      templateUrl: 'modules/interventions/views/interventions.dashboard-card.html',
+      controllerAs: 'interventionsDashboardCardCtrl',
+      controller: ['PlageIntervention', 'Moment', '$state', 'Dialog', 'INTERVENTIONS', function (PlageIntervention, Moment, $state, Dialog, INTERVENTIONS) {
+
+        var ctrl = this,
+          now = new Moment().startOf('day');
+
+        ctrl.handleClick = function ($event) {
+          if (ctrl.nbInterventions) {
+            return $state.go('interventions', {
+              filters: {
+                date: {
+                  start: now.toDate()
+                }
+              }
+            });
+          }
+          var dialog = new Dialog(INTERVENTIONS.DIALOGS.ADD_PLAGE);
+          dialog.show($event).then(function (plage) {
+            ctrl.nbInterventions++;
+            $state.go('interventions.fiche', {
+              plageId: plage._id
+            });
+          });
+        };
+
+        PlageIntervention.count({
+          date: {
+            $gte: now
+          }
+        }).then(function (nb) {
+          ctrl.nbInterventions = nb;
+        });
+      }]
     };
   });
 ;
@@ -3353,7 +3462,7 @@ angular.module('interventions').controller('InterventionCardController',
     var ctrl = this,
       plageInterventionFicheCtrl = $element.controller('plageInterventionFiche');
 
-    // Initialisation...
+    // Heures début et fin..
 
     ctrl.start = new Date($scope.intervention.date.start.seconds(0).milliseconds(0));
     ctrl.setStartDate = function () {
@@ -3365,6 +3474,8 @@ angular.module('interventions').controller('InterventionCardController',
       $scope.intervention.date.end = new Moment(ctrl.end);
       $scope.showEnd = false;
     };
+
+    // Set participants et intéressés
 
     $scope.intervention.getBenevoles('participants').then(function (benevoles) {
       ctrl.participants = _.sortBy(benevoles, function (benevole) {
@@ -3379,18 +3490,42 @@ angular.module('interventions').controller('InterventionCardController',
     });
 
     // Tags
+
     ctrl.chipSeparatorKeys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA, 186];
 
-    ctrl.transformChip = function (chip) {
-      return _.isObject(chip) ? chip : new InterventionTag({
-        description: chip,
-        isNew: true
-      });
+    InterventionTag.find({
+      _id: {
+        $in: $scope.intervention.tags
+      }
+    }).then(function (tags) {
+      ctrl.tags = tags;
+    });
+
+    ctrl.removeChip = function (chip) {
+      _.pull($scope.intervention.tags, chip._id);
     };
 
-    ctrl.searchTags = function (query) {
-      return InterventionTag.find(query).then(function (results) {
-        return _.differenceBy(results, $scope.intervention.tags, '_id');
+    ctrl.transformChip = function (chip) {
+
+      function assignTag(tag) {
+        $scope.intervention.tags.push(tag._id);
+      }
+
+      if (_.isString(chip)) {
+        var tag = new InterventionTag({
+          name: chip
+        });
+        tag.save().then(assignTag);
+        return tag;
+      }
+
+      assignTag(chip);
+      return chip;
+    };
+
+    ctrl.searchTags = function (params) {
+      return InterventionTag.searchByName(params).then(function (results) {
+        return _.differenceBy(results, ctrl.tags, '_id');
       });
     };
 
@@ -3499,7 +3634,7 @@ angular.module('interventions').controller('NouvellePlageInterventionController'
 'use strict';
 
 angular.module('interventions').controller('PlageFicheController',
-  ['$scope', '$q', '$state', 'PlageIntervention', 'Intervention', function ($scope, $q, $state, PlageIntervention, Intervention) {
+  ['$scope', '$q', '$state', 'Toast', 'PlageIntervention', 'Intervention', function ($scope, $q, $state, Toast, PlageIntervention, Intervention) {
 
     var ctrl = this;
 
@@ -3524,6 +3659,26 @@ angular.module('interventions').controller('PlageFicheController',
 
     populatePlage($scope.plage).then(function () {
       ctrl.plage = $scope.plage;
+    });
+
+    ctrl.saveInterventions = function (showToast) {
+      $q.all(_.map(ctrl.interventions, function (intervention) {
+        return intervention.save().then(function (intervention) {
+          return intervention.tags;
+        });
+      })).then(function (tags) {
+        _.assign(ctrl.plage, {
+          tags: _.uniq(_.flatten(tags))
+        }).save().then(function () {
+          if (showToast) {
+            Toast.show('Sauvegardé!');
+          }
+        });
+      });
+    };
+
+    $scope.$on('$destroy', function () {
+      ctrl.saveInterventions(false);
     });
 
     ctrl.addIntervention = function () {
@@ -3594,6 +3749,20 @@ angular.module('interventions').controller('PlagesInterventionsSectionController
         });
       }
     }
+
+    $scope.search = $stateParams.filters;
+
+    ctrl.updateSearch = function (search) {
+      PlageIntervention.formatFilters(search).then(function (query) {
+        PlageIntervention.find(query).then(function (plages) {
+          ctrl.plages = plages;
+          var firstPlage = _.first(plages);
+          if (firstPlage && $scope.plage._id !== firstPlage._id) {
+            showPlage(firstPlage);
+          }
+        });
+      });
+    };
 
     var listeners = [];
 
@@ -3856,7 +4025,7 @@ angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('modules/core/views/right-panel.html',
-    "<md-sidenav class=\"md-sidenav-right md-whiteframe-4dp\" md-component-id=right-panel><md-toolbar class=md-theme-light><div class=md-toolbar-tools><md-button class=md-icon-button ng-click=closeSideNav() aria-label=Fermer><md-icon md-svg-icon=navigation:arrow_forward></md-icon></md-button><h1>{{ title }}</h1></div></md-toolbar><div layout=column flex><md-content flex ng-include=templateUrl></md-content></div></md-sidenav>"
+    "<md-sidenav class=\"md-sidenav-right md-whiteframe-4dp\" md-component-id=right-panel><md-toolbar class=md-theme-light><div class=md-toolbar-tools><md-button class=md-icon-button ng-click=closeSideNav() aria-label=Fermer><md-icon md-svg-icon=navigation:arrow_forward></md-icon></md-button><h1>{{ title }}</h1></div></md-toolbar><div layout=column flex><md-content layout=column flex ng-include=templateUrl></md-content></div></md-sidenav>"
   );
 
 
@@ -3866,7 +4035,7 @@ angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('modules/dashboard/views/dashboard.html',
-    "<md-content flex style=padding:8px class=layout-bg><md-grid-list md-cols-xs=2 md-cols-sm=4 md-cols-md=4 md-cols-gt-md=6 md-row-height=1:1 md-gutter=8px><md-grid-tile md-rowspan=2 md-colspan-xs=2 md-colspan-sm=4 md-colspan=2><mini-calendar><mini-calendar></mini-calendar></mini-calendar></md-grid-tile><md-grid-tile md-rowspan-xs=2 md-rowspan-sm=2 md-rowspan=2 md-colspan-xs=2 md-colspan-sm=4 md-colspan=2 md-colspan-sm=2><urgent-interventions-card></urgent-interventions-card></md-grid-tile><md-grid-tile><messages-dashboard-card></messages-dashboard-card></md-grid-tile><md-grid-tile><benevoles-dashboard-card></benevoles-dashboard-card></md-grid-tile><md-grid-tile md-colspan-xs=2 md-colspan-sm=2><etablissements-dashboard-card></etablissements-dashboard-card></md-grid-tile><md-grid-tile><observateurs-dashboard-card></observateurs-dashboard-card></md-grid-tile></md-grid-list></md-content>"
+    "<md-content flex style=padding:8px class=layout-bg><md-grid-list md-cols-xs=2 md-cols-sm=4 md-cols-md=4 md-cols-gt-md=6 md-row-height=1:1 md-gutter=8px><md-grid-tile><interventions-dashboard-card></interventions-dashboard-card></md-grid-tile><md-grid-tile><messages-dashboard-card></messages-dashboard-card></md-grid-tile><md-grid-tile><benevoles-dashboard-card></benevoles-dashboard-card></md-grid-tile><md-grid-tile md-colspan-xs=2 md-colspan-sm=2><etablissements-dashboard-card></etablissements-dashboard-card></md-grid-tile><md-grid-tile><observateurs-dashboard-card></observateurs-dashboard-card></md-grid-tile></md-grid-list></md-content>"
   );
 
 
@@ -3913,7 +4082,14 @@ angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('modules/interventions/views/intervention.card.html',
-    "<md-card><form name=interventionForm><md-card-title><div class=md-headline layout=row layout-align=\"start center\"><div class=value ng-mouseover=\"showStart = true\" ng-hide=showStart>{{ intervention.getDateRange().start.format('H:mm') }}</div><md-input-container ng-show=showStart ng-mouseleave=interventionCardCtrl.setStartDate() layout=row layout-align=\"start center\"><input type=time step=60 aria-label=start name=start ng-model=interventionCardCtrl.start></md-input-container>&nbsp-&nbsp<div class=value ng-mouseover=\"showEnd = true\" ng-hide=showEnd>{{ intervention.getDateRange().end.format('H:mm') }}</div><md-input-container ng-show=showEnd ng-mouseleave=interventionCardCtrl.setEndDate() layout=row layout-align=\"start center\"><input type=time step=60 aria-label=end name=end ng-model=interventionCardCtrl.end></md-input-container></div><span flex></span><md-icon class=status-icon md-svg-icon=action:done></md-icon><md-menu md-position-mode=\"target-right target\"><md-button aria-label=Options class=md-icon-button ng-click=$mdOpenMenu($event)><md-icon md-menu-origin md-svg-icon=navigation:more_vert></md-icon></md-button><md-menu-content width=4><md-menu-item><md-button ng-click=\"interventionCardCtrl.removeIntervention($event, $index, intervention)\"><div layout=row flex><p flex>Supression</p><md-icon md-menu-align-target md-svg-icon=action:delete style=\"margin: auto 3px auto 0\"></md-icon></div></md-button></md-menu-item></md-menu-content></md-menu></md-card-title><md-chips ng-model=intervention.tags name=tags md-autocomplete-snap md-separator-key=interventionCardCtrl.chipSeparatorKeys md-transform-chip=interventionCardCtrl.transformChip($chip)><md-autocomplete md-selected-item=selectedItem md-search-text=searchText md-items=\"tag in interventionCardCtrl.searchTags(searchText)\" md-item-text=tag.description placeholder=\"Ajout mot clef\"><span md-highlight-text=searchText>{{ tag.description }}</span></md-autocomplete><md-chip-template><span><strong>{{ $chip.description }}</strong></span></md-chip-template></md-chips><md-card-content layout=column layout-gt-xs=row><div layout=column flex-gt-xs=50><div class=hidden-input-group layout=row><div><div>local:</div><div>responsable:</div><div>lieu de rencontre:</div></div><div><hidden-input ng-model=intervention.local name=local></hidden-input><hidden-input ng-model=intervention.responsableGroupe name=responsableGroupe></hidden-input><hidden-input ng-model=intervention.lieuRencontre name=lieuRencontre></hidden-input></div></div><md-card><md-toolbar><div class=md-toolbar-tools><h2 class=md-subhead><div>Bénévoles participants</div></h2><span flex></span><div class=toolbar-fab-buttons><md-button class=\"md-fab md-mini\" aria-label=\"Suppression bénévole\" ng-show=showGarbage id=garbage ng-mouseover=interventionCardCtrl.removeParticipant()><md-icon md-svg-icon=action:delete dnd-list=[] dnd-drop=interventionCardCtrl.droppedInGarbage(item)></md-icon></md-button><md-button class=\"md-fab md-mini\" aria-label=\"Ajout bénévole\" ng-click=interventionCardCtrl.addParticipant($event)><md-icon md-svg-icon=content:add></md-icon></md-button></div></div></md-toolbar><div class=benevole-list layout=row layout-wrap layout-margin dnd-list=interventionCardCtrl.participants dnd-allowed-types=[intervention._id] dnd-drop=interventionCardCtrl.droppedInParticipants(item)><participant-avatar ng-repeat=\"benevole in interventionCardCtrl.participants\" benevole=benevole intervention=intervention click-for-details-avatar show-status dnd-dragstart=interventionCardCtrl.toogleGarbage(true) dnd-dragend=interventionCardCtrl.toogleGarbage(false) dnd-draggable=benevole dnd-type=intervention._id dnd-moved=\"interventionCardCtrl.participants.splice($index, 1)\" dnd-effect-allowed=move></participant-avatar></div></md-card></div><md-card flex-gt-xs=50><md-toolbar><div class=md-toolbar-tools><h2 class=md-subhead><div>Bénévoles intéressés</div></h2></div></md-toolbar><md-content class=benevole-list layout=row layout-wrap layout-margin dnd-list=interventionCardCtrl.interested dnd-allowed-types=[intervention._id] dnd-drop=interventionCardCtrl.droppedInInterested(item)><participant-avatar ng-repeat=\"benevole in interventionCardCtrl.interested\" benevole=benevole intervention=intervention click-for-details-avatar dnd-draggable=benevole dnd-type=intervention._id dnd-moved=\"interventionCardCtrl.interested.splice($index, 1)\" dnd-effect-allowed=move></participant-avatar></md-content></md-card></md-card-content></form></md-card>"
+    "<md-card><form name=interventionForm><md-card-title><div class=md-headline layout=row layout-align=\"start center\"><div class=value ng-mouseover=\"showStart = true\" ng-hide=showStart>{{ intervention.getDateRange().start.format('H:mm') }}</div><md-input-container ng-show=showStart layout=row layout-align=\"start center\" ng-mouseleave=interventionCardCtrl.setStartDate()><input type=time step=60 aria-label=start ng-model=interventionCardCtrl.start></md-input-container>&nbsp-&nbsp<div class=value ng-mouseover=\"showEnd = true\" ng-hide=showEnd>{{ intervention.getDateRange().end.format('H:mm') }}</div><md-input-container ng-show=showEnd ng-mouseleave=interventionCardCtrl.setEndDate() layout=row layout-align=\"start center\"><input type=time step=60 aria-label=end name=end ng-model=interventionCardCtrl.end></md-input-container></div><span flex></span><md-icon class=status-icon md-svg-icon=action:done></md-icon><md-menu md-position-mode=\"target-right target\"><md-button aria-label=Options class=md-icon-button ng-click=$mdOpenMenu($event)><md-icon md-menu-origin md-svg-icon=navigation:more_vert></md-icon></md-button><md-menu-content width=4><md-menu-item><md-button ng-click=\"interventionCardCtrl.removeIntervention($event, $index, intervention)\"><div layout=row flex><p flex>Supression</p><md-icon md-menu-align-target md-svg-icon=action:delete style=\"margin: auto 3px auto 0\"></md-icon></div></md-button></md-menu-item></md-menu-content></md-menu></md-card-title><md-chips ng-model=interventionCardCtrl.tags md-autocomplete-snap md-separator-key=interventionCardCtrl.chipSeparatorKeys md-transform-chip=interventionCardCtrl.transformChip($chip) md-on-remove=interventionCardCtrl.removeChip($chip)><md-autocomplete md-selected-item=selectedItem md-search-text=searchText md-items=\"tag in interventionCardCtrl.searchTags(searchText)\" md-item-text=tag.name placeholder=\"Ajout mot clef\"><span md-highlight-text=searchText>{{ tag.toString() }}</span></md-autocomplete><md-chip-template><span><strong>{{ $chip.toString() }}</strong></span></md-chip-template></md-chips><md-card-content layout=column layout-gt-xs=row><div layout=column flex-gt-xs=50><div class=hidden-input-group layout=row><div><div>local:</div><div>responsable:</div><div>lieu de rencontre:</div></div><div><hidden-input ng-model=intervention.local></hidden-input><hidden-input ng-model=intervention.responsableGroupe></hidden-input><hidden-input ng-model=intervention.lieuRencontre></hidden-input></div></div><md-card><md-toolbar><div class=md-toolbar-tools><h2 class=md-subhead><div>Bénévoles participants</div></h2><span flex></span><div class=toolbar-fab-buttons><md-button class=\"md-fab md-mini\" aria-label=\"Suppression bénévole\" ng-show=showGarbage id=garbage ng-mouseover=interventionCardCtrl.removeParticipant()><md-icon md-svg-icon=action:delete dnd-list=[] dnd-drop=interventionCardCtrl.droppedInGarbage(item)></md-icon></md-button><md-button class=\"md-fab md-mini\" aria-label=\"Ajout bénévole\" ng-click=interventionCardCtrl.addParticipant($event)><md-icon md-svg-icon=content:add></md-icon></md-button></div></div></md-toolbar><div class=benevole-list layout=row layout-wrap layout-margin dnd-list=interventionCardCtrl.participants dnd-allowed-types=[intervention._id] dnd-drop=interventionCardCtrl.droppedInParticipants(item)><participant-avatar ng-repeat=\"benevole in interventionCardCtrl.participants\" benevole=benevole intervention=intervention click-for-details-avatar show-status dnd-dragstart=interventionCardCtrl.toogleGarbage(true) dnd-dragend=interventionCardCtrl.toogleGarbage(false) dnd-draggable=benevole dnd-type=intervention._id dnd-moved=\"interventionCardCtrl.participants.splice($index, 1)\" dnd-effect-allowed=move></participant-avatar></div></md-card></div><md-card flex-gt-xs=50><md-toolbar><div class=md-toolbar-tools><h2 class=md-subhead><div>Bénévoles intéressés</div></h2></div></md-toolbar><md-content class=benevole-list layout=row layout-wrap layout-margin dnd-list=interventionCardCtrl.interested dnd-allowed-types=[intervention._id] dnd-drop=interventionCardCtrl.droppedInInterested(item)><participant-avatar ng-repeat=\"benevole in interventionCardCtrl.interested\" benevole=benevole intervention=intervention click-for-details-avatar dnd-draggable=benevole dnd-type=intervention._id dnd-moved=\"interventionCardCtrl.interested.splice($index, 1)\" dnd-effect-allowed=move></participant-avatar></md-content></md-card></md-card-content></form></md-card>"
+  );
+
+
+  $templateCache.put('modules/interventions/views/interventions.dashboard-card.html',
+    "<md-card ng-click=interventionsDashboardCardCtrl.handleClick($event)><md-card-content flex layout=column layout-align=\"center center\" class=text-center><md-icon flex style=\"height:50; width:50px\" md-svg-icon=\"{{ INTERVENTIONS.ICONS.PLAGE }}\"></md-icon><div flex><div class=md-display-1 ng-if=interventionsDashboardCardCtrl.nbInterventions>{{ interventionsDashboardCardCtrl.nbInterventions }}</div><ng-pluralize class=md-title count=interventionsDashboardCardCtrl.nbInterventions when=\"{'0': 'Ajouter une intervention',\n" +
+    "	                         'one': 'plage à venir',\n" +
+    "	                         'other': 'plages à venir'}\"></ng-pluralize></div></md-card-content></md-card>"
   );
 
 
@@ -3923,12 +4099,12 @@ angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('modules/interventions/views/plage-intervention.fiche.html',
-    "<md-card layout=column flex><div layout=column layout-padding class=fiche-header><div layout=row><span flex></span><md-button class=md-icon-button ng-click=plageFicheCtrl.addIntervention()><md-icon md-svg-icon=content:add></md-icon><md-tooltip>Ajout intervention</md-tooltip></md-button><md-button class=md-icon-button ng-click=\"benevoleCardCtrl.deleteBenevole($event, benevole)\" ng-disabled=true><md-icon md-svg-icon=action:delete></md-icon><md-tooltip>Supprimer</md-tooltip></md-button></div><span flex></span><div layout=row class=fiche-title-over-custom-tabs><div layout=column layout-align=\"center start\"><span class=md-title>{{ plageFicheCtrl.plage.etablissement.toString() }}</span> <span class=md-subhead>{{ plageFicheCtrl.plage.getCalendarDay() }}</span></div></div></div><div layout=column flex><md-tabs flex class=md-accent><md-tab label=Interventions layout-fill><md-tab-body><md-content flex class=layout-bg><intervention-card class=plage-card ng-repeat=\"intervention in plageFicheCtrl.interventions\"></intervention-card></md-content></md-tab-body></md-tab></md-tabs></div></md-card>"
+    "<md-card layout=column flex><div layout=column layout-padding class=fiche-header><div layout=row><span flex></span><md-button class=md-icon-button ng-click=plageFicheCtrl.addIntervention()><md-icon md-svg-icon=content:add></md-icon><md-tooltip>Ajout intervention</md-tooltip></md-button><md-button class=md-icon-button ng-show=plageFicheCtrl.interventions.length ng-click=plageFicheCtrl.saveInterventions(true)><md-icon md-svg-icon=content:save></md-icon><md-tooltip>Sauvegarde</md-tooltip></md-button><md-button class=md-icon-button ng-click=\"benevoleCardCtrl.deleteBenevole($event, benevole)\" ng-disabled=true><md-icon md-svg-icon=action:delete></md-icon><md-tooltip>Supprimer</md-tooltip></md-button></div><span flex></span><div layout=row class=fiche-title-over-custom-tabs><div layout=column layout-align=\"center start\"><span class=md-title>{{ plageFicheCtrl.plage.etablissement.toString() }}</span> <span class=md-subhead>{{ plageFicheCtrl.plage.getCalendarDay() }}</span></div></div></div><div layout=column flex><md-tabs flex class=md-accent><md-tab label=Interventions layout-fill><md-tab-body><md-content flex class=layout-bg><intervention-card class=plage-card ng-repeat=\"intervention in plageFicheCtrl.interventions\"></intervention-card></md-content></md-tab-body></md-tab></md-tabs></div></md-card>"
   );
 
 
   $templateCache.put('modules/interventions/views/plages-interventions.section.html',
-    "<div layout=column flex><div layout=row flex><md-card layout=column flex=30 flex-gt-lg=20 class=card-list><md-content layout=column flex><md-list flex layout=column><md-list-item class=md-2-line ui-sref-active=active ng-repeat=\"item in plagesInterventionsSectionCtrl.plages\" ng-click=undefined><div class=md-list-item-text ui-sref=\"interventions.fiche({ plageId: item._id })\"><h3>{{ item.etablissement.toString() }}</h3><p>{{ item.date.format('dddd DD MMMM') }}</p></div><md-icon md-svg-icon=action:done></md-icon><md-divider ng-if=!$last></md-divider></md-list-item></md-list></md-content></md-card><div flex=70 flex-gt-lg=80 layout=column><div layout=row flex layout-align=\"center center\" ng-hide=plage><md-progress-circular md-diameter=280 md-mode=indeterminate></md-progress-circular></div><plage-intervention-fiche ng-if=plage plage=plage></plage-intervention-fiche></div></div></div>"
+    "<div layout=column flex><div layout=row flex><div layout=column flex=30 flex-gt-lg=20><md-card layout=column style=display:block><md-card-content><div layout=row style=height:50px><div layout=column flex style=position:relative><label class=md-caption>De</label><md-datepicker style=position:absolute;left:-18px;top:14px ng-model=search.date.start ng-change=plagesInterventionsSectionCtrl.updateSearch(search)></md-datepicker></div><div layout=column flex style=position:relative><label class=md-caption>À</label><md-datepicker style=position:absolute;left:-21px;top:14px;padding-right:0px ng-model=search.date.end ng-change=plagesInterventionsSectionCtrl.updateSearch(search)></md-datepicker></div></div><md-input-container md-no-float class=\"md-icon-float md-block no-errors-spacer\"><md-icon md-svg-icon=action:search></md-icon><input placeholder=recherche... ng-model=search.etablissementName ng-model-options=\"{ debounce: PARAMS.DEBOUNCE_TIME }\" ng-change=plagesInterventionsSectionCtrl.updateSearch(search)></md-input-container></md-card-content></md-card><md-card layout=column class=card-list><md-content layout=column flex><md-list flex layout=column><md-list-item class=md-2-line ui-sref-active=active ng-repeat=\"item in plagesInterventionsSectionCtrl.plages\" ng-click=undefined><div class=md-list-item-text ui-sref=\"interventions.fiche({ plageId: item._id })\"><h3>{{ item.etablissement.toString() }}</h3><p>{{ item.date.format('dddd DD MMMM') }}</p></div><md-icon md-svg-icon=action:done></md-icon><md-divider ng-if=!$last></md-divider></md-list-item></md-list></md-content></md-card></div><div flex=70 flex-gt-lg=80 layout=column><div layout=row flex layout-align=\"center center\" ng-hide=plage><md-progress-circular md-diameter=280 md-mode=indeterminate></md-progress-circular></div><plage-intervention-fiche ng-if=plage plage=plage></plage-intervention-fiche></div></div></div>"
   );
 
 
