@@ -1547,9 +1547,14 @@ angular.module('interventions').factory('Intervention',
 'use strict';
 
 angular.module('interventions').factory('PlageIntervention',
-  ['$q', 'Schema', 'Moment', 'Conversation', 'Etablissement', 'Intervention', function ($q, Schema, Moment, Conversation, Etablissement, Intervention) {
+  ['$q', 'Schema', 'Moment', 'UserAuth', 'Conversation', 'Etablissement', 'Intervention', function ($q, Schema, Moment, UserAuth, Conversation, Etablissement, Intervention) {
 
     var PlageIntervention = new Schema('plage-intervention');
+
+    PlageIntervention.pre('create', function (next) {
+      this.createdBy = UserAuth.getCurrentUser().getFullName();
+      next();
+    });
 
     PlageIntervention.post('find', function (next) {
       this.date = new Moment(this.date);
@@ -2294,7 +2299,7 @@ angular.module('core').directive('mdTabAction',
         icon: '@'
       },
       template: '<md-button class="md-fab md-mini md-primary" aria-label="{{ tooltip }}"' +
-        'style="position:absolute;top:-28px;right:12px;">' +
+        'style="position:absolute;top:-28px;right:16px;">' +
         '<md-icon md-svg-icon="{{ icon }}"></md-icon>' +
         '<md-tooltip>{{ tooltip }}</md-tooltip>' +
         '</md-button>'
@@ -3593,39 +3598,33 @@ angular.module('interventions').controller('InterventionCardController',
 'use strict';
 
 angular.module('interventions').controller('NouvellePlageInterventionController',
-  ['Benevole', 'Message', '$mdToast', function (Benevole, Message, $mdToast) {
+  ['$state', 'Etablissement', 'Contact', 'PlageIntervention', function ($state, Etablissement, Contact, PlageIntervention) {
 
     var ctrl = this;
 
-    var toast = $mdToast.simple()
-      .action('annuler')
-      .textContent('Le message a été envoyé!');
+    Etablissement.find().then(function (etablissements) {
+      ctrl.etablissements = etablissements;
+    });
 
-    ctrl.message = {
-      destinataires: ctrl.receivers || []
-    };
-
-    ctrl.searchDestinataires = function (query) {
-      return Benevole.search(query).then(function (results) {
-        return _.difference(results, ctrl.message.destinataires);
+    ctrl.setContacts = function (etablissement) {
+      Contact.findByEtablissement(etablissement._id).then(function (contacts) {
+        ctrl.contacts = contacts;
       });
     };
 
     ctrl.cancel = ctrl.dialog.cancel;
 
-    ctrl.send = function (messageForm) {
+    ctrl.create = function (plageForm, plage) {
 
-      messageForm.destinataires.$setValidity('required', ctrl.message.destinataires.length > 0);
-
-      if (messageForm.$invalid) {
+      if (plageForm.$invalid) {
         return ctrl.dialog.shake();
       }
 
       ctrl.dialog.hide().then(function () {
-        $mdToast.show(toast).then(function (response) {
-          if (_.isUndefined(response)) {
-            Message.create(ctrl.message);
-          }
+        PlageIntervention.create(plage).then(function (newPlage) {
+          $state.go('interventions.fiche', {
+            plageId: newPlage._id
+          });
         });
       });
     };
@@ -3634,7 +3633,7 @@ angular.module('interventions').controller('NouvellePlageInterventionController'
 'use strict';
 
 angular.module('interventions').controller('PlageFicheController',
-  ['$scope', '$q', '$state', 'Toast', 'PlageIntervention', 'Intervention', function ($scope, $q, $state, Toast, PlageIntervention, Intervention) {
+  ['$scope', '$q', '$state', 'Moment', 'Toast', 'PlageIntervention', 'Intervention', function ($scope, $q, $state, Moment, Toast, PlageIntervention, Intervention) {
 
     var ctrl = this;
 
@@ -3648,6 +3647,9 @@ angular.module('interventions').controller('PlageFicheController',
     });
 
     function populatePlage(plage) {
+
+      plage.createdAt = new Moment(plage.createdAt);
+
       plage.getConversation().then(function (conversation) {
         ctrl.conversation = conversation;
       });
@@ -3682,41 +3684,19 @@ angular.module('interventions').controller('PlageFicheController',
     });
 
     ctrl.addIntervention = function () {
-      var existingIntervention = _.first(ctrl.interventions);
       Intervention.create(_.assign({
         date: {
-          start: {
-            type: new Date()
-          },
-          end: {
-            type: new Date()
-          }
+          start: new Date(),
+          end: new Date()
         },
         plage: ctrl.plage._id
-      }, _.omit(existingIntervention, ['createdAt', 'updatedAt', '_id']))).then(function (intervention) {
+      }, _.omit(_.first(ctrl.interventions), ['createdAt', 'updatedAt', '_id']))).then(function (intervention) {
         ctrl.interventions.unshift(intervention);
       });
     };
 
     ctrl.removeIntervention = function ($index) {
       ctrl.interventions.splice($index, 1);
-    };
-
-  }]);
-;
-'use strict';
-
-angular.module('interventions').controller('PlageInterventionController',
-  ['$scope', 'Intervention', function ($scope, Intervention) {
-
-    var ctrl = this;
-
-    Intervention.findByPlageId($scope.plage._id).then(function (interventions) {
-      ctrl.interventions = interventions;
-    });
-
-    ctrl.addIntervention = function () {
-      console.log('Adding intervention');
     };
 
   }]);
@@ -4082,7 +4062,7 @@ angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('modules/interventions/views/intervention.card.html',
-    "<md-card><form name=interventionForm><md-card-title><div class=md-headline layout=row layout-align=\"start center\"><div class=value ng-mouseover=\"showStart = true\" ng-hide=showStart>{{ intervention.getDateRange().start.format('H:mm') }}</div><md-input-container ng-show=showStart layout=row layout-align=\"start center\" ng-mouseleave=interventionCardCtrl.setStartDate()><input type=time step=60 aria-label=start ng-model=interventionCardCtrl.start></md-input-container>&nbsp-&nbsp<div class=value ng-mouseover=\"showEnd = true\" ng-hide=showEnd>{{ intervention.getDateRange().end.format('H:mm') }}</div><md-input-container ng-show=showEnd ng-mouseleave=interventionCardCtrl.setEndDate() layout=row layout-align=\"start center\"><input type=time step=60 aria-label=end name=end ng-model=interventionCardCtrl.end></md-input-container></div><span flex></span><md-icon class=status-icon md-svg-icon=action:done></md-icon><md-menu md-position-mode=\"target-right target\"><md-button aria-label=Options class=md-icon-button ng-click=$mdOpenMenu($event)><md-icon md-menu-origin md-svg-icon=navigation:more_vert></md-icon></md-button><md-menu-content width=4><md-menu-item><md-button ng-click=\"interventionCardCtrl.removeIntervention($event, $index, intervention)\"><div layout=row flex><p flex>Supression</p><md-icon md-menu-align-target md-svg-icon=action:delete style=\"margin: auto 3px auto 0\"></md-icon></div></md-button></md-menu-item></md-menu-content></md-menu></md-card-title><md-chips ng-model=interventionCardCtrl.tags md-autocomplete-snap md-separator-key=interventionCardCtrl.chipSeparatorKeys md-transform-chip=interventionCardCtrl.transformChip($chip) md-on-remove=interventionCardCtrl.removeChip($chip)><md-autocomplete md-selected-item=selectedItem md-search-text=searchText md-items=\"tag in interventionCardCtrl.searchTags(searchText)\" md-item-text=tag.name placeholder=\"Ajout mot clef\"><span md-highlight-text=searchText>{{ tag.toString() }}</span></md-autocomplete><md-chip-template><span><strong>{{ $chip.toString() }}</strong></span></md-chip-template></md-chips><md-card-content layout=column layout-gt-xs=row><div layout=column flex-gt-xs=50><div class=hidden-input-group layout=row><div><div>local:</div><div>responsable:</div><div>lieu de rencontre:</div></div><div><hidden-input ng-model=intervention.local></hidden-input><hidden-input ng-model=intervention.responsableGroupe></hidden-input><hidden-input ng-model=intervention.lieuRencontre></hidden-input></div></div><md-card><md-toolbar><div class=md-toolbar-tools><h2 class=md-subhead><div>Bénévoles participants</div></h2><span flex></span><div class=toolbar-fab-buttons><md-button class=\"md-fab md-mini\" aria-label=\"Suppression bénévole\" ng-show=showGarbage id=garbage ng-mouseover=interventionCardCtrl.removeParticipant()><md-icon md-svg-icon=action:delete dnd-list=[] dnd-drop=interventionCardCtrl.droppedInGarbage(item)></md-icon></md-button><md-button class=\"md-fab md-mini\" aria-label=\"Ajout bénévole\" ng-click=interventionCardCtrl.addParticipant($event)><md-icon md-svg-icon=content:add></md-icon></md-button></div></div></md-toolbar><div class=benevole-list layout=row layout-wrap layout-margin dnd-list=interventionCardCtrl.participants dnd-allowed-types=[intervention._id] dnd-drop=interventionCardCtrl.droppedInParticipants(item)><participant-avatar ng-repeat=\"benevole in interventionCardCtrl.participants\" benevole=benevole intervention=intervention click-for-details-avatar show-status dnd-dragstart=interventionCardCtrl.toogleGarbage(true) dnd-dragend=interventionCardCtrl.toogleGarbage(false) dnd-draggable=benevole dnd-type=intervention._id dnd-moved=\"interventionCardCtrl.participants.splice($index, 1)\" dnd-effect-allowed=move></participant-avatar></div></md-card></div><md-card flex-gt-xs=50><md-toolbar><div class=md-toolbar-tools><h2 class=md-subhead><div>Bénévoles intéressés</div></h2></div></md-toolbar><md-content class=benevole-list layout=row layout-wrap layout-margin dnd-list=interventionCardCtrl.interested dnd-allowed-types=[intervention._id] dnd-drop=interventionCardCtrl.droppedInInterested(item)><participant-avatar ng-repeat=\"benevole in interventionCardCtrl.interested\" benevole=benevole intervention=intervention click-for-details-avatar dnd-draggable=benevole dnd-type=intervention._id dnd-moved=\"interventionCardCtrl.interested.splice($index, 1)\" dnd-effect-allowed=move></participant-avatar></md-content></md-card></md-card-content></form></md-card>"
+    "<md-card><form name=interventionForm><md-card-title><div class=md-headline layout=row layout-align=\"start center\"><div class=value ng-mouseover=\"showStart = true\" ng-hide=showStart>{{ intervention.getDateRange().start.format('H:mm') }}</div><md-input-container ng-show=showStart layout=row layout-align=\"start center\" ng-mouseleave=interventionCardCtrl.setStartDate()><input type=time step=60 aria-label=start ng-model=interventionCardCtrl.start></md-input-container>&nbsp-&nbsp<div class=value ng-mouseover=\"showEnd = true\" ng-hide=showEnd>{{ intervention.getDateRange().end.format('H:mm') }}</div><md-input-container ng-show=showEnd ng-mouseleave=interventionCardCtrl.setEndDate() layout=row layout-align=\"start center\"><input type=time step=60 aria-label=end name=end ng-model=interventionCardCtrl.end></md-input-container></div><span flex></span><md-icon class=status-icon md-svg-icon=action:done></md-icon><md-button class=md-icon-button ng-click=\"binterventionCardCtrl.removeIntervention($event, $index, intervention)\" ng-disabled=true><md-icon md-svg-icon=action:delete></md-icon><md-tooltip>Supprimer</md-tooltip></md-button></md-card-title><md-chips ng-model=interventionCardCtrl.tags md-autocomplete-snap md-separator-key=interventionCardCtrl.chipSeparatorKeys md-transform-chip=interventionCardCtrl.transformChip($chip) md-on-remove=interventionCardCtrl.removeChip($chip)><md-autocomplete md-selected-item=selectedItem md-search-text=searchText md-items=\"tag in interventionCardCtrl.searchTags(searchText)\" md-item-text=tag.name placeholder=\"Ajout mot clef\"><span md-highlight-text=searchText>{{ tag.toString() }}</span></md-autocomplete><md-chip-template><span><strong>{{ $chip.toString() }}</strong></span></md-chip-template></md-chips><md-card-content layout=column layout-gt-xs=row><div layout=column flex-gt-xs=50><div class=hidden-input-group layout=row><div><div>local:</div><div>responsable:</div><div>lieu de rencontre:</div></div><div><hidden-input ng-model=intervention.local></hidden-input><hidden-input ng-model=intervention.responsableGroupe></hidden-input><hidden-input ng-model=intervention.lieuRencontre></hidden-input></div></div><md-card><md-toolbar><div class=md-toolbar-tools><h2 class=md-subhead><div>Bénévoles participants</div></h2><span flex></span><div class=toolbar-fab-buttons><md-button class=\"md-fab md-mini\" aria-label=\"Suppression bénévole\" ng-show=showGarbage id=garbage ng-mouseover=interventionCardCtrl.removeParticipant()><md-icon md-svg-icon=action:delete dnd-list=[] dnd-drop=interventionCardCtrl.droppedInGarbage(item)></md-icon></md-button><md-button class=\"md-fab md-mini\" aria-label=\"Ajout bénévole\" ng-click=interventionCardCtrl.addParticipant($event)><md-icon md-svg-icon=content:add></md-icon></md-button></div></div></md-toolbar><div class=benevole-list layout=row layout-wrap layout-margin dnd-list=interventionCardCtrl.participants dnd-allowed-types=[intervention._id] dnd-drop=interventionCardCtrl.droppedInParticipants(item)><participant-avatar ng-repeat=\"benevole in interventionCardCtrl.participants\" benevole=benevole intervention=intervention click-for-details-avatar show-status dnd-dragstart=interventionCardCtrl.toogleGarbage(true) dnd-dragend=interventionCardCtrl.toogleGarbage(false) dnd-draggable=benevole dnd-type=intervention._id dnd-moved=\"interventionCardCtrl.participants.splice($index, 1)\" dnd-effect-allowed=move></participant-avatar></div></md-card></div><md-card flex-gt-xs=50><md-toolbar><div class=md-toolbar-tools><h2 class=md-subhead><div>Bénévoles intéressés</div></h2></div></md-toolbar><md-content class=benevole-list layout=row layout-wrap layout-margin dnd-list=interventionCardCtrl.interested dnd-allowed-types=[intervention._id] dnd-drop=interventionCardCtrl.droppedInInterested(item)><participant-avatar ng-repeat=\"benevole in interventionCardCtrl.interested\" benevole=benevole intervention=intervention click-for-details-avatar dnd-draggable=benevole dnd-type=intervention._id dnd-moved=\"interventionCardCtrl.interested.splice($index, 1)\" dnd-effect-allowed=move></participant-avatar></md-content></md-card></md-card-content></form></md-card>"
   );
 
 
@@ -4094,17 +4074,17 @@ angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('modules/interventions/views/nouvelle-plage-intervention.dialog.html',
-    "<md-dialog aria-label=\"Nouveau message\" style=width:800px><form novalidate name=messageForm ng-submit=nouveauMessageCtrl.send(messageForm)><md-toolbar><div class=md-toolbar-tools><h2>Nouveau message</h2><span flex></span><md-button class=md-icon-button ng-click=nouveauMessageCtrl.cancel()><md-icon md-svg-icon=navigation:close aria-label=\"Close dialog\"></md-icon></md-button></div></md-toolbar><md-dialog-content><div class=md-dialog-content><md-contact-chips ng-model=nouveauMessageCtrl.message.destinataires name=destinataires md-contacts=nouveauMessageCtrl.searchDestinataires($query) md-contact-name=fullname md-contact-image=avatar md-contact-email=email md-require-match=true md-highlight-flags=i placeholder=Destinataire(s)></md-contact-chips><div ng-messages=messageForm.destinataires.$error><div ng-message=required>requis.</div></div><md-input-container class=md-block><label>Sujet</label><input name=subject ng-model=nouveauMessageCtrl.message.subject required><div ng-messages=messageForm.subject.$error><div ng-message=required>requis.</div></div></md-input-container><md-input-container class=md-block><label>Message</label><textarea name=body ng-model=nouveauMessageCtrl.message.body rows=5 required></textarea><div ng-messages=messageForm.body.$error><div ng-message=required>requis.</div></div></md-input-container></div></md-dialog-content><md-dialog-actions layout=row><md-button type=button ng-click=nouveauMessageCtrl.cancel()>Annuler</md-button><md-button type=submit class=\"md-primary md-raised\" style=margin-right:20px>Envoyer</md-button></md-dialog-actions></form></md-dialog>"
+    "<md-dialog aria-label=\"Nouvelle plage d'intervention\" style=width:800px><form novalidate name=plageForm ng-submit=\"nouvellePlageCtrl.create(plageForm, plage)\"><md-toolbar><div class=md-toolbar-tools><h2>Nouvelle plage d'intervention</h2><span flex></span><md-button class=md-icon-button ng-click=nouvellePlageCtrl.cancel()><md-icon md-svg-icon=navigation:close aria-label=\"Close dialog\"></md-icon></md-button></div></md-toolbar><md-dialog-content><div layout=column class=md-dialog-content><md-datepicker name=date md-placeholder=Date ng-model=plage.date required><div ng-messages=plageForm.date.$error><div ng-message=required>requis.</div></div></md-datepicker><md-input-container flex=40><label>Établissement</label><md-select name=etablissement ng-model=plage.etablissement ng-change=nouvellePlageCtrl.setContacts(plage.etablissement) required><md-option ng-repeat=\"etablissement in nouvellePlageCtrl.etablissements\" ng-value=etablissement._id ng-selected=\"etablissement._id === plage.etablissement\">{{ etablissement.toString() }}</md-option></md-select><ng-messages for=plageForm.etablissement.$error><ng-message when=required>requis.</ng-message></ng-messages></md-input-container><md-input-container flex=40><label>Contact</label><md-select name=contact ng-model=plage.contact><md-option ng-repeat=\"contact in nouvellePlageCtrl.contacts\" ng-value=contact._id ng-selected=\"contact._id === plage.contact\">{{ contact.toString() }}</md-option></md-select></md-input-container></div></md-dialog-content><md-dialog-actions layout=row><md-button type=button ng-click=nouvellePlageCtrl.cancel()>Annuler</md-button><md-button type=submit class=\"md-primary md-raised\" style=margin-right:20px>Créer</md-button></md-dialog-actions></form></md-dialog>"
   );
 
 
   $templateCache.put('modules/interventions/views/plage-intervention.fiche.html',
-    "<md-card layout=column flex><div layout=column layout-padding class=fiche-header><div layout=row><span flex></span><md-button class=md-icon-button ng-click=plageFicheCtrl.addIntervention()><md-icon md-svg-icon=content:add></md-icon><md-tooltip>Ajout intervention</md-tooltip></md-button><md-button class=md-icon-button ng-show=plageFicheCtrl.interventions.length ng-click=plageFicheCtrl.saveInterventions(true)><md-icon md-svg-icon=content:save></md-icon><md-tooltip>Sauvegarde</md-tooltip></md-button><md-button class=md-icon-button ng-click=\"benevoleCardCtrl.deleteBenevole($event, benevole)\" ng-disabled=true><md-icon md-svg-icon=action:delete></md-icon><md-tooltip>Supprimer</md-tooltip></md-button></div><span flex></span><div layout=row class=fiche-title-over-custom-tabs><div layout=column layout-align=\"center start\"><span class=md-title>{{ plageFicheCtrl.plage.etablissement.toString() }}</span> <span class=md-subhead>{{ plageFicheCtrl.plage.getCalendarDay() }}</span></div></div></div><div layout=column flex><md-tabs flex class=md-accent><md-tab label=Interventions layout-fill><md-tab-body><md-content flex class=layout-bg><intervention-card class=plage-card ng-repeat=\"intervention in plageFicheCtrl.interventions\"></intervention-card></md-content></md-tab-body></md-tab></md-tabs></div></md-card>"
+    "<md-card layout=column flex><div layout=column layout-padding class=fiche-header><div layout=row><span flex></span><md-button class=md-icon-button ng-show=plageFicheCtrl.interventions.length ng-click=plageFicheCtrl.saveInterventions(true)><md-icon md-svg-icon=content:save></md-icon><md-tooltip>Sauvegarde</md-tooltip></md-button><md-button class=md-icon-button ng-click=\"benevoleCardCtrl.deleteBenevole($event, benevole)\" ng-disabled=true><md-icon md-svg-icon=action:delete></md-icon><md-tooltip>Supprimer</md-tooltip></md-button></div><span flex></span><div layout=row class=fiche-title-over-custom-tabs><div layout=column layout-align=\"center start\"><span class=md-title>{{ plageFicheCtrl.plage.etablissement.toString() }}</span> <span class=md-subhead>{{ plageFicheCtrl.plage.getCalendarDay() }}</span></div></div></div><div layout=column flex><md-tabs flex class=md-accent><md-tab label=Interventions layout-fill><md-tab-body><div layout=row layout-align=\"end center\"><md-tab-action tooltip=\"Ajouter une intervention\" icon=content:add ng-click=plageFicheCtrl.addIntervention()></md-tab-action></div><md-content flex class=layout-bg><intervention-card class=plage-card ng-repeat=\"intervention in plageFicheCtrl.interventions\"></intervention-card></md-content></md-tab-body></md-tab><md-tab label=Conversation layout-fill><md-tab-body><div class=layout-bg layout=column flex><md-card class=plage-card layout=column flex><md-card-title layout=column style=max-height:155px;height:155px;padding-bottom:0px><div class=md-title>Participants</div><div layout=row layout-align=\"start center\" layout-wrap layout-margin><participant-avatar ng-repeat=\"benevole in plageFicheCtrl.conversation.getParticipants()\" plage=plageFicheCtrl.plage click-for-details-avatar show-status></participant-avatar></div></md-card-title><span flex></span><md-card-content layout=column><conversation conversation=plageFicheCtrl.conversation layout=column></conversation></md-card-content></md-card></div></md-tab-body></md-tab><md-tab label=Infos layout-fill><md-tab-body><md-content flex class=layout-bg><md-card class=plage-card><md-card-title><div class=md-title>Plage d'intervention</div></md-card-title><md-card-content><div class=hidden-input-group layout=row><div><div>date de création:</div><div>créé par:</div><div>personne contact:</div></div><div><div>{{ plageFicheCtrl.plage.createdAt.format('LL') }}</div><hidden-input ng-model=plageFicheCtrl.plage.createdBy aria-label=\"créé par\"></hidden-input><hidden-input ng-model=plageFicheCtrl.plage.contact aria-label=contact></hidden-input></div></div></md-card-content></md-card></md-content></md-tab-body></md-tab></md-tabs></div></md-card>"
   );
 
 
   $templateCache.put('modules/interventions/views/plages-interventions.section.html',
-    "<div layout=column flex><div layout=row flex><div layout=column flex=30 flex-gt-lg=20><md-card layout=column style=display:block><md-card-content><div layout=row style=height:50px><div layout=column flex style=position:relative><label class=md-caption>De</label><md-datepicker style=position:absolute;left:-18px;top:14px ng-model=search.date.start ng-change=plagesInterventionsSectionCtrl.updateSearch(search)></md-datepicker></div><div layout=column flex style=position:relative><label class=md-caption>À</label><md-datepicker style=position:absolute;left:-21px;top:14px;padding-right:0px ng-model=search.date.end ng-change=plagesInterventionsSectionCtrl.updateSearch(search)></md-datepicker></div></div><md-input-container md-no-float class=\"md-icon-float md-block no-errors-spacer\"><md-icon md-svg-icon=action:search></md-icon><input placeholder=recherche... ng-model=search.etablissementName ng-model-options=\"{ debounce: PARAMS.DEBOUNCE_TIME }\" ng-change=plagesInterventionsSectionCtrl.updateSearch(search)></md-input-container></md-card-content></md-card><md-card layout=column class=card-list><md-content layout=column flex><md-list flex layout=column><md-list-item class=md-2-line ui-sref-active=active ng-repeat=\"item in plagesInterventionsSectionCtrl.plages\" ng-click=undefined><div class=md-list-item-text ui-sref=\"interventions.fiche({ plageId: item._id })\"><h3>{{ item.etablissement.toString() }}</h3><p>{{ item.date.format('dddd DD MMMM') }}</p></div><md-icon md-svg-icon=action:done></md-icon><md-divider ng-if=!$last></md-divider></md-list-item></md-list></md-content></md-card></div><div flex=70 flex-gt-lg=80 layout=column><div layout=row flex layout-align=\"center center\" ng-hide=plage><md-progress-circular md-diameter=280 md-mode=indeterminate></md-progress-circular></div><plage-intervention-fiche ng-if=plage plage=plage></plage-intervention-fiche></div></div></div>"
+    "<div layout=column flex><div layout=row flex><div layout=column flex=30 flex-gt-lg=20><md-card layout=column style=display:block><md-card-content><div layout=row style=height:50px><div layout=column flex style=position:relative><label class=md-caption>De</label><md-datepicker style=position:absolute;left:-18px;top:14px ng-model=search.date.start ng-change=plagesInterventionsSectionCtrl.updateSearch(search)></md-datepicker></div><div layout=column flex style=position:relative><label class=md-caption>À</label><md-datepicker style=position:absolute;left:-21px;top:14px;padding-right:0px ng-model=search.date.end ng-change=plagesInterventionsSectionCtrl.updateSearch(search)></md-datepicker></div></div><md-input-container md-no-float class=\"md-icon-float md-block no-errors-spacer\"><md-icon md-svg-icon=action:search></md-icon><input placeholder=recherche... ng-model=search.etablissementName ng-model-options=\"{ debounce: PARAMS.DEBOUNCE_TIME }\" ng-change=plagesInterventionsSectionCtrl.updateSearch(search)></md-input-container></md-card-content></md-card><md-card layout=column flex class=card-list><md-content layout=column flex><md-list flex layout=column><md-list-item class=md-2-line ui-sref-active=active ng-repeat=\"item in plagesInterventionsSectionCtrl.plages\" ng-click=undefined><div class=md-list-item-text ui-sref=\"interventions.fiche({ plageId: item._id })\"><h3>{{ item.etablissement.toString() }}</h3><p>{{ item.date.format('dddd DD MMMM') }}</p></div><md-icon md-svg-icon=action:done></md-icon><md-divider ng-if=!$last></md-divider></md-list-item></md-list></md-content></md-card></div><div flex=70 flex-gt-lg=80 layout=column><div layout=row flex layout-align=\"center center\" ng-hide=plage><md-progress-circular md-diameter=280 md-mode=indeterminate></md-progress-circular></div><plage-intervention-fiche ng-if=plage plage=plage></plage-intervention-fiche></div></div></div>"
   );
 
 

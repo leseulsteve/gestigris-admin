@@ -1,9 +1,14 @@
 'use strict';
 
 angular.module('interventions').factory('PlageIntervention',
-  function ($q, Schema, Moment, Conversation, Etablissement, Intervention) {
+  function ($q, Schema, Moment, UserAuth, Conversation, Etablissement, Intervention) {
 
     var PlageIntervention = new Schema('plage-intervention');
+
+    PlageIntervention.pre('create', function (next) {
+      this.createdBy = UserAuth.getCurrentUser().getFullName();
+      next();
+    });
 
     PlageIntervention.post('find', function (next) {
       this.date = new Moment(this.date);

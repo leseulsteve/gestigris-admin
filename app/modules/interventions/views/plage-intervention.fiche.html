@@ -3,10 +3,6 @@
 	<div layout="column" layout-padding class="fiche-header">
 		<div layout="row">
 			<span flex></span>
-			<md-button class="md-icon-button" ng-click="plageFicheCtrl.addIntervention()">
-				<md-icon md-svg-icon="content:add"></md-icon>
-				<md-tooltip>Ajout intervention</md-tooltip>
-			</md-button>
 			<md-button class="md-icon-button" ng-show="plageFicheCtrl.interventions.length"
 								 ng-click="plageFicheCtrl.saveInterventions(true)">
 				<md-icon md-svg-icon="content:save"></md-icon>
@@ -31,6 +27,14 @@
 		<md-tabs flex class="md-accent">
       <md-tab label="Interventions" layout-fill>
         <md-tab-body>
+
+					<div layout="row" layout-align="end center">
+	        	<md-tab-action tooltip="Ajouter une intervention"
+	        							   icon="content:add"
+	        								 ng-click="plageFicheCtrl.addIntervention()">
+	        	</md-tab-action>
+		      </div>
+
 					<md-content flex class="layout-bg">
 						<intervention-card class="plage-card"
 															 ng-repeat="intervention in plageFicheCtrl.interventions">
@@ -38,7 +42,7 @@
 					</md-content>
         </md-tab-body>
       </md-tab>
-    <!--  <md-tab label="Conversation" layout-fill>
+      <md-tab label="Conversation" layout-fill>
 				<md-tab-body>
           <div class="layout-bg" layout="column" flex>
         		<md-card class="plage-card" layout="column" flex>
@@ -71,7 +75,7 @@
                   <div>
                     <div>date de création:</div>
                     <div>créé par:</div>
-                    <div>personne ressource:</div>
+                    <div>personne contact:</div>
                   </div>
                   <div>
                     <div>{{ plageFicheCtrl.plage.createdAt.format('LL') }}</div>
@@ -85,12 +89,12 @@
                 </div>
               </md-card-content>
             </md-card>
-            <etablissement-card class="plage-card"
+          <!--  <etablissement-card class="plage-card"
                                 etablissement="plageFicheCtrl.etablissement">
-            </etablissement-card>
+            </etablissement-card>-->
 		  		</md-content>
         </md-tab-body>
-      </md-tab>-->
+      </md-tab>
     </md-tabs>
   </div>
 

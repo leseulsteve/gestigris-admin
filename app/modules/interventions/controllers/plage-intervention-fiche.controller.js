@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('interventions').controller('PlageFicheController',
-  function ($scope, $q, $state, Toast, PlageIntervention, Intervention) {
+  function ($scope, $q, $state, Moment, Toast, PlageIntervention, Intervention) {
 
     var ctrl = this;
 
@@ -15,6 +15,9 @@ angular.module('interventions').controller('PlageFicheController',
     });
 
     function populatePlage(plage) {
+
+      plage.createdAt = new Moment(plage.createdAt);
+
       plage.getConversation().then(function (conversation) {
         ctrl.conversation = conversation;
       });
@@ -49,18 +52,13 @@ angular.module('interventions').controller('PlageFicheController',
     });
 
     ctrl.addIntervention = function () {
-      var existingIntervention = _.first(ctrl.interventions);
       Intervention.create(_.assign({
         date: {
-          start: {
-            type: new Date()
-          },
-          end: {
-            type: new Date()
-          }
+          start: new Date(),
+          end: new Date()
         },
         plage: ctrl.plage._id
-      }, _.omit(existingIntervention, ['createdAt', 'updatedAt', '_id']))).then(function (intervention) {
+      }, _.omit(_.first(ctrl.interventions), ['createdAt', 'updatedAt', '_id']))).then(function (intervention) {
         ctrl.interventions.unshift(intervention);
       });
     };

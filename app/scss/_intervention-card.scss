@@ -4,6 +4,12 @@ intervention-card {
   md-card-title {
     padding: 16px 24px;
 
+    button {
+      margin-right: 0 !important;
+      padding-right: 0 !important;
+      padding-left: 18px !important;
+    }
+
     md-input-container {
       padding: 0;
       margin: 0;
@@ -11,8 +17,8 @@ intervention-card {
 
     .status-icon {
       color: #aed581;
-      height: 48px;
-      width: 48px;
+      height: 36px;
+      width: 36px;
     }
   }
 

@@ -1,54 +1,60 @@
-<md-dialog aria-label="Nouveau message" style="width:800px;">
-  <form novalidate name="messageForm" ng-submit="nouveauMessageCtrl.send(messageForm)">
+<md-dialog aria-label="Nouvelle plage d'intervention" style="width:800px;">
+  <form novalidate name="plageForm" ng-submit="nouvellePlageCtrl.create(plageForm, plage)">
     <md-toolbar>
       <div class="md-toolbar-tools">
-        <h2>Nouveau message</h2>
+        <h2>Nouvelle plage d'intervention</h2>
         <span flex></span>
-        <md-button class="md-icon-button" ng-click="nouveauMessageCtrl.cancel()">
+        <md-button class="md-icon-button" ng-click="nouvellePlageCtrl.cancel()">
           <md-icon md-svg-icon="navigation:close" aria-label="Close dialog"></md-icon>
         </md-button>
       </div>
     </md-toolbar>
     <md-dialog-content>
-      <div class="md-dialog-content">
+      <div layout="column" class="md-dialog-content">
 
-        <md-contact-chips ng-model="nouveauMessageCtrl.message.destinataires" name="destinataires"
-                          md-contacts="nouveauMessageCtrl.searchDestinataires($query)"
-                          md-contact-name="fullname"
-                          md-contact-image="avatar"
-                          md-contact-email="email"
-                          md-require-match="true"
-                          md-highlight-flags="i"
-                          placeholder="Destinataire(s)">
-        </md-contact-chips>
-        <div ng-messages="messageForm.destinataires.$error">
-          <div ng-message="required">requis.</div>
-        </div>
-
-        <md-input-container class="md-block">
-          <label>Sujet</label>
-          <input name="subject" ng-model="nouveauMessageCtrl.message.subject" required>
-          <div ng-messages="messageForm.subject.$error">
+        <md-datepicker name="date" md-placeholder="Date"
+                       ng-model="plage.date"
+                       required>
+          <div ng-messages="plageForm.date.$error">
             <div ng-message="required">requis.</div>
           </div>
+        </md-datepicker>
+
+        <md-input-container flex="40">
+          <label>Établissement</label>
+          <md-select name="etablissement"
+                     ng-model="plage.etablissement"
+                     ng-change="nouvellePlageCtrl.setContacts(plage.etablissement)"
+                     required>
+            <md-option ng-repeat="etablissement in nouvellePlageCtrl.etablissements"
+                       ng-value="etablissement._id" ng-selected="etablissement._id === plage.etablissement">
+              {{ etablissement.toString() }}
+            </md-option>
+          </md-select>
+          <ng-messages for="plageForm.etablissement.$error">
+            <ng-message when="required">requis.</ng-message>
+          </ng-messages>
         </md-input-container>
 
-        <md-input-container class="md-block">
-          <label>Message</label>
-          <textarea name="body" ng-model="nouveauMessageCtrl.message.body" rows="5" required></textarea>
-          <div ng-messages="messageForm.body.$error">
-            <div ng-message="required">requis.</div>
-          </div>
+        <md-input-container flex="40">
+          <label>Contact</label>
+          <md-select name="contact"
+                     ng-model="plage.contact">
+            <md-option ng-repeat="contact in nouvellePlageCtrl.contacts"
+                       ng-value="contact._id" ng-selected="contact._id === plage.contact">
+              {{ contact.toString() }}
+            </md-option>
+          </md-select>
         </md-input-container>
 
       </div>
     </md-dialog-content>
     <md-dialog-actions layout="row">
-      <md-button type="button" ng-click="nouveauMessageCtrl.cancel()">
+      <md-button type="button" ng-click="nouvellePlageCtrl.cancel()">
         Annuler
       </md-button>
       <md-button type="submit" class="md-primary md-raised" style="margin-right:20px;">
-        Envoyer
+        Créer
       </md-button>
     </md-dialog-actions>
   </form>

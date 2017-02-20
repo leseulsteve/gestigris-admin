@@ -1,39 +1,33 @@
 'use strict';
 
 angular.module('interventions').controller('NouvellePlageInterventionController',
-  function (Benevole, Message, $mdToast) {
+  function ($state, Etablissement, Contact, PlageIntervention) {
 
     var ctrl = this;
 
-    var toast = $mdToast.simple()
-      .action('annuler')
-      .textContent('Le message a été envoyé!');
+    Etablissement.find().then(function (etablissements) {
+      ctrl.etablissements = etablissements;
+    });
 
-    ctrl.message = {
-      destinataires: ctrl.receivers || []
-    };
-
-    ctrl.searchDestinataires = function (query) {
-      return Benevole.search(query).then(function (results) {
-        return _.difference(results, ctrl.message.destinataires);
+    ctrl.setContacts = function (etablissement) {
+      Contact.findByEtablissement(etablissement._id).then(function (contacts) {
+        ctrl.contacts = contacts;
       });
     };
 
     ctrl.cancel = ctrl.dialog.cancel;
 
-    ctrl.send = function (messageForm) {
+    ctrl.create = function (plageForm, plage) {
 
-      messageForm.destinataires.$setValidity('required', ctrl.message.destinataires.length > 0);
-
-      if (messageForm.$invalid) {
+      if (plageForm.$invalid) {
         return ctrl.dialog.shake();
       }
 
       ctrl.dialog.hide().then(function () {
-        $mdToast.show(toast).then(function (response) {
-          if (_.isUndefined(response)) {
-            Message.create(ctrl.message);
-          }
+        PlageIntervention.create(plage).then(function (newPlage) {
+          $state.go('interventions.fiche', {
+            plageId: newPlage._id
+          });
         });
       });
     };

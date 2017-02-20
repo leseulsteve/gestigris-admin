@@ -31,7 +31,12 @@
 
 	    <md-icon class="status-icon" md-svg-icon="action:done"></md-icon>
 
-			<md-menu md-position-mode="target-right target">
+			<md-button class="md-icon-button" ng-click="binterventionCardCtrl.removeIntervention($event, $index, intervention)" ng-disabled="true">
+				<md-icon md-svg-icon="action:delete"></md-icon>
+				<md-tooltip>Supprimer</md-tooltip>
+			</md-button>
+
+			<!--<md-menu md-position-mode="target-right target">
         <md-button aria-label="Options" class="md-icon-button" ng-click="$mdOpenMenu($event)">
           <md-icon md-menu-origin md-svg-icon="navigation:more_vert"></md-icon>
         </md-button>
@@ -45,7 +50,7 @@
             </md-button>
           </md-menu-item>
         </md-menu-content>
-      </md-menu>
+      </md-menu>-->
 
 	  </md-card-title>
 
