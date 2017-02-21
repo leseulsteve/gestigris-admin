@@ -15,6 +15,10 @@ angular.module('interventions').factory('DemandeParticipation',
       return this.accepted;
     };
 
+    DemandeParticipation.prototype.isConfirmed = function () {
+      return this.confirmed;
+    };
+
     return DemandeParticipation;
 
   });

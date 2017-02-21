@@ -27,6 +27,8 @@ angular.module('interventions').controller('NouvellePlageInterventionController'
         PlageIntervention.create(plage).then(function (newPlage) {
           $state.go('interventions.fiche', {
             plageId: newPlage._id
+          }, {
+            reload: true
           });
         });
       });

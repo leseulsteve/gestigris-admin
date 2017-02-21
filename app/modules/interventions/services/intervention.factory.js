@@ -13,7 +13,30 @@ angular.module('interventions').factory('Intervention',
 
       DemandeParticipation.getByInterventionId(this._id).then(function (demandes) {
         this.demandesParticipations = demandes;
-        next();
+
+        $q.all([
+
+          Benevole.find({
+            _id: {
+              $in: _.map(_.filter(this.demandesParticipations, function (demande) {
+                return !demande.isAccepted();
+              }), 'benevole')
+            }
+          }).then(function (benevoles) {
+            this.interested = benevoles;
+          }.bind(this)),
+
+          Benevole.find({
+            _id: {
+              $in: _.map(_.filter(this.demandesParticipations, function (demande) {
+                return demande.isAccepted();
+              }), 'benevole')
+            }
+          }).then(function (benevoles) {
+            this.participants = benevoles;
+          }.bind(this))
+
+        ]).then(next);
       }.bind(this));
     });
 
@@ -24,31 +47,28 @@ angular.module('interventions').factory('Intervention',
     };
 
     Intervention.prototype.getBenevoles = function (type) {
-      return Benevole.find({
-        _id: {
-          $in: _.map(_.filter(this.demandesParticipations, function (demande) {
-            return type === 'participants' ? demande.isAccepted() : !demande.isAccepted();
-          }), 'benevole')
-        }
-      });
+      return $q.when(type === 'interested' ? this.interested : this.participants);
     };
 
     Intervention.prototype.addInterested = function (benevole) {
-      var demandeParticipation = _.find(this.demandesParticipations, ['benevole', benevole._id]);
 
-      if (demandeParticipation) {
-        return _.assign(demandeParticipation, {
-          accepted: false
-        }).save().then(function () {
-          return benevole;
-        });
-      }
+      var that = this;
+      var toast = $mdToast.simple()
+        .textContent('Annulation de la partipation envoyé à ' + benevole.toString() + '!')
+        .action('annuler')
+        .highlightAction(true);
 
-      return DemandeParticipation.create({
-        benevole: benevole._id,
-        intervention: this._id,
-      }).then(function () {
-        return benevole;
+      return $mdToast.show(toast).then(function (response) {
+        if (response) {
+          return $q.reject();
+        }
+        if (_.isUndefined(response)) {
+          return _.assign(that.getDemandeParticipation(benevole), {
+            accepted: false
+          }).save().then(function () {
+            return benevole;
+          });
+        }
       });
     };
 
@@ -64,7 +84,7 @@ angular.module('interventions').factory('Intervention',
       return $mdToast.show(toast).then(function (response) {
 
         if (_.isUndefined(response)) {
-          var demandeParticipation = _.find(that.demandesParticipations, ['benevole', benevole._id]);
+          var demandeParticipation = that.getDemandeParticipation(benevole);
 
           // Était déjà intéressé.
           if (demandeParticipation) {
@@ -80,7 +100,9 @@ angular.module('interventions').factory('Intervention',
             benevole: benevole._id,
             intervention: that._id,
             accepted: true
-          }).then(function () {
+          }).then(function (demandeParticipation) {
+            that.participants.push(benevole);
+            that.demandesParticipations.push(demandeParticipation);
             return benevole;
           });
         }
@@ -93,9 +115,29 @@ angular.module('interventions').factory('Intervention',
     };
 
     Intervention.prototype.removeBenevoleFromParticipants = function (benevole) {
-      benevole = benevole;
-      return $q.when();
-      //return _.find(this.demandesParticipations, ['benevole', benevole._id]).remove();
+      var that = this;
+      var toast = $mdToast.simple()
+        .textContent('Annulation de la partipation envoyé à ' + benevole.toString() + '!')
+        .action('annuler')
+        .highlightAction(true);
+
+      return $mdToast.show(toast).then(function (response) {
+        if (response) {
+          return $q.reject();
+        }
+        if (_.isUndefined(response)) {
+          return that.getDemandeParticipation(benevole).remove();
+        }
+      });
+    };
+
+    Intervention.prototype.getDemandeParticipation = function (benevole) {
+      return _.find(this.demandesParticipations, ['benevole', benevole._id]);
+    };
+
+    Intervention.prototype.isConfirmed = function (benevole) {
+      var demande = this.getDemandeParticipation(benevole);
+      return demande ? demande.isConfirmed() : false;
     };
 
     ///
@@ -125,13 +167,6 @@ angular.module('interventions').factory('Intervention',
 
     Intervention.prototype.getDateRange = function () {
       return this.date;
-    };
-
-    Intervention.prototype.isConfirmed = function (benevole) {
-
-      return !_.isUndefined(_.find(this.participants, function (participant) {
-        return benevole._id === participant._id;
-      }));
     };
 
     Intervention.prototype.toString = function () {

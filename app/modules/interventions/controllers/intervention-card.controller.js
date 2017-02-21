@@ -77,7 +77,13 @@ angular.module('interventions').controller('InterventionCardController',
 
     ctrl.droppedInInterested = function (item) {
       var benevole = new Benevole(item);
-      $scope.intervention.addInterested(benevole);
+      $scope.intervention.addInterested(benevole)
+        .catch(function () {
+          _.pull(ctrl.interested, benevole);
+          ctrl.participants.splice(_.sortedIndexBy(ctrl.participants, benevole, function (benevole) {
+            return benevole.toString();
+          }), 0, benevole);
+        });
       return benevole;
     };
 
@@ -87,19 +93,24 @@ angular.module('interventions').controller('InterventionCardController',
 
       if (_.isUndefined(_.find(ctrl.participants, ['_id', item._id]))) {
 
-        $scope.intervention.addParticipant(benevole).catch(function () {
-          _.pull(ctrl.participants, benevole);
-          ctrl.interested.splice(_.sortedIndexBy(ctrl.interested, benevole, function (benevole) {
-            return benevole.toString();
-          }), 0, benevole);
-        });
+        $scope.intervention.addParticipant(benevole)
+          .catch(function () {
+            _.pull(ctrl.participants, benevole);
+            ctrl.interested.splice(_.sortedIndexBy(ctrl.interested, benevole, function (benevole) {
+              return benevole.toString();
+            }), 0, benevole);
+          });
       }
 
       return benevole;
     };
 
     ctrl.droppedInGarbage = function (item) {
-      $scope.intervention.removeBenevoleFromParticipants(item);
+      var benevole = new Benevole(item);
+      $scope.intervention.removeBenevoleFromParticipants(benevole)
+        .catch(function () {
+          ctrl.participants.push(benevole);
+        });
       return true;
     };
 
