@@ -1,26 +1,25 @@
 <md-card layout="column" flex>
 
-	<div layout="column" layout-padding class="card-header">
-		<div layout="row">
+	<div layout="column" class="card-header">
+		<div layout="row" class="card-header-tools">
 			<span flex></span>
 			<md-button class="md-icon-button" ng-click="benevoleCardCtrl.sendMessage($event, benevole)">
 				<md-icon md-svg-icon="communication:message"></md-icon>
 				<md-tooltip>Message</md-tooltip>
 			</md-button>
+			<!--<md-button class="md-icon-button" ng-click="benevoleCardCtrl.saveBenevole(true)">
+				<md-icon md-svg-icon="content:save"></md-icon>
+				<md-tooltip>Sauvegarde</md-tooltip>
+			</md-button>-->
 			<md-button class="md-icon-button" ng-click="benevoleCardCtrl.deleteBenevole($event, benevole)" ng-disabled="true">
 				<md-icon md-svg-icon="action:delete"></md-icon>
 				<md-tooltip>Supprimer</md-tooltip>
 			</md-button>
 		</div>
 		<span flex></span>
-		<div layout="row" class="fiche-title-over-custom-tabs">
-			<div layout="row" layout-align="center start">
-				<avatar user="benevole"></avatar>
-			</div>
-			<div layout="column" layout-align="center start">
-				<span class="md-title">{{ benevole.toString() }}</span>
-	      <span class="md-subhead">{{ benevole.getRoleDescription() }}</span>
-			</div>
+		<div layout="row" layout-align="start center" class="fiche-title-over-custom-tabs md-padding">
+			<avatar user="benevole" click-to-update></avatar>
+			<span class="md-title benevole-name">{{ benevole.toString() }}</span>
 		</div>
 	</div>
 

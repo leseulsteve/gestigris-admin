@@ -27,7 +27,7 @@ angular.module('interventions').factory('PlageIntervention',
         });
       }
       if (filters.etablissementName) {
-        return Etablissement.searchByName(filters.etablissementName).then(function (etablissements) {
+        return Etablissement.search(filters.etablissementName).then(function (etablissements) {
           return _.assign(query, {
             etablissement: {
               $in: _.map(etablissements, '_id')

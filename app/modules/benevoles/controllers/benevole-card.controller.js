@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('benevoles').controller('BenevoleCardController',
-  function ($scope, $mdDialog, $mdToast, MessageDialog) {
+  function ($scope, $mdDialog, Toast, MessageDialog) {
 
     var ctrl = this;
 
@@ -11,6 +11,14 @@ angular.module('benevoles').controller('BenevoleCardController',
 
       MessageDialog.show($event, {
         receivers: [benevole]
+      });
+    };
+
+    ctrl.saveBenevole = function (showToast) {
+      $scope.benevole.save().then(function () {
+        if (showToast) {
+          Toast.show('Sauvegardé!');
+        }
       });
     };
 
@@ -26,10 +34,7 @@ angular.module('benevoles').controller('BenevoleCardController',
 
       $mdDialog.show(confirmDelete).then(function () {
         benevole.remove().then(function () {
-          $mdToast.show(
-            $mdToast.simple()
-            .textContent(benevole.toString() + ' a été supprimé.')
-          );
+          Toast.show(benevole.toString() + ' a été supprimé.');
         });
       });
     };

@@ -1,76 +1,69 @@
-<div layout="column" flex>
+<plage-intervention-section layout="row" flex>
 
-	<div layout="row" flex>
+	<div layout="column" flex="30" flex-gt-lg="20">
 
-		<div layout="column" flex="30" flex-gt-lg="20">
+		<md-card>
 
-			<md-card layout="column" style="display:block">
+			<md-card-content>
 
-				<md-card-content>
-
-					<div layout="row" style="height:50px">
-						<div layout="column" flex style="position:relative">
-	    				<label class="md-caption">De</label>
-	    				<md-datepicker style="position:absolute;left:-18px;top:14px;"
-														 ng-model="search.date.start"
-													   ng-change="plagesInterventionsSectionCtrl.updateSearch(search)">
-							</md-datepicker>
-						</div>
-						<div layout="column" flex style="position:relative">
-	    				<label class="md-caption">À</label>
-							<md-datepicker style="position:absolute;left:-21px;top:14px;padding-right:0px;"
-														 ng-model="search.date.end"
-														 ng-change="plagesInterventionsSectionCtrl.updateSearch(search)">
-							</md-datepicker>
-						</div>
+				<div layout="row" class="date-filters">
+					<div layout="column" flex style="position:relative">
+    				<label class="md-caption">De</label>
+    				<md-datepicker ng-model="search.date.start"
+												   ng-change="plagesInterventionsSectionCtrl.updateSearch(search)">
+						</md-datepicker>
 					</div>
+					<div layout="column" flex style="position:relative">
+    				<label class="md-caption">À</label>
+						<md-datepicker ng-model="search.date.end"
+													 ng-change="plagesInterventionsSectionCtrl.updateSearch(search)">
+						</md-datepicker>
+					</div>
+				</div>
 
-					<md-input-container md-no-float class="md-icon-float md-block no-errors-spacer">
-						<md-icon md-svg-icon="action:search"></md-icon>
-        		<input placeholder="recherche..."
-									 ng-model="search.etablissementName"
-									 ng-model-options="{ debounce: PARAMS.DEBOUNCE_TIME }"
-									 ng-change="plagesInterventionsSectionCtrl.updateSearch(search)">
-      		</md-input-container>
+				<md-input-container md-no-float class="md-icon-float md-block no-errors-spacer">
+					<md-icon md-svg-icon="action:search"></md-icon>
+      		<input placeholder="recherche..." input-clear
+								 ng-model="search.etablissementName"
+								 ng-model-options="{ debounce: PARAMS.DEBOUNCE_TIME }"
+								 ng-change="plagesInterventionsSectionCtrl.updateSearch(search)">
+    		</md-input-container>
 
-				</md-card-content>
+			</md-card-content>
 
+		</md-card>
 
+		<md-card flex>
 
-			</md-card>
+			<md-content flex>
 
-			<md-card layout="column" flex class="card-list">
+				<md-list section-list flex layout="column">
+					<md-list-item class="md-2-line"  ng-class="{ active:item._id === plage._id }"
+												ng-repeat="item in plagesInterventionsSectionCtrl.plages"
+												ng-click="plagesInterventionsSectionCtrl.showPlage(item)">
+			      <div class="md-list-item-text">
+			        <h3>{{ item.etablissement.toString() }}</h3>
+			        <p>{{ item.date.format('dddd DD MMMM') }} </p>
+			      </div>
+						<md-icon md-svg-icon="action:done"></md-icon>
+			    	<md-divider ng-if="!$last"></md-divider>
+			    </md-list-item>
+		    </md-list>
 
-				<md-content layout="column" flex>
+			</md-content>
 
-					<md-list flex layout="column">
-						<md-list-item class="md-2-line" ui-sref-active="active"
-													ng-repeat="item in plagesInterventionsSectionCtrl.plages"
-													ng-click="undefined">
-				      <div class="md-list-item-text" ui-sref="interventions.fiche({ plageId: item._id })">
-				        <h3>{{ item.etablissement.toString() }}</h3>
-				        <p>{{ item.date.format('dddd DD MMMM') }} </p>
-				      </div>
-							<md-icon md-svg-icon="action:done"></md-icon>
-				    <md-divider ng-if="!$last"></md-divider>
-				    </md-list-item>
-			    </md-list>
-
-				</md-content>
-
-			</md-card>
-
-		</div>
-
-		<div flex="70" flex-gt-lg="80" layout="column">
-
-			<div layout="row" flex layout-align="center center" ng-hide="plage">
-				<md-progress-circular md-diameter="280" md-mode="indeterminate"></md-progress-circular>
-			</div>
-
-			<plage-intervention-fiche ng-if="plage" plage="plage"></plage-intervention-fiche>
-
-		</div>
+		</md-card>
 
 	</div>
-</div>
+
+	<div flex="70" flex-gt-lg="80" layout="column">
+
+		<div layout="row" flex layout-align="center center" ng-hide="lodadingDone">
+			<md-progress-circular md-diameter="280" md-mode="indeterminate"></md-progress-circular>
+		</div>
+
+		<plage-intervention-fiche ng-if="lodadingDone" plage="plage"></plage-intervention-fiche>
+
+	</div>
+
+</plage-intervention-section>

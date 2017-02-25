@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('benevoles').factory('Benevole',
-  function ($rootScope, $q, $timeout, Schema) {
+  function ($rootScope, $q, $timeout, Schema, SearchFieldQueryBuilder) {
 
     var Benevole = new Schema('benevole');
 
@@ -28,12 +28,14 @@ angular.module('benevoles').factory('Benevole',
       return this.role.description;
     };
 
-    Benevole.search = function (term) {
-      return Benevole.find().then(function (benevoles) {
-        return _.filter(benevoles, function (benevole) {
-          return _.includes(benevole.toString().toLowerCase(), term.toLowerCase());
-        });
-      });
+    Benevole.search = function (params) {
+      var query = {};
+      if (_.isString(params)) {
+        query = SearchFieldQueryBuilder.build(params);
+      } else  {
+        _.assign(query, params.benevoleName ? SearchFieldQueryBuilder.build(params.benevoleName) : undefined, _.omit(params, 'benevoleName'));
+      }
+      return Benevole.find(query);
     };
 
     Benevole.prototype.toString = function () {

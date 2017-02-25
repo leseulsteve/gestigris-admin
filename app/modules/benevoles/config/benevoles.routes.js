@@ -8,35 +8,29 @@ angular.module('benevoles').config(
     state('benevoles', {
       url: '/benevoles',
       template: '<ui-view layout="column" flex></ui-view>',
+      params: {
+        filters: null
+      },
       resolve: {
-        benevoles: function ($q, $timeout, Benevole, PARAMS) {
+        benevoles: function ($q, $timeout, Benevole, PARAMS, $stateParams) {
+          $stateParams.filters = _.assign({
+            actif: true
+          }, $stateParams.filters);
           return $q.all([
             $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
-            Benevole.find()
+            Benevole.search($stateParams.filters)
           ]).then(function (results) {
             return _.last(results);
           });
         }
       },
-      controller: function ($state, $location, Dialog, BENEVOLES, benevoles) {
-        if ($location.path().split('/').length === 2) {
-          if (benevoles.length === 0) {
-            var dialog = new Dialog(BENEVOLES.DIALOGS.ADD_BENEVOLE);
-            dialog.show()
-              .then(function (benevole) {
-                benevoles.unshift(benevole);
-                $state.go('benevoles.fiche', {
-                  benevoleId: benevole._id
-                });
-              })
-              .catch(function () {
-                $state.go('home');
-              });
-          } else {
-            $state.go('benevoles.fiche', {
-              benevoleId: _.first(benevoles)._id
-            });
-          }
+      controller: function ($state, $location, benevoles, $stateParams) {
+        if ($location.path().split('/').length === 2 && benevoles.length) {
+          console.log($stateParams);
+          $state.go('benevoles.fiche', {
+            benevoleId: _.first(benevoles)._id,
+            filters: $stateParams.filters
+          });
         }
       }
     }).
@@ -44,6 +38,9 @@ angular.module('benevoles').config(
     state('benevoles.fiche', {
       url: '/:benevoleId',
       title: 'Bénévoles',
+      params: {
+        filters: null
+      },
       templateUrl: 'modules/benevoles/views/benevoles.section.html',
       controller: 'BenevolesSectionController',
       controllerAs: 'benevolesSectionCtrl'

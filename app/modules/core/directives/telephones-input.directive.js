@@ -7,7 +7,7 @@ angular.module('core').directive('telephoneInput',
       scope: {
         telephones: '=ngModel',
         ngChange: '&',
-        ngDisabled: '&'
+        ngDisabled: '='
       },
       templateUrl: 'modules/core/views/telephones-input.html',
       compile: function (iElement) {
@@ -15,6 +15,7 @@ angular.module('core').directive('telephoneInput',
       },
       controllerAs: 'telephoneInputCtrl',
       controller: function ($scope) {
+        $scope.telephones = $scope.telephones ||  [];
         this.removePhone = function ($index) {
           $scope.telephones.splice($index, 1);
           $scope.ngChange();

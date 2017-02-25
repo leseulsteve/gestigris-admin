@@ -1,0 +1,21 @@
+etablissement-card {
+  .card-header {
+    position: relative;
+    height: 200px;
+    min-height: 200px;
+
+    .card-header-tools {
+      position: absolute;
+      width: 100%;
+      z-index: 10;
+    }
+
+    .leaflet-left {
+      padding-left: 8px;
+    }
+
+    .leaflet-top {
+      padding-top: 8px;
+    }
+  }
+}

@@ -1,0 +1,43 @@
+plage-intervention-section {
+  .date-filters {
+    height: 50px;
+
+    md-datepicker {
+      &:first-of-type {
+        position: absolute;
+        left: -18px;
+        top: 14px;
+      }
+
+      &:last-of-type {
+        position: absolute;
+        left: -21px;
+        top: 14px;
+        padding-right: 0;
+      }
+    }
+  }
+
+  plage-intervention-fiche {
+    .card-header {
+      background: url("../img/mb-bg-fb-22.png") no-repeat center;
+      background-size: cover;
+    }
+
+    participant-avatar, .dndPlaceholder {
+      display: block;
+    }
+
+    participant-avatar {
+      position: relative;
+
+      md-icon {
+        border-radius: 50%;
+        background-color: #fff;
+        position: absolute;
+        top: -4px;
+        right: -4px;
+      }
+    }
+  }
+}

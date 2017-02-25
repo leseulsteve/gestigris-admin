@@ -1,17 +1,10 @@
 <ng-form name="userProfileForm" auto-save-form="autoSave" novalidate autocomplete="off">
 
-	<div layout="row" layout-wrap>
+	<div layout="row" flex layout-wrap>
 
-		<div ng-if="benevoleFormCtrl.isNew"
-         layout="column" flex="40" layout-align="center center">
-			<avatar class="profile" user="benevole" click-to-update></avatar>
-		</div>
+		<div layout="column" flex="45">
 
-		<span flex="10" ng-if="benevoleFormCtrl.isNew"></span>
-
-		<div layout="column" flex="40">
-
-  	 	<md-input-container flex>
+  	 	<md-input-container>
         <label>Prénom</label>
         <input name="prenom"
                ng-model="benevole.prenom"
@@ -23,7 +16,7 @@
 				</ng-messages>
       </md-input-container>
 
-      <md-input-container flex>
+      <md-input-container>
         <label>Nom de famille</label>
         <input name="nomFamille"
                ng-model="benevole.nomFamille"
@@ -35,31 +28,7 @@
 				</ng-messages>
       </md-input-container>
 
-   	</div>
-
-    <span flex="10" ng-if="!benevoleFormCtrl.isNew"></span>
-
-    <md-input-container flex="40">
-      <label>Rôle</label>
-      <md-select name="role"
-                 ng-model="benevole.role"
-                 ng-change="benevoleFormCtrl.saveBenevole(userProfileForm)"
-                 required>
-        <md-option ng-repeat="role in benevoleFormCtrl.benevoleRoles"
-                   ng-value="role" ng-selected="role._id === benevole.role._id">
-          {{ role.toString() }}
-        </md-option>
-      </md-select>
-      <ng-messages for="userProfileForm.role.$error">
-        <ng-message when="required">requis.</ng-message>
-      </ng-messages>
-    </md-input-container>
-
-    <span flex="10" ng-if="benevoleFormCtrl.isNew"></span>
-
-    <div layout="column" flex="40">
-
-      <md-input-container flex>
+			<md-input-container>
         <label>Date de naissance</label>
         <input type="date" name="dateNaissance"
                ng-model="benevole.dateNaissance"
@@ -72,7 +41,7 @@
         </ng-messages>
       </md-input-container>
 
-      <md-input-container flex>
+      <md-input-container>
         <label>Courriel</label>
         <input type="email" name="email"
                ng-model="benevole.email"
@@ -85,41 +54,61 @@
         </ng-messages>
       </md-input-container>
 
-    </div>
-  
-  </div>
+			<input style="display:none">
+	  	<md-input-container flex>
+	    	<label>{{ benevoleFormCtrl.isNew ? 'Mot de passe' : 'Nouveau mot de passe' }}</label>
+	    	<input name="password" type="password" autocomplete="new-password"
+	    				 ng-model="benevole.password"
+	             ng-model-options="{ updateOn: 'blur' }"
+	             ng-change="benevole.password === benevole.passwordMatch && benevoleFormCtrl.saveBenevole(userProfileForm)"
+	    				 ng-required="userProfileForm.isNew">
+	      <ng-messages for="userProfileForm.password.$error">
+	        <ng-message when="required">requis.</ng-message>
+	      </ng-messages>
+	  	</md-input-container>
 
-  <div layout="row">
-    
-   	<input style="display:none">
-  	<md-input-container flex="40">
-    	<label>{{ benevoleFormCtrl.isNew ? 'Mot de passe' : 'Nouveau mot de passe' }}</label>
-    	<input name="password" type="password" autocomplete="new-password" 
-    				 ng-model="benevole.password"
-             ng-model-options="{ updateOn: 'blur' }"
-             ng-change="benevole.password === benevole.passwordMatch && benevoleFormCtrl.saveBenevole(userProfileForm)"
-    				 ng-required="userProfileForm.isNew">
-      <ng-messages for="userProfileForm.password.$error">
-        <ng-message when="required">requis.</ng-message>
-      </ng-messages>
-  	</md-input-container>
+	  	<md-input-container>
+	    	<label>Vérification mot de passe</label>
+	    	<input name="passwordMatch" type="password" autocomplete="off"
+	             ng-model="benevole.passwordMatch"
+	             ng-model-options="{ updateOn: 'default blur', debounce: { default: 500, blur: 0 } }"
+	             ng-change="benevole.password === benevole.passwordMatch && benevoleFormCtrl.saveBenevole(userProfileForm)"
+	             ng-disabled="benevole.password === undefined"
+	             ng-required="benevole.password"
+	             password-verify="benevole.password">
+	    	<ng-messages for="userProfileForm.passwordMatch.$error" ng-show="userProfileForm.passwordMatch.$touched || userProfileForm.passwordMatch.$dirty">
+					<ng-message when="required">requis.</ng-message>
+	        <ng-message when="passwordVerify">Ne correspond pas au mot de passe.</ng-message>
+				</ng-messages>
+	  	</md-input-container>
 
-  	<span flex="10"></span>
+   	</div>
 
-  	<md-input-container flex="40">
-    	<label>Vérification mot de passe</label>
-    	<input name="passwordMatch" type="password" autocomplete="off"
-             ng-model="benevole.passwordMatch"
-             ng-model-options="{ updateOn: 'default blur', debounce: { default: 500, blur: 0 } }"
-             ng-change="benevole.password === benevole.passwordMatch && benevoleFormCtrl.saveBenevole(userProfileForm)"
-             ng-disabled="benevole.password === undefined"
-             ng-required="benevole.password"
-             password-verify="benevole.password">
-    	<ng-messages for="userProfileForm.passwordMatch.$error" ng-show="userProfileForm.passwordMatch.$touched || userProfileForm.passwordMatch.$dirty">
-				<ng-message when="required">requis.</ng-message>
-        <ng-message when="passwordVerify">Ne correspond pas au mot de passe.</ng-message>
-			</ng-messages>
-  	</md-input-container>
+    <span flex="10"></span>
+
+		<div layout="column" flex="45">
+
+			<md-input-container>
+				<label>Rôle</label>
+				<md-select name="role"
+									 ng-model="benevole.role"
+									 ng-change="benevoleFormCtrl.saveBenevole(userProfileForm)"
+									 required>
+					<md-option ng-repeat="role in benevoleFormCtrl.benevoleRoles"
+										 ng-value="role" ng-selected="role._id === benevole.role._id">
+						{{ role.toString() }}
+					</md-option>
+				</md-select>
+				<ng-messages for="userProfileForm.role.$error">
+					<ng-message when="required">requis.</ng-message>
+				</ng-messages>
+			</md-input-container>
+
+			<telephone-input flex="50" ng-model="benevole.telephones"
+											 ng-change="benevoleFormCtrl.saveBenevole(userProfileForm)">
+			</telephone-input>
+
+		</div>
 
   </div>
 

@@ -1,19 +1,44 @@
+@import "benevoles";
+@import "etablissements";
+@import "plage-interventions";
+@import "interventions";
+
 @import "md-fab-speed-dial";
-@import "benevole-card";
-@import "interventions-section";
 @import "dashboard";
 @import "toolbar";
 @import "search-bar";
 @import "mini-calendar";
-@import "plage-intervention-fiche";
 @import "custom-tabs";
-@import "intervention-card";
 @import "right-panel";
 @import "conversation";
 @import "hidden-input";
 
 .shake-it {
   animation: shake 1s;
+}
+
+.card-header {
+  height: 150px;
+  min-height: 150px;
+
+  .card-header-tools {
+    padding: 8px;
+  }
+}
+
+avatar {
+  width: 70px;
+  height: 70px;
+}
+
+[section-list] {
+  padding: 0;
+}
+
+md-list {
+  avatar {
+    margin-right: 8px;
+  }
 }
 
 md-dialog.md-dialog-fullscreen {

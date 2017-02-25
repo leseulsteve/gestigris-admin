@@ -11,7 +11,7 @@ var sortedPush = function (collection, item, predicate) {
   }
   if (_.isString(predicate)) {
     collection.splice(_.sortedIndexBy(collection, item, function (o) {
-      return o[predicate];
+      return _.deburr(o[predicate]);
     }), 0, item);
     return collection;
   }

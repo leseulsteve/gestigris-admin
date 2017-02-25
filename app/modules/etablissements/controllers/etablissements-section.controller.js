@@ -7,25 +7,39 @@ angular.module('etablissements').controller('EtablissementsSectionController',
 
     ctrl.etablissements = etablissements;
 
-    function showEtablissement(etablissement) {
+    $scope.search = $stateParams.filters;
+
+    ctrl.showEtablissement = function (etablissement) {
       if (_.isUndefined($scope.etablissement) || etablissement._id !== $scope.etablissement._id) {
 
-        $scope.etablissement = undefined;
+        $scope.lodadingDone = false;
+        $scope.etablissement = etablissement;
+
+        $state.go('etablissements.fiche', {
+          etablissementId: etablissement._id
+        }, {
+          notify: false
+        });
 
         $q.all([
           $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
           Etablissement.findById(etablissement._id)
         ]).then(function (results) {
           $scope.etablissement = _.last(results);
-          ctrl.currentIndex = _.indexOf(ctrl.etablissements, _.find(ctrl.etablissements, {
-            _id: $scope.etablissement._id
-          }));
-          $scope.$watch('etablissement', function (etablissement) {
-            ctrl.etablissements.splice(ctrl.currentIndex, 1, etablissement);
-          }, true);
+          $scope.lodadingDone = true;
         });
       }
-    }
+    };
+
+    ctrl.updateSearch = function (search) {
+      Etablissement.search(search).then(function (etablissements) {
+        ctrl.etablissements = etablissements;
+        var firstEtablissement = _.first(etablissements);
+        if (firstEtablissement && $scope.etablissement._id !== firstEtablissement._id) {
+          ctrl.showEtablissement(firstEtablissement);
+        }
+      });
+    };
 
     var listeners = [];
 
@@ -40,9 +54,7 @@ angular.module('etablissements').controller('EtablissementsSectionController',
         return removedEtablissement._id === etablissement._id;
       });
       if (removedEtablissement._id === $scope.etablissement._id) {
-        return $state.go('etablissements.fiche', {
-          etablissementId: (ctrl.etablissements[ctrl.currentIndex - 1]  ||  _.first(ctrl.etablissements))._id
-        });
+        ctrl.showEtablissement(ctrl.etablissements[ctrl.currentIndex - 1]  ||  _.first(ctrl.etablissements));
       }
 
     }));
@@ -53,15 +65,6 @@ angular.module('etablissements').controller('EtablissementsSectionController',
       });
     });
 
-    var selectedEtablissement = _.find(ctrl.etablissements, ['_id', $stateParams.etablissementId]);
-    if (selectedEtablissement) {
-      return showEtablissement(selectedEtablissement);
-    }
-    $state.go('etablissements.fiche', {
-      etablissementId: _.first(ctrl.etablissements)._id
-    }, {
-      notify: false
-    });
-    showEtablissement(_.first(ctrl.etablissements));
+    ctrl.showEtablissement(_.find(ctrl.etablissements, ['_id', $stateParams.etablissementId]) ||  _.first(ctrl.etablissements));
 
   });

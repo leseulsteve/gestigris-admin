@@ -1,21 +1,43 @@
-<div layout="column" flex>
-	
-	<div layout="row" flex>
+<benevole-section layout="row" flex>
 
-		<md-card layout="column" flex="30" flex-gt-lg="20" class="card-list">
-			
-			<md-content layout="column" flex>
-		
-				<md-list flex layout="column">
-					<md-list-item class="md-2-line" ui-sref-active="active"
+	<div layout="column" flex="30" flex-gt-lg="20">
+
+		<md-card>
+
+			<md-card-content>
+
+				<md-input-container md-no-float class="md-icon-float md-block no-errors-spacer ">
+					<md-icon md-svg-icon="action:search"></md-icon>
+					<input placeholder="recherche..." input-clear
+								 ng-model="search.benevoleName"
+								 ng-model-options="{ debounce: PARAMS.DEBOUNCE_TIME }"
+								 ng-change="benevolesSectionCtrl.updateSearch(search)">
+				</md-input-container>
+
+				<md-checkbox aria-label="Actifs"
+										 ng-model="search.actif"
+										 ng-change="benevolesSectionCtrl.updateSearch(search)">
+				  Actifs
+			  </md-checkbox>
+
+			</md-card-content>
+
+		</md-card>
+
+		<md-card flex>
+
+			<md-content flex>
+
+				<md-list section-list flex layout="column">
+					<md-list-item class="md-2-line" ng-class="{ active:item._id === benevole._id }"
 												ng-repeat="item in benevolesSectionCtrl.benevoles"
-												ng-click="undefined">
-						<avatar user="item"></avatar>
-			      <div class="md-list-item-text" ui-sref="benevoles.fiche({ benevoleId: item._id })">
+												ng-click="benevolesSectionCtrl.showBenevole(item)">
+						<avatar user="item" no-role></avatar>
+			      <div class="md-list-item-text">
 			        <h3>{{ item.toString() }}</h3>
 			        <p>{{ item.getRoleDescription() }} </p>
 			      </div>
-			    <md-divider ng-if="!$last"></md-divider>
+			    	<md-divider ng-if="!$last"></md-divider>
 			    </md-list-item>
 		    </md-list>
 
@@ -23,15 +45,15 @@
 
 		</md-card>
 
-		<div flex="70" flex-gt-lg="80" layout="column">
-
-			<div layout="row" flex layout-align="center center" ng-hide="benevole">
-				<md-progress-circular md-diameter="280"  md-mode="indeterminate"></md-progress-circular>
-			</div>
-			
-			<benevole-card ng-if="benevole" benevole="benevole"></benevole-card>
-
-		</div>
-		
 	</div>
-</div>
+
+	<div flex="70" flex-gt-lg="80" layout="column">
+
+		<div layout="row" flex layout-align="center center" ng-hide="lodadingDone">
+			<md-progress-circular md-diameter="280"  md-mode="indeterminate"></md-progress-circular>
+		</div>
+
+		<benevole-card ng-if="lodadingDone" benevole="benevole"></benevole-card>
+
+	</div>
+</benevole-section>

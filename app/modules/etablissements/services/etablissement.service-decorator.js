@@ -7,8 +7,14 @@ angular.module('etablissements').config(
 
       var Etablissement = $delegate;
 
-      Etablissement.search = function (term) {
-        return Etablissement.searchByName(term);
+      Etablissement.search = function (params) {
+        var query = {};
+        if (_.isString(params)) {
+          query = SearchFieldQueryBuilder.build(params);
+        } else  {
+          _.assign(query, params.etablissementName ? SearchFieldQueryBuilder.build(params.etablissementName) : undefined, _.omit(params, 'etablissementName'));
+        }
+        return Etablissement.find(query);
       };
 
       Etablissement.searchByName = function (params) {

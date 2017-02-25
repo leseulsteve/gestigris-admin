@@ -1,10 +1,18 @@
 <md-card layout="column" flex>
-	
-	<etablissement-map height="200px"
-										 width="100%"
-										 etablissement="etablissement">
-	</etablissement-map>
-	
+
+	<div class="card-header">
+		<div class="card-header-tools" flex layout="row" layout-align="end center">
+			<md-button class="md-icon-button" ng-click="benevoleCardCtrl.deleteBenevole($event, benevole)" ng-disabled="true">
+				<md-icon md-svg-icon="action:delete"></md-icon>
+				<md-tooltip>Supprimer</md-tooltip>
+			</md-button>
+		</div>
+		<etablissement-map height="200px"
+											 width="100%"
+											 etablissement="etablissement">
+		</etablissement-map>
+	</div>
+
 	<div layout="column" flex>
 
 		<md-tabs flex class="md-accent">

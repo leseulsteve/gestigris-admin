@@ -7,24 +7,40 @@ angular.module('benevoles').controller('BenevolesSectionController',
 
     ctrl.benevoles = benevoles;
 
+    $scope.search = _.assign({
+      actif: true
+    }, $stateParams.filters);
+
     ctrl.showBenevole = function (benevole) {
       if (_.isUndefined($scope.benevole) || benevole._id !== $scope.benevole._id) {
 
-        $scope.benevole = undefined;
+        $scope.lodadingDone = false;
+        $scope.benevole = benevole;
+
+        $state.go('benevoles.fiche', {
+          benevoleId: benevole._id
+        }, {
+          notify: false
+        });
 
         $q.all([
           $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
           Benevole.findById(benevole._id)
         ]).then(function (results) {
           $scope.benevole = _.last(results);
-          ctrl.currentIndex = _.indexOf(ctrl.benevoles, _.find(ctrl.benevoles, {
-            _id: $scope.benevole._id
-          }));
-          $scope.$watch('benevole', function (benevole) {
-            ctrl.benevoles.splice(ctrl.currentIndex, 1, benevole);
-          }, true);
+          $scope.lodadingDone = true;
         });
       }
+    };
+
+    ctrl.updateSearch = function (search) {
+      Benevole.search(search).then(function (benevoles) {
+        ctrl.benevoles = benevoles;
+        var firstBenevole = _.first(benevoles);
+        if (firstBenevole && $scope.benevole._id !== firstBenevole._id) {
+          ctrl.showBenevole(firstBenevole);
+        }
+      });
     };
 
     var listeners = [];
@@ -40,9 +56,7 @@ angular.module('benevoles').controller('BenevolesSectionController',
         return removedBenevole._id === benevole._id;
       });
       if (removedBenevole._id === $scope.benevole._id) {
-        return $state.go('benevoles.fiche', {
-          benevoleId: (ctrl.benevoles[ctrl.currentIndex - 1]  ||  _.first(ctrl.benevoles))._id
-        });
+        ctrl.showBenevole(ctrl.benevoles[ctrl.currentIndex - 1]  ||  _.first(ctrl.benevoles));
       }
     }));
 
@@ -52,16 +66,6 @@ angular.module('benevoles').controller('BenevolesSectionController',
       });
     });
 
-    var selectedBenevole = _.find(ctrl.benevoles, ['_id', $stateParams.benevoleId]);
-    if (selectedBenevole) {
-      ctrl.showBenevole(selectedBenevole);
-    } else {
-      $state.go('benevoles.fiche', {
-        benevoleId: _.first(ctrl.benevoles)._id
-      }, {
-        notify: false
-      });
-      ctrl.showBenevole(_.first(ctrl.benevoles));
-    }
+    ctrl.showBenevole(_.find(ctrl.benevoles, ['_id', $stateParams.benevoleId]) || _.first(ctrl.benevoles));
 
   });
