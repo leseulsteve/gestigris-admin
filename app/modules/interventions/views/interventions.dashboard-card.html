@@ -1,16 +1,23 @@
 <md-card ng-click="interventionsDashboardCardCtrl.handleClick($event)">
-	<md-card-content flex layout="column" layout-align="center center" class="text-center">
-		<md-icon flex style="height:50; width:50px" md-svg-icon="{{ INTERVENTIONS.ICONS.PLAGE }}"></md-icon>
-	  <div flex>
-	  	<div class="md-display-1" ng-if="interventionsDashboardCardCtrl.nbInterventions">
-	  		{{ interventionsDashboardCardCtrl.nbInterventions }}
-	  	</div>
-		  <ng-pluralize class="md-title"
-		  							count="interventionsDashboardCardCtrl.nbInterventions"
-	                 	when="{'0': 'Ajouter une intervention',
-	                         'one': 'plage à venir',
-	                         'other': 'plages à venir'}">
-			</ng-pluralize>
+	<md-card-content flex layout="column" layout-align="start center" layout-fill>
+
+		<div layout="row" flex="10" style="width:100%" layout-align="start start">
+			<md-icon flex="15" style="height:50px; width:50px;margin: inherit;" md-svg-icon="{{ INTERVENTIONS.ICONS.PLAGE }}"></md-icon>
+
+			<div layout="row" flex layout-align="start center">
+	  		<div class="md-display-1" style="margin-right:8px;" ng-if="interventionsDashboardCardCtrl.nbInterventions">
+	  			{{ interventionsDashboardCardCtrl.nbInterventions }}
+	  		</div>
+		  	<ng-pluralize class="md-title"
+		  								count="interventionsDashboardCardCtrl.nbInterventions"
+	                 		when="{'0': 'Ajouter une intervention',
+	                         	'one': 'plage d\'intervention à venir',
+	                         	'other': 'plages d\'intervention à venir'}">
+													</ng-pluralize>
+												</div>
+		</div>
+		<div flex style="width:100%">
+			<mini-calendar><mini-calendar>
 		</div>
 	</md-card-content>
 </md-card>
