@@ -1,29 +1,29 @@
 <md-list layout="column">
-  
+
   <md-content layout="column" flex>
-    
-    <md-list-item class="md-2-line" ng-repeat="message in messages | orderBy : 'date'"
+
+    <md-list-item class="md-2-line" ng-repeat="message in messages | orderBy : 'createdAt'"
                   ng-mouseover="showOptions = true"
                   ng-mouseleave="showOptions = false"
-                  ng-init="$last && scrollDown()">                
-      <avatar user="message.getAuthor()"></avatar>
+                  ng-init="$last && scrollDown()">
+      <avatar user="conversationCtrl.getAuthor(message.author)" no-role></avatar>
       <div class="md-list-item-text" layout="column">
         <div layout="row" flex>
-          <h3>{{ message.getAuthor().toString() }}</h3>
+          <h3>{{ conversationCtrl.getAuthor(message.author).toString() }}</h3>
           <span flex></span>
-          <span class="md-caption" ng-hide="message.author._id === currentUser._id && showOptions" style="padding-right:6px;line-height:23px;">
-            {{ message.getDate().fromNow() }}
+          <span class="md-caption" ng-hide="message.currentUserIsAuthor() && showOptions" style="padding-right:6px;line-height:23px;">
+            {{ message.createdAt.fromNow() }}
           </span>
           <md-button class="md-icon-button" aria-label="Supprimer"
                      style="margin:0px;padding:0px;min-height:23px;height:18px;"
-                     ng-show="message.author._id === currentUser._id && showOptions"
-                     ng-click="deleteMessage(message)">
+                     ng-show="message.currentUserIsAuthor() && showOptions"
+                     ng-click="conversationCtrl.deleteMessage(message)">
             <md-icon md-svg-icon="action:delete" style="height: 16px;"></md-icon>
           </md-button>
         </div>
         <p>{{ message.body }}</p>
       </div>
-      
+
     </md-list-item>
 
   </md-content>

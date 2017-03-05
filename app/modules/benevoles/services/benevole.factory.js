@@ -1,12 +1,18 @@
 'use strict';
 
 angular.module('benevoles').factory('Benevole',
-  function ($rootScope, $q, $timeout, Schema, SearchFieldQueryBuilder) {
+  function ($rootScope, Schema, Avatar, SearchFieldQueryBuilder) {
 
     var Benevole = new Schema('benevole');
 
     Benevole.post('find', function (next) {
       this.dateNaissance = new Date(this.dateNaissance);
+      if (_.isUndefined(this.avatar)) {
+        return Avatar.getDefaultAvatar(this).then(function (avatar) {
+          this.avatar = avatar;
+          next();
+        }.bind(this));
+      }
       next();
     });
 

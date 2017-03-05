@@ -19,6 +19,8 @@ angular.module('interventions').directive('participantAvatar',
 
         iElement.append('<avatar user="benevole"></avatar>');
 
+        iElement.find('avatar').attr('click-for-details-avatar', '');
+
         if (iAttrs.hasOwnProperty('showStatus')) {
           iElement.append('<md-icon class="md-whiteframe-3dp" md-svg-icon="{{ iconName }}"></md-icon>');
         }

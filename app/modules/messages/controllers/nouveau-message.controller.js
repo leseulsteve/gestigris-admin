@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('messages').controller('NouveauMessageController',
-  function (Benevole, Message, $mdToast) {
+  function (Benevole, Conversation, $mdToast, UserAuth) {
 
     var ctrl = this;
 
@@ -15,7 +15,11 @@ angular.module('messages').controller('NouveauMessageController',
 
     ctrl.searchDestinataires = function (query) {
       return Benevole.search(query).then(function (results) {
-        return _.difference(results, ctrl.message.destinataires);
+        return _.map(_.differenceBy(results, ctrl.message.destinataires, '_id'), function (destinataire) {
+          return _.assign(destinataire, {
+            fullname: destinataire.toString()
+          });
+        });
       });
     };
 
@@ -32,7 +36,12 @@ angular.module('messages').controller('NouveauMessageController',
       ctrl.dialog.hide().then(function () {
         $mdToast.show(toast).then(function (response) {
           if (_.isUndefined(response)) {
-            Message.create(ctrl.message);
+            Conversation.create({
+              title: ctrl.message.subject,
+              participants: _.map(ctrl.message.destinataires, '_id').concat(UserAuth.getCurrentUser()._id),
+              type: 'private',
+              message: ctrl.message.body
+            });
           }
         });
       });

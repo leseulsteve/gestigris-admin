@@ -6,17 +6,18 @@ angular.module('messages').directive('messagesDashboardCard',
       restrict: 'E',
       templateUrl: 'modules/messages/views/messages.dashboard-card.html',
       controllerAs: 'messagesDashboardCardCtrl',
-      controller: function ( /*, $state*/ ) {
+      controller: function (Conversation, $state) {
 
         var ctrl = this;
 
         ctrl.handleClick = function () {
-          // $state.go('conversations');
+          $state.go('conversations');
         };
 
-        //Etablissement.count().then(function (etablissements) {
-        ctrl.nbNouveauxMessages = 8; //etablissements.length;
-        //});
+        Conversation.getNbNewMessages().then(function (nb) {
+          ctrl.nbNouveauxMessages = nb;
+        });
+
       }
     };
   });

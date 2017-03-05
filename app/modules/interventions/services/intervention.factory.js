@@ -12,6 +12,7 @@ angular.module('interventions').factory('Intervention',
       };
 
       DemandeParticipation.getByInterventionId(this._id).then(function (demandes) {
+
         this.demandesParticipations = demandes;
 
         $q.all([

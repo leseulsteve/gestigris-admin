@@ -24,16 +24,13 @@ angular.module('conversations').directive('conversation',
 
         var unwatch = scope.$watch('conversation', function (conversation) {
           if (conversation) {
-            scope.messages = scope.conversation.getMessages();
+            scope.conversation.getMessages().then(function (messages) {
+              scope.messages = messages;
+            });
             unwatch();
           }
         });
 
-        scope.deleteMessage = function (message) {
-          message.remove().then(function () {
-            _.pull(scope.conversation.messages, message);
-          });
-        };
       }
     };
   });

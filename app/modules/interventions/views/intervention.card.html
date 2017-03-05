@@ -113,7 +113,7 @@
 							 dnd-drop="interventionCardCtrl.droppedInParticipants(item)">
 						<participant-avatar ng-repeat="benevole in interventionCardCtrl.participants"
 																benevole="benevole" intervention="intervention"
-																click-for-details-avatar show-status
+																show-status
 																dnd-dragstart="interventionCardCtrl.toogleGarbage(true)"
 																dnd-dragend="interventionCardCtrl.toogleGarbage(false)"
 												  			dnd-draggable="benevole"
@@ -137,7 +137,6 @@
 										dnd-drop="interventionCardCtrl.droppedInInterested(item)">
 					<participant-avatar ng-repeat="benevole in interventionCardCtrl.interested"
 															benevole="benevole" intervention="intervention"
-															click-for-details-avatar
 			       	  							dnd-draggable="benevole"
 			       	  							dnd-type="intervention._id"
 				          						dnd-moved="interventionCardCtrl.interested.splice($index, 1)"

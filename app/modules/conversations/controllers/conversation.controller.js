@@ -1,9 +1,24 @@
 'use strict';
 
 angular.module('conversations').controller('ConversationController',
-  function ($scope, Message) {
+  function ($scope, Benevole, Message) {
 
     var ctrl = this;
+
+    var unwatch = $scope.$watch('messages', function (messages) {
+      if (messages)  {
+        Benevole.find({
+          _id: {
+            $in: _.map(messages, 'author')
+          }
+        }).then(function (benevoles) {
+          ctrl.getAuthor = function (authorId) {
+            return _.find(benevoles, '_id', authorId);
+          };
+          unwatch();
+        });
+      }
+    });
 
     ctrl.addMessage = function (newMessage) {
 
@@ -11,9 +26,9 @@ angular.module('conversations').controller('ConversationController',
         conversation: $scope.conversation._id,
       }, newMessage)).then(function (message) {
         $scope.newMessage = {};
-        $scope.conversation.messages.push(message);
+        $scope.messages.push(message);
 
-        var isParticipating = false,
+        /*  var isParticipating = false,
           participants = $scope.conversation.getParticipants();
 
         _.forEach(participants, function (participant) {
@@ -23,7 +38,13 @@ angular.module('conversations').controller('ConversationController',
         if (!isParticipating) {
           participants.push(message.author);
         }
+*/
+      });
+    };
 
+    ctrl.deleteMessage = function (message) {
+      message.remove().then(function () {
+        _.pull($scope.messages, message);
       });
     };
 

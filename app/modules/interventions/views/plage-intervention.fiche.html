@@ -45,21 +45,7 @@
       <md-tab label="Conversation" layout-fill>
 				<md-tab-body>
           <div class="layout-bg" layout="column" flex>
-        		<md-card class="plage-card" layout="column" flex>
-        			<md-card-title layout="column" style="max-height:155px;height:155px;padding-bottom:0px">
-        				<div class="md-title">Participants</div>
-        				<div layout="row" layout-align="start center" layout-wrap layout-margin>
-                  <participant-avatar ng-repeat="benevole in plageFicheCtrl.conversation.getParticipants()"
-                                      plage="plageFicheCtrl.plage"
-                                      click-for-details-avatar show-status>
-                  </participant-avatar>
-  					    </div>
-        			</md-card-title>
-              <span flex></span>
-        			<md-card-content layout="column">
-        				<conversation conversation="plageFicheCtrl.conversation" layout="column"></conversation>
-        			</md-card-content>
-        		</md-card>
+						<conversation-card conversation="plageFicheCtrl.conversation"></conversation-card>
           </div>
         </md-tab-body>
       </md-tab>
@@ -79,19 +65,12 @@
                   </div>
                   <div>
                     <div>{{ plageFicheCtrl.plage.createdAt.format('LL') }}</div>
-                    <hidden-input ng-model="plageFicheCtrl.plage.createdBy"
-                                  aria-label="créé par">
-                    </hidden-input>
-                    <hidden-input ng-model="plageFicheCtrl.plage.contact"
-                                  aria-label="contact">
-                    </hidden-input>
+										<div>{{ plageFicheCtrl.plage.createdBy }}</div>
+										<div>{{ plageFicheCtrl.plage.contact.toString() }}</div>
                   </div>
                 </div>
               </md-card-content>
             </md-card>
-          <!--  <etablissement-card class="plage-card"
-                                etablissement="plageFicheCtrl.etablissement">
-            </etablissement-card>-->
 		  		</md-content>
         </md-tab-body>
       </md-tab>

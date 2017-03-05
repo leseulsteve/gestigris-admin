@@ -12,7 +12,11 @@ angular.module('conversations').config(
         conversations: function ($q, $timeout, Conversation, PARAMS) {
           return $q.all([
             $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
-            Conversation.find()
+            Conversation.find({
+              type: {
+                $ne: 'intervention'
+              }
+            })
           ]).then(function (results) {
             return _.last(results);
           });

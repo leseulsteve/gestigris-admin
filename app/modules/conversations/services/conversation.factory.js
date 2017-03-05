@@ -1,11 +1,53 @@
 'use strict';
 
 angular.module('conversations').factory('Conversation',
-  function ($q, Schema, Message, User, UserAuth, Moment, Benevole) {
+  function ($q, Schema, Message, User, UserAuth, Benevole) {
 
-    /*var Conversation = new Schema('conversation');
+    var Conversation = new Schema('conversation');
 
-    Conversation.post('find', function (next) {
+    Conversation.getNbNewMessages = function () {
+      var currentUser = UserAuth.getCurrentUser();
+      return Conversation.find({
+        participants: currentUser._id,
+        archived: false,
+        type: {
+          $ne: 'intervention'
+        }
+      }).then(function (conversations) {
+        return Message.count({
+          conversation: {
+            $in: _.map(conversations, '_id')
+          },
+          readBy: {
+            $ne: currentUser._id
+          }
+        });
+      });
+    };
+
+    Conversation.prototype.toString = function () {
+      return this.title;
+    };
+
+    Conversation.prototype.getParticipants = function () {
+      return Benevole.find({
+        _id: {
+          $in: this.participants
+        }
+      });
+    };
+
+    Conversation.prototype.getMessages = function () {
+      return Message.find({
+        conversation: {
+          $in: this._id
+        }
+      });
+    };
+
+    /////////
+
+    /*Conversation.post('find', function (next) {
 
       if (this.messages) {
         for (var i = 0; i < this.messages.length; i++) {
@@ -22,62 +64,40 @@ angular.module('conversations').factory('Conversation',
       }
 
       next();
-    });*/
-
-    var Conversation = function (params) {
-      _.assign(this, params);
-      this.messages = [];
-    };
-
-    Conversation.findById = function () {
-
-      return Benevole.find().then(function (benevoles) {
-        return new Conversation({
-          participants: _.take(benevoles, 7)
-        });
-      });
-    };
+    });
 
     //
 
-    Conversation.prototype.getMessages = function () {
-      return this.messages;
-    };
+     Conversation.prototype.hasNewMessages = function () {
 
-    Conversation.prototype.hasNewMessages = function () {
+        var currentUser = UserAuth.getCurrentUser(),
+          lastVisit = new Date(currentUser.getLastVisit()),
+          lastMessage = this.getLastMessage();
 
-      var currentUser = UserAuth.getCurrentUser(),
-        lastVisit = new Date(currentUser.getLastVisit()),
-        lastMessage = this.getLastMessage();
+        return lastMessage && new Date(lastMessage.created.date) > lastVisit && lastMessage.author._id !== currentUser._id;
+      };
 
-      return lastMessage && new Date(lastMessage.created.date) > lastVisit && lastMessage.author._id !== currentUser._id;
-    };
+      Conversation.prototype.getLastMessage = function () {
+        return _.last(_.sortBy(this.messages, function (message) {
+          return new Date(message.created.date);
+        }));
+      };
 
-    Conversation.prototype.getLastMessage = function () {
-      return _.last(_.sortBy(this.messages, function (message) {
-        return new Date(message.created.date);
-      }));
-    };
+      Conversation.getFromTeam = function () {
+        return Conversation.find({
+          type: 'equipe'
+        });
+      };
 
-    Conversation.prototype.getParticipants = function () {
-      return this.participants;
-    };
+      Conversation.getGeneral = function () {
+        return Conversation.find({
+          type: 'general'
+        });
+      };
 
-    Conversation.getFromTeam = function () {
-      return Conversation.find({
-        type: 'equipe'
-      });
-    };
-
-    Conversation.getGeneral = function () {
-      return Conversation.find({
-        type: 'general'
-      });
-    };
-
-    Conversation.prototype.getTitle = function () {
-      return this.title;
-    };
+      Conversation.prototype.getTitle = function () {
+        return this.title;
+      };*/
 
     return Conversation;
 
