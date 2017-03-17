@@ -1,9 +1,11 @@
 'use strict';
 
-angular.module('messages').controller('NouveauMessageController',
+angular.module('conversations').controller('NouveauMessageController',
   function (Benevole, Conversation, $mdToast, UserAuth) {
 
     var ctrl = this;
+
+    var currentUser = UserAuth.getCurrentUser();
 
     var toast = $mdToast.simple()
       .action('annuler')
@@ -13,9 +15,14 @@ angular.module('messages').controller('NouveauMessageController',
       destinataires: ctrl.receivers || []
     };
 
-    ctrl.searchDestinataires = function (query) {
-      return Benevole.search(query).then(function (results) {
-        return _.map(_.differenceBy(results, ctrl.message.destinataires, '_id'), function (destinataire) {
+    ctrl.searchDestinataires = function (searchTerm) {
+      return Benevole.search({
+        _id: {
+          $nin: _.map(ctrl.message.destinataires, '_id').concat(currentUser._id)
+        },
+        benevoleName: searchTerm
+      }).then(function (results) {
+        return _.map(results, function (destinataire) {
           return _.assign(destinataire, {
             fullname: destinataire.toString()
           });
@@ -38,7 +45,7 @@ angular.module('messages').controller('NouveauMessageController',
           if (_.isUndefined(response)) {
             Conversation.create({
               title: ctrl.message.subject,
-              participants: _.map(ctrl.message.destinataires, '_id').concat(UserAuth.getCurrentUser()._id),
+              participants: _.map(ctrl.message.destinataires, '_id').concat(currentUser._id),
               type: 'private',
               message: ctrl.message.body
             });

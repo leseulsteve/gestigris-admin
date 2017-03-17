@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('messages').constant('MESSAGES', {
+angular.module('conversations').constant('MESSAGES', {
   ICONS: {
     MESSAGE: 'communication:message'
   }
 });
 
-angular.module('messages').run(
+angular.module('conversations').run(
   function ($rootScope, MESSAGES) {
     $rootScope.MESSAGES = MESSAGES;
   });
