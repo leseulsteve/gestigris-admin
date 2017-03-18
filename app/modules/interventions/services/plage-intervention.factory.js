@@ -6,7 +6,7 @@ angular.module('interventions').factory('PlageIntervention',
     var PlageIntervention = new Schema('plage-intervention');
 
     PlageIntervention.pre('create', function (next) {
-      this.createdBy = UserAuth.getCurrentUser().getFullName();
+      this.createdBy = UserAuth.getCurrentUser().toString();
       next();
     });
 
@@ -16,6 +16,19 @@ angular.module('interventions').factory('PlageIntervention',
       this.contact = new Contact(this.contact);
       next();
     });
+
+    PlageIntervention.search = function (terms) {
+      return Etablissement.search(terms).then(function (etablissements) {
+        return PlageIntervention.find({
+          etablissement: {
+            $in: _.map(etablissements, '_id')
+          },
+          date: {
+            $gte: new Moment().startOf('day')
+          }
+        });
+      });
+    };
 
     PlageIntervention.formatFilters = function (filters) {
       var query = {};
@@ -40,6 +53,10 @@ angular.module('interventions').factory('PlageIntervention',
       }
     };
 
+    PlageIntervention.prototype.toString = function () {
+      return this.date.format('MM-DD-YYYY') + ' - ' + this.etablissement.toString();
+    };
+
     PlageIntervention.prototype.getInterventions = function () {
       return Intervention.findByPlageId(this._id);
     };
@@ -56,13 +73,7 @@ angular.module('interventions').factory('PlageIntervention',
         });
       };
 
-      PlageIntervention.search = function () {
-        return $q.when([]);
-      };
 
-      PlageIntervention.prototype.toString = function () {
-        return this.date.format('MM-DD-YYYY') + ' - ' + this.etablissement.toString();
-      };
 
       PlageIntervention.prototype.getDate = function () {
         return this.date;

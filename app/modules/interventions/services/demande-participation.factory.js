@@ -11,6 +11,19 @@ angular.module('interventions').factory('DemandeParticipation',
       });
     };
 
+    DemandeParticipation.prototype.acceptAndConfirm = function () {
+      return _.assign(this, {
+        accepted: true,
+        confirmed: true,
+      }).save();
+    };
+
+    DemandeParticipation.prototype.unAccept = function () {
+      return _.assign(this, {
+        accepted: false
+      }).save();
+    };
+
     DemandeParticipation.prototype.isAccepted = function () {
       return this.accepted;
     };

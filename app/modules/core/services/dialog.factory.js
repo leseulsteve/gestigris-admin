@@ -7,9 +7,9 @@ angular.module('core').factory('Dialog',
       this.config = _.assign({
         parent: angular.element(document.body),
         bindToController: true,
-        locals: _.assign({
+        locals: _.assign(params.locals, {
           dialog: this
-        }, params.locals)
+        })
       }, params);
     };
 

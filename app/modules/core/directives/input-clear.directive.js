@@ -10,7 +10,7 @@ angular.module('core').directive('inputClear',
         tElement.parent().css('position', 'relative');
 
         tElement.after(
-          '<md-button arial-label="clear" class="md-icon-button clear-button" ng-show="hasValue" ng-click="clearInput()" style="position: absolute; bottom: 0px; right: -14px;">' +
+          '<md-button arial-label="clear" aria-label="Rénitialiser" class="md-icon-button clear-button" ng-show="hasValue" ng-click="clearInput()" style="position: absolute; bottom: 0px; right: -14px;">' +
           '<md-icon md-svg-icon="content:clear"></md-icon>' +
           '</md-button>');
       },

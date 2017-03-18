@@ -18,7 +18,11 @@ angular.module('interventions').config(
     SearchServiceProvider.register({
       factory: 'PlageIntervention',
       type: 'plage d\'intervention',
-      icon: INTERVENTIONS.ICONS.PLAGE
+      icon: INTERVENTIONS.ICONS.PLAGE,
+      resultState: {
+        name: 'interventions.fiche',
+        param: 'plageId'
+      }
     });
 
     EventServiceProvider.register({

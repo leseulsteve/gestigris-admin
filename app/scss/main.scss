@@ -13,6 +13,16 @@
 @import "conversation";
 @import "hidden-input";
 
+html {
+  overflow: hidden;
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  overflow: auto;
+}
+
 .shake-it {
   animation: shake 1s;
 }

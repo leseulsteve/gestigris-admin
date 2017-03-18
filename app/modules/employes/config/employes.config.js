@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('employes').config(
+/*angular.module('employes').config(
   function (SearchServiceProvider) {
 
     SearchServiceProvider.register({
@@ -9,4 +9,4 @@ angular.module('employes').config(
       icon: 'action:account_circle'
     });
 
-  });
+  });*/

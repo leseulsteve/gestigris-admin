@@ -16,9 +16,16 @@ angular.module('interventions').controller('AddParticipantController',
     ctrl.add = function (addParticipantForm, message) {
 
       if (addParticipantForm.$valid) {
-        ctrl.dialog.hide(message.destinataire);
+        ctrl.dialog.hide(message);
       }
     };
 
-    ctrl.search = Benevole.search;
+    ctrl.search = function (terms) {
+      return Benevole.search({
+        _id: {
+          $nin: ctrl.exclude
+        },
+        benevoleName: terms
+      });
+    };
   });

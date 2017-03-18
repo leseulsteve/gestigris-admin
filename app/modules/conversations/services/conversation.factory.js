@@ -37,6 +37,10 @@ angular.module('conversations').factory('Conversation',
       });
     };
 
+    Conversation.prototype.hasParticipants = function () {
+      return this.participants.length !== 0;
+    };
+
     Conversation.prototype.getMessages = function () {
       return Message.find({
         conversation: {

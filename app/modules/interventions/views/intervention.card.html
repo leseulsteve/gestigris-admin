@@ -29,9 +29,15 @@
 
 	    <span flex></span>
 
-	    <md-icon class="status-icon" md-svg-icon="action:done"></md-icon>
+			<md-button class="status-icon md-icon-button"
+								 ng-class="{ booked: intervention.isBooked() }"
+								 ng-click="intervention.book()"
+								 ng-disabled="intervention.isBooked()">
+				<md-icon md-svg-icon="{{ intervention.isBooked() ? 'action:lock' : 'action:lock_open' }}"></md-icon>
+				<md-tooltip>Fermer</md-tooltip>
+			</md-button>
 
-			<md-button class="md-icon-button" ng-click="binterventionCardCtrl.removeIntervention($event, $index, intervention)" ng-disabled="true">
+			<md-button class="md-icon-button" ng-click="interventionCardCtrl.removeIntervention($event, $index, intervention)" ng-disabled="true">
 				<md-icon md-svg-icon="action:delete"></md-icon>
 				<md-tooltip>Supprimer</md-tooltip>
 			</md-button>

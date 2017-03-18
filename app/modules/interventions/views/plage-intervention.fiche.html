@@ -42,7 +42,7 @@
 					</md-content>
         </md-tab-body>
       </md-tab>
-      <md-tab label="Conversation" layout-fill>
+      <md-tab label="Conversation" layout-fill ng-if="plageFicheCtrl.conversation.hasParticipants()">
 				<md-tab-body>
           <div class="layout-bg" layout="column" flex>
 						<conversation-card conversation="plageFicheCtrl.conversation"></conversation-card>

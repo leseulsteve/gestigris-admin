@@ -6,6 +6,7 @@ angular.module('interventions').factory('Intervention',
     var Intervention = new Schema('intervention');
 
     Intervention.post('find', function (next) {
+
       this.date = {
         start: new Moment(this.date.start),
         end: new Moment(this.date.end)
@@ -51,84 +52,81 @@ angular.module('interventions').factory('Intervention',
       return $q.when(type === 'interested' ? this.interested : this.participants);
     };
 
-    Intervention.prototype.addInterested = function (benevole) {
+    Intervention.prototype.addParticipant = function (benevole, message) {
 
-      var that = this;
-      var toast = $mdToast.simple()
-        .textContent('Annulation de la partipation envoyé à ' + benevole.toString() + '!')
-        .action('annuler')
-        .highlightAction(true);
+      var intervention = this;
 
-      return $mdToast.show(toast).then(function (response) {
-        if (response) {
-          return $q.reject();
-        }
-        if (_.isUndefined(response)) {
-          return _.assign(that.getDemandeParticipation(benevole), {
-            accepted: false
-          }).save().then(function () {
-            return benevole;
-          });
-        }
-      });
-    };
+      function add() {
 
-    Intervention.prototype.addParticipant = function (benevole) {
+        var demandeParticipation = intervention.getDemandeParticipation(benevole);
 
-      var that = this;
-
-      var toast = $mdToast.simple()
-        .textContent('Demande de confirmation envoyé à ' + benevole.toString() + '!')
-        .action('annuler')
-        .highlightAction(true);
-
-      return $mdToast.show(toast).then(function (response) {
-
-        if (_.isUndefined(response)) {
-          var demandeParticipation = that.getDemandeParticipation(benevole);
-
-          // Était déjà intéressé.
-          if (demandeParticipation) {
-            return _.assign(demandeParticipation, {
-              accepted: true
-            }).save().then(function () {
-              return benevole;
-            });
-          }
-
-          // N'était pas intéressé.
-          return DemandeParticipation.create({
-            benevole: benevole._id,
-            intervention: that._id,
-            accepted: true
-          }).then(function (demandeParticipation) {
-            that.participants.push(benevole);
-            that.demandesParticipations.push(demandeParticipation);
+        // Était déjà intéressé.
+        if (demandeParticipation) {
+          return demandeParticipation.acceptAndConfirm().then(function () {
             return benevole;
           });
         }
 
-        // Changer d'idée.
+        // N'était pas intéressé.
+        return DemandeParticipation.create({
+          benevole: benevole._id,
+          intervention: intervention._id,
+          accepted: true,
+          message: message
+        }).then(function (demandeParticipation) {
+          intervention.participants.push(benevole);
+          intervention.demandesParticipations.push(demandeParticipation);
+          return benevole;
+        });
+      }
+
+      if (!intervention.isBooked()) {
+        return add();
+      }
+
+      var toast = $mdToast.simple()
+        .textContent('Envois de la confirmation à ' + benevole.toString() + '...')
+        .action('annuler')
+        .highlightAction(true);
+
+      return $mdToast.show(toast).then(function (response) {
+
         if (response === 'ok') {
           return $q.reject();
         }
+
+        return add();
+
       });
+
     };
 
-    Intervention.prototype.removeBenevoleFromParticipants = function (benevole) {
-      var that = this;
+    Intervention.prototype.removeBenevoleFromParticipants = function (benevole, forGood) {
+
+      var intervention = this;
+
+      function remove() {
+        var demandeParticipation = intervention.getDemandeParticipation(benevole);
+        return forGood ? demandeParticipation.remove() : demandeParticipation.unAccept();
+      }
+
+      if (!intervention.isBooked()) {
+        return remove();
+      }
+
       var toast = $mdToast.simple()
-        .textContent('Annulation de la partipation envoyé à ' + benevole.toString() + '!')
+        .textContent('Envois de l\'annulation de la partipation à ' + benevole.toString() + '...')
         .action('annuler')
         .highlightAction(true);
 
       return $mdToast.show(toast).then(function (response) {
-        if (response) {
+
+        if (response === 'ok') {
           return $q.reject();
         }
-        if (_.isUndefined(response)) {
-          return that.getDemandeParticipation(benevole).remove();
-        }
+
+        return remove();
+
       });
     };
 
@@ -141,50 +139,71 @@ angular.module('interventions').factory('Intervention',
       return demande ? demande.isConfirmed() : false;
     };
 
-    ///
-
-    Intervention.prototype.isBooked = function () {
-      return true;
-    };
-
-    ////
-
-    Intervention.getUrgents = function () {
-      return Intervention.find({
-        'date.start': {
-          $gte: new Moment().subtract(1, 'week')
-        }
-      });
-    };
-
-    Intervention.getByDate = function (date) {
-      return Intervention.find({
-        date: {
-          start: date.startOf('day'),
-          end: date.endOf('day')
-        }
-      });
-    };
-
     Intervention.prototype.getDateRange = function () {
       return this.date;
     };
 
-    Intervention.prototype.toString = function () {
-      return this.etablissement ? this.etablissement.toString() : undefined;
+    Intervention.prototype.isBooked = function () {
+      return this.status === 'CLOSE';
     };
 
-    Intervention.prototype.getEtablissement = function () {
-      return this.etablissement;
+    Intervention.prototype.book = function () {
+
+      if (!this.isBooked()) {
+
+        var intervention = this,
+          toast = $mdToast.simple()
+          .textContent('Envois des notifications aux bénov...')
+          .action('annuler')
+          .highlightAction(true);
+
+        return $mdToast.show(toast).then(function (response) {
+          if (response) {
+            return $q.reject();
+          }
+          if (_.isUndefined(response)) {
+            return _.assign(intervention, {
+              status: 'CLOSE'
+            }).save();
+          }
+        });
+      }
+
+      return $q.reject('L\'intervention était déjà fermée');
+
     };
 
-    Intervention.prototype.getDate = function () {
-      return this.date;
-    };
+    ////
 
-    Intervention.prototype.getStateIcon = function () {
-      return 'navigation:check';
-    };
+    /*  Intervention.getUrgents = function () {
+        return Intervention.find({
+          'date.start': {
+            $gte: new Moment().subtract(1, 'week')
+          }
+        });
+      };
+
+      Intervention.getByDate = function (date) {
+        return Intervention.find({
+          date: {
+            start: date.startOf('day'),
+            end: date.endOf('day')
+          }
+        });
+      };
+
+      Intervention.prototype.toString = function () {
+        return this.etablissement ? this.etablissement.toString() : undefined;
+      };
+
+      Intervention.prototype.getEtablissement = function () {
+        return this.etablissement;
+      };
+
+
+      Intervention.prototype.getStateIcon = function () {
+        return 'navigation:check';
+      };*/
 
     return Intervention;
 

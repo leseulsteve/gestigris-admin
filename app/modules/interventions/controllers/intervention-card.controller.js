@@ -77,13 +77,18 @@ angular.module('interventions').controller('InterventionCardController',
 
     ctrl.droppedInInterested = function (item) {
       var benevole = new Benevole(item);
-      $scope.intervention.addInterested(benevole)
-        .catch(function () {
-          _.pull(ctrl.interested, benevole);
-          ctrl.participants.splice(_.sortedIndexBy(ctrl.participants, benevole, function (benevole) {
-            return benevole.toString();
-          }), 0, benevole);
-        });
+
+      // Était dans la liste des participants
+      if ($scope.intervention.getDemandeParticipation(benevole).isAccepted()) {
+        $scope.intervention.removeBenevoleFromParticipants(benevole)
+          .catch(function () {
+            _.pull(ctrl.interested, benevole);
+            ctrl.participants.splice(_.sortedIndexBy(ctrl.participants, benevole, function (benevole) {
+              return benevole.toString();
+            }), 0, benevole);
+          });
+      }
+
       return benevole;
     };
 
@@ -107,7 +112,7 @@ angular.module('interventions').controller('InterventionCardController',
 
     ctrl.droppedInGarbage = function (item) {
       var benevole = new Benevole(item);
-      $scope.intervention.removeBenevoleFromParticipants(benevole)
+      $scope.intervention.removeBenevoleFromParticipants(benevole, true)
         .catch(function () {
           ctrl.participants.push(benevole);
         });
@@ -118,18 +123,23 @@ angular.module('interventions').controller('InterventionCardController',
       $scope.showGarbage = value;
     };
 
-    var addParticipantDialog = new Dialog({
-      templateUrl: 'modules/interventions/views/add-participant.dialog.html',
-      controller: 'AddParticipantController',
-      controllerAs: 'addParticipantCtrl'
-    });
-
     ctrl.addParticipant = function ($event) {
-      addParticipantDialog.show($event).then(function (benevole) {
+
+      var addParticipantDialog = new Dialog({
+        templateUrl: 'modules/interventions/views/add-participant.dialog.html',
+        controller: 'AddParticipantController',
+        controllerAs: 'addParticipantCtrl',
+        locals: {
+          exclude: _.map(ctrl.participants.concat(ctrl.interested), '_id')
+        }
+      });
+
+      addParticipantDialog.show($event).then(function (message) {
+        var benevole = message.destinataire;
         ctrl.participants.splice(_.sortedIndexBy(ctrl.participants, benevole, function (benevole) {
           return benevole.toString();
         }), 0, benevole);
-        $scope.intervention.addParticipant(benevole).catch(function () {
+        $scope.intervention.addParticipant(benevole, message.body).catch(function () {
           _.pull(ctrl.participants, benevole);
         });
       });
