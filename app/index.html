@@ -94,7 +94,6 @@
         <script src="modules/etablissements/etablissements.module.js"></script>
         <script src="modules/events/events.module.js"></script>
         <script src="modules/interventions/interventions.module.js"></script>
-        <script src="modules/messages/messages.module.js"></script>
         <script src="modules/navigation/navigation.module.js"></script>
         <script src="modules/search/search.module.js"></script>
         <script src="modules/sockets/sockets.module.js"></script>
@@ -106,6 +105,8 @@
         <script src="modules/conversations/config/conversation.config.js"></script>
         <script src="modules/conversations/config/conversation.constants.js"></script>
         <script src="modules/conversations/config/conversations.routes.js"></script>
+        <script src="modules/conversations/config/messages.config.js"></script>
+        <script src="modules/conversations/config/messages.constants.js"></script>
         <script src="modules/core/config/core.config.js"></script>
         <script src="modules/core/config/core.constants.js"></script>
         <script src="modules/dashboard/config/core.routes.js"></script>
@@ -116,8 +117,6 @@
         <script src="modules/interventions/config/interventions.config.js"></script>
         <script src="modules/interventions/config/interventions.constants.js"></script>
         <script src="modules/interventions/config/interventions.routes.js"></script>
-        <script src="modules/messages/config/messages.config.js"></script>
-        <script src="modules/messages/config/messages.constants.js"></script>
         <script src="modules/sockets/config/socket.run.js"></script>
         <script src="modules/users/config/user-auth.config.js"></script>
         <script src="modules/benevoles/services/benevole-role.factory.js"></script>
@@ -128,6 +127,7 @@
         <script src="modules/contacts/services/poste.factory.js"></script>
         <script src="modules/conversations/services/conversation.factory.js"></script>
         <script src="modules/conversations/services/conversation.service.js"></script>
+        <script src="modules/conversations/services/message-dialog.service.js"></script>
         <script src="modules/conversations/services/message.factory.js"></script>
         <script src="modules/core/services/_sortedPush.lodash-mixin.js"></script>
         <script src="modules/core/services/dialog.factory.js"></script>
@@ -146,7 +146,6 @@
         <script src="modules/interventions/services/intervention.factory.js"></script>
         <script src="modules/interventions/services/plage-intervention.factory.js"></script>
         <script src="modules/interventions/services/remove-intervention-dialog.service.js"></script>
-        <script src="modules/messages/services/message-dialog.service.js"></script>
         <script src="modules/navigation/services/fab-speed-dial.service.js"></script>
         <script src="modules/navigation/services/toolbar-menu.service.js"></script>
         <script src="modules/search/services/search.service.js"></script>
@@ -161,6 +160,7 @@
         <script src="modules/conversations/directives/conversation-side-nav-list.directive.js"></script>
         <script src="modules/conversations/directives/conversation.directive.js"></script>
         <script src="modules/conversations/directives/conversations-card.directive.js"></script>
+        <script src="modules/conversations/directives/messages-dashboard-card.directive.js"></script>
         <script src="modules/core/directives/auto-save-form.directive.js"></script>
         <script src="modules/core/directives/email-validation.directive.js"></script>
         <script src="modules/core/directives/hidden-input.directive.js"></script>
@@ -180,7 +180,6 @@
         <script src="modules/interventions/directives/participant-avatar.directive.js"></script>
         <script src="modules/interventions/directives/plage-intervention-fiche.directive.js"></script>
         <script src="modules/interventions/directives/urgent-interventions-card.directive.js"></script>
-        <script src="modules/messages/directives/messages-dashboard-card.directive.js"></script>
         <script src="modules/navigation/directives/fab-speed-dial.directive.js"></script>
         <script src="modules/navigation/directives/side-nav.directive.js"></script>
         <script src="modules/navigation/directives/toolbar.directive.js"></script>
@@ -194,6 +193,7 @@
         <script src="modules/conversations/controllers/conversation-fiche.controller.js"></script>
         <script src="modules/conversations/controllers/conversation.controller.js"></script>
         <script src="modules/conversations/controllers/conversations-section.controller.js"></script>
+        <script src="modules/conversations/controllers/nouveau-message.controller.js"></script>
         <script src="modules/etablissements/controllers/etablissement-card.controller.js"></script>
         <script src="modules/etablissements/controllers/etablissement-form.controller.js"></script>
         <script src="modules/etablissements/controllers/etablissements-section.controller.js"></script>
@@ -205,7 +205,6 @@
         <script src="modules/interventions/controllers/plage-intervention-fiche.controller.js"></script>
         <script src="modules/interventions/controllers/plages-interventions-section.controller.js"></script>
         <script src="modules/interventions/controllers/urgent-interventions-card.controller.js"></script>
-        <script src="modules/messages/controllers/nouveau-message.controller.js"></script>
         <script src="modules/navigation/controllers/fab-speed-dial.controller.js"></script>
         <script src="modules/navigation/controllers/sidenav.controller.js"></script>
         <script src="modules/navigation/controllers/toolbar.controller.js"></script>

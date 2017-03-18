@@ -1,3 +1,3 @@
 'use strict';
 
-ApplicationConfiguration.registerModule('conversations', ['core', 'sockets']);
+ApplicationConfiguration.registerModule('conversations', ['navigation', 'search', 'core', 'sockets']);

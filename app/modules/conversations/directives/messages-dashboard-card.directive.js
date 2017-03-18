@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('messages').directive('messagesDashboardCard',
+angular.module('conversations').directive('messagesDashboardCard',
   function () {
     return {
       restrict: 'E',
-      templateUrl: 'modules/messages/views/messages.dashboard-card.html',
+      templateUrl: 'modules/conversations/views/messages.dashboard-card.html',
       controllerAs: 'messagesDashboardCardCtrl',
       controller: function (Conversation, $state) {
 

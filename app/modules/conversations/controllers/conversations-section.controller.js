@@ -43,10 +43,9 @@ angular.module('conversations').controller('ConversationsSectionController',
 
     var listeners = [];
 
-    listeners.push($rootScope.$on('Conversation:new', function ($event, newConversation) {
-      _.sortedPush(ctrl.conversations, newConversation, function (conversation) {
-        return conversation.toString();
-      });
+    listeners.push($rootScope.$on('Conversation:new:currentUser', function ($event, newConversation) {
+      ctrl.conversations.unshift(newConversation);
+      ctrl.showConversation(newConversation);
     }));
 
     $scope.$on('destroy', function () {

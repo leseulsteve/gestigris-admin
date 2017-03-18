@@ -1,9 +1,14 @@
 'use strict';
 
 angular.module('conversations').factory('Conversation',
-  function ($q, Schema, Message, User, UserAuth, Benevole) {
+  function ($rootScope, $q, Schema, Message, User, UserAuth, Benevole) {
 
     var Conversation = new Schema('conversation');
+
+    Conversation.post('create', function (next) {
+      $rootScope.$broadcast('Conversation:new:currentUser', this);
+      next();
+    });
 
     Conversation.getNbNewMessages = function () {
       var currentUser = UserAuth.getCurrentUser();
