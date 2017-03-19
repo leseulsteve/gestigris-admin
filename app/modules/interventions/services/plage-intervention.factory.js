@@ -57,6 +57,14 @@ angular.module('interventions').factory('PlageIntervention',
       return this.date.format('MM-DD-YYYY') + ' - ' + this.etablissement.toString();
     };
 
+    PlageIntervention.prototype.isBooked = function () {
+      return this.status === 'CLOSE';
+    };
+
+    PlageIntervention.prototype.isUrgent = function () {
+      return new Moment().endOf('day').add(2, 'weeks').isAfter(this.date) && this.status === 'OPEN';
+    };
+
     PlageIntervention.prototype.getInterventions = function () {
       return Intervention.findByPlageId(this._id);
     };
@@ -84,14 +92,6 @@ angular.module('interventions').factory('PlageIntervention',
         return true;
       };
 
-      PlageIntervention.prototype.getCalendarDay = function () {
-        return this.getDate().calendar(null, {
-          sameDay: '[Today]',
-          nextDay: '[Tomorrow]',
-          nextWeek: 'dddd',
-          lastDay: '[Yesterday]',
-          lastWeek: '[Last] dddd'
-        });
       };*/
 
     return PlageIntervention;

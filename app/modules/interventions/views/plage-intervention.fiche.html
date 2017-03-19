@@ -3,11 +3,6 @@
 	<div layout="column" layout-padding class="card-header">
 		<div layout="row">
 			<span flex></span>
-			<md-button class="md-icon-button" ng-show="plageFicheCtrl.interventions.length"
-								 ng-click="plageFicheCtrl.saveInterventions(true)">
-				<md-icon md-svg-icon="content:save"></md-icon>
-				<md-tooltip>Sauvegarde</md-tooltip>
-			</md-button>
 			<md-button class="md-icon-button" ng-click="benevoleCardCtrl.deleteBenevole($event, benevole)" ng-disabled="true">
 				<md-icon md-svg-icon="action:delete"></md-icon>
 				<md-tooltip>Supprimer</md-tooltip>
@@ -17,7 +12,20 @@
 		<div layout="row" class="fiche-title-over-custom-tabs">
 			<div layout="column" layout-align="center start">
 				<span class="md-title">{{ plageFicheCtrl.plage.etablissement.toString() }}</span>
-	      <span class="md-subhead">{{ plageFicheCtrl.plage.getCalendarDay() }}</span>
+				<div class="md-subhead" layout="row" layout-align="start center">
+					<md-icon ng-if="plageFicheCtrl.plage.isUrgent()"
+									 class="md-warn"
+									 md-svg-icon="alert:warning">
+						<md-tooltip>urgence</md-tooltip>
+					</md-icon>
+					<div layout="row" layout-align="start center" style="margin-top:10px">
+					<span>{{ plageFicheCtrl.plage.date.fromNow() }}</span>
+					<div ng-if="plageFicheCtrl.plage.contactNotified" layout="row" layout-align="start center">&nbsp
+						<md-icon class="md-primary" md-svg-icon="action:check_circle"></md-icon>&nbsp
+						<span style="color: rgba(0,0,0,0.54)">Contact nofifié</span>
+					</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('interventions').controller('PlageFicheController',
-  function ($scope, $q, $state, Moment, Toast, PlageIntervention, Intervention) {
+  function ($rootScope, $scope, $q, $state, Moment, PlageIntervention, Intervention) {
 
     var ctrl = this;
 
@@ -14,13 +14,15 @@ angular.module('interventions').controller('PlageFicheController',
       }
     });
 
-    function populatePlage(plage) {
-
-      plage.createdAt = new Moment(plage.createdAt);
-
-      plage.getConversation().then(function (conversation) {
+    ctrl.updateConversation = function (plage) {
+      (plage || ctrl.plage).getConversation().then(function (conversation) {
         ctrl.conversation = conversation;
       });
+    };
+
+    function populatePlage(plage) {
+      plage.createdAt = new Moment(plage.createdAt);
+      ctrl.updateConversation(plage);
 
       return Intervention.findByPlageId(plage._id).then(function (interventions) {
         ctrl.interventions = interventions;
@@ -31,26 +33,6 @@ angular.module('interventions').controller('PlageFicheController',
       ctrl.plage = $scope.plage;
     });
 
-    ctrl.saveInterventions = function (showToast) {
-      $q.all(_.map(ctrl.interventions, function (intervention) {
-        return intervention.save().then(function (intervention) {
-          return intervention.tags;
-        });
-      })).then(function (tags) {
-        _.assign(ctrl.plage, {
-          tags: _.uniq(_.flatten(tags))
-        }).save().then(function () {
-          if (showToast) {
-            Toast.show('Sauvegardé!');
-          }
-        });
-      });
-    };
-
-    $scope.$on('$destroy', function () {
-      ctrl.saveInterventions(false);
-    });
-
     ctrl.addIntervention = function () {
       Intervention.create(_.assign({
         date: {
@@ -58,13 +40,21 @@ angular.module('interventions').controller('PlageFicheController',
           end: new Date()
         },
         plage: ctrl.plage._id
-      }, _.omit(_.first(ctrl.interventions), ['createdAt', 'updatedAt', '_id']))).then(function (intervention) {
+      }, _.omit(_.first(ctrl.interventions), ['createdAt', 'updatedAt', '_id', 'status']))).then(function (intervention) {
         ctrl.interventions.unshift(intervention);
+        $rootScope.$broadcast('PLAGE:STATUS-CHANGE', _.assign(ctrl.plage, {
+          status: 'OPEN'
+        }));
       });
     };
 
     ctrl.removeIntervention = function ($index) {
       ctrl.interventions.splice($index, 1);
+    };
+
+    ctrl.updateStatus = function () {
+      ctrl.plage.status = _.filter(ctrl.interventions, ['status', 'OPEN']).length ? 'OPEN' : 'CLOSE';
+      $rootScope.$broadcast('PLAGE:STATUS-CHANGE', ctrl.plage);
     };
 
   });

@@ -45,7 +45,20 @@
 			        <h3>{{ item.etablissement.toString() }}</h3>
 			        <p>{{ item.date.format('dddd DD MMMM YYYY') }} </p>
 			      </div>
-						<md-icon md-svg-icon="action:done"></md-icon>
+						<md-icon ng-if="item.isUrgent()"
+									   class="md-warn"
+										 md-svg-icon="alert:warning">
+						  <md-tooltip>urgence</md-tooltip>
+						</md-icon>
+						<md-icon ng-if="item.contactNotified"
+									   class="md-primary"
+										 md-svg-icon="action:check_circle">
+						  <md-tooltip>contact notifié</md-tooltip>
+						</md-icon>
+						<md-icon ng-class="{ 'md-primary': item.isBooked() }"
+										 md-svg-icon="{{ item.isBooked() ? 'action:lock' : 'action:lock_open' }}">
+					   <md-tooltip>{{ item.isBooked() ? 'fermée' : 'ouverte' }}</md-tooltip>
+						</md-icon>
 			    	<md-divider ng-if="!$last"></md-divider>
 			    </md-list-item>
 		    </md-list>

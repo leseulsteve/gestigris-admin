@@ -10,12 +10,11 @@ angular.module('conversations').directive('conversationCard',
       templateUrl: 'modules/conversations/views/conversation.card.html',
       link: function (scope) {
 
-        var unwatch = scope.$watch('conversation', function (conversation) {
+        scope.$watch('conversation', function (conversation) {
           if (conversation) {
             conversation.getParticipants().then(function (participants) {
               scope.conversationParticipants = participants;
             });
-            unwatch();
           }
         });
 

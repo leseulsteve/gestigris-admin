@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('interventions').factory('Intervention',
-  function ($q, Schema, Moment, DemandeParticipation, Benevole, InterventionTag, $mdToast) {
+  function ($rootScope, $q, Schema, Moment, DemandeParticipation, Benevole, InterventionTag, $mdToast) {
 
     var Intervention = new Schema('intervention');
 
@@ -54,11 +54,10 @@ angular.module('interventions').factory('Intervention',
 
     Intervention.prototype.addParticipant = function (benevole, message) {
 
-      var intervention = this;
+      var intervention = this,
+        demandeParticipation = intervention.getDemandeParticipation(benevole);
 
       function add() {
-
-        var demandeParticipation = intervention.getDemandeParticipation(benevole);
 
         // Était déjà intéressé.
         if (demandeParticipation) {
@@ -74,13 +73,12 @@ angular.module('interventions').factory('Intervention',
           accepted: true,
           message: message
         }).then(function (demandeParticipation) {
-          intervention.participants.push(benevole);
           intervention.demandesParticipations.push(demandeParticipation);
           return benevole;
         });
       }
 
-      if (!intervention.isBooked()) {
+      if (!intervention.isBooked() && demandeParticipation) {
         return add();
       }
 
@@ -107,7 +105,9 @@ angular.module('interventions').factory('Intervention',
 
       function remove() {
         var demandeParticipation = intervention.getDemandeParticipation(benevole);
-        return forGood ? demandeParticipation.remove() : demandeParticipation.unAccept();
+        return forGood ? demandeParticipation.remove().then(function () {
+          _.pull(intervention.demandesParticipations, demandeParticipation);
+        }) : demandeParticipation.unAccept();
       }
 
       if (!intervention.isBooked()) {
@@ -153,7 +153,7 @@ angular.module('interventions').factory('Intervention',
 
         var intervention = this,
           toast = $mdToast.simple()
-          .textContent('Envois des notifications aux bénov...')
+          .textContent('Envois des notifications aux bénévoles...')
           .action('annuler')
           .highlightAction(true);
 
@@ -161,11 +161,16 @@ angular.module('interventions').factory('Intervention',
           if (response) {
             return $q.reject();
           }
-          if (_.isUndefined(response)) {
-            return _.assign(intervention, {
+          return _.assign(intervention, {
               status: 'CLOSE'
-            }).save();
-          }
+            })
+            .save()
+            .catch(function (error) {
+              console.error(error);
+              intervention.status = 'OPEN';
+              $mdToast.show($mdToast.simple().textContent('Impossible de fermer la démystification'));
+              return $q.reject('Impossible de fermer la démystification');
+            });
         });
       }
 

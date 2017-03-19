@@ -2,7 +2,7 @@
 	<md-card-content flex layout="column" layout-align="center center" class="text-center">
 		<md-icon flex style="height:50; width:50px" md-svg-icon="{{ MESSAGES.ICONS.MESSAGE }}"></md-icon>
 	  <div flex>
-		  <div class="md-display-1">{{ messagesDashboardCardCtrl.nbNouveauxMessages }}</div>
+		  <div class="md-display-1" ng-if="messagesDashboardCardCtrl.nbNouveauxMessages">{{ messagesDashboardCardCtrl.nbNouveauxMessages }}</div>
 		  <ng-pluralize class="md-title"
 		  							count="messagesDashboardCardCtrl.nbNouveauxMessages"
 	                 	when="{'0': 'Aucun nouveau message',

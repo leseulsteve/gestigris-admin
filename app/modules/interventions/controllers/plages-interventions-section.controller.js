@@ -44,6 +44,10 @@ angular.module('interventions').controller('PlagesInterventionsSectionController
 
     var listeners = [];
 
+    listeners.push($rootScope.$on('PLAGE:STATUS-CHANGE', function ($event, plage) {
+      _.find(ctrl.plages, '_id', plage._id).status = plage.status;
+    }));
+
     listeners.push($rootScope.$on('PlageIntervention:new', function ($event, nouvellePlage) {
       _.sortedPush(ctrl.plages, nouvellePlage, function (plage) {
         return plage.toString();

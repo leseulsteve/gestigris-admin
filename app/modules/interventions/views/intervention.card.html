@@ -29,9 +29,17 @@
 
 	    <span flex></span>
 
-			<md-button class="status-icon md-icon-button"
-								 ng-class="{ booked: intervention.isBooked() }"
-								 ng-click="intervention.book()"
+			<md-button class="md-icon-button"
+								 ng-click="interventionCardCtrl.saveIntervention($event, interventionForm)"
+								 ng-disabled="!interventionForm.$dirty || interventionForm.$invalid">
+				<md-icon md-svg-icon="content:save"></md-icon>
+				<md-tooltip>Sauvegarde</md-tooltip>
+			</md-button>
+
+			<md-button class="md-icon-button"
+								 ng-class="{ 'md-primary': intervention.isBooked() }"
+								 ng-if="interventionCardCtrl.participants.length"
+								 ng-click="interventionCardCtrl.bookIntervention()"
 								 ng-disabled="intervention.isBooked()">
 				<md-icon md-svg-icon="{{ intervention.isBooked() ? 'action:lock' : 'action:lock_open' }}"></md-icon>
 				<md-tooltip>Fermer</md-tooltip>
@@ -41,22 +49,6 @@
 				<md-icon md-svg-icon="action:delete"></md-icon>
 				<md-tooltip>Supprimer</md-tooltip>
 			</md-button>
-
-			<!--<md-menu md-position-mode="target-right target">
-        <md-button aria-label="Options" class="md-icon-button" ng-click="$mdOpenMenu($event)">
-          <md-icon md-menu-origin md-svg-icon="navigation:more_vert"></md-icon>
-        </md-button>
-        <md-menu-content width="4">
-          <md-menu-item>
-            <md-button ng-click="interventionCardCtrl.removeIntervention($event, $index, intervention)">
-                <div layout="row" flex>
-                  <p flex>Supression</p>
-                  <md-icon md-menu-align-target md-svg-icon="action:delete" style="margin: auto 3px auto 0;"></md-icon>
-                </div>
-            </md-button>
-          </md-menu-item>
-        </md-menu-content>
-      </md-menu>-->
 
 	  </md-card-title>
 

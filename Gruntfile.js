@@ -21,7 +21,7 @@ module.exports = function (grunt) {
     watch: {
 
       options: {
-        livereload: 1338
+        livereload: 13382
       },
 
       bower: {

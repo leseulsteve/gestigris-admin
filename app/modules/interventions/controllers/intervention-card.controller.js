@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('interventions').controller('InterventionCardController',
-  function ($scope, $element, $mdConstant, InterventionTag, Benevole, Moment, Dialog, RemoveInterventionDialog) {
+  function ($scope, $element, $mdConstant, $mdDialog, Toast, InterventionTag, Benevole, Moment, Dialog, RemoveInterventionDialog) {
 
     var ctrl = this,
       plageInterventionFicheCtrl = $element.controller('plageInterventionFiche');
@@ -22,15 +22,11 @@ angular.module('interventions').controller('InterventionCardController',
     // Set participants et intéressés
 
     $scope.intervention.getBenevoles('participants').then(function (benevoles) {
-      ctrl.participants = _.sortBy(benevoles, function (benevole) {
-        return benevole.toString();
-      });
+      ctrl.participants = benevoles;
     });
 
     $scope.intervention.getBenevoles('interested').then(function (benevoles) {
-      ctrl.interested = _.sortBy(benevoles, function (benevole) {
-        return benevole.toString();
-      });
+      ctrl.interested = benevoles;
     });
 
     // Tags
@@ -81,6 +77,9 @@ angular.module('interventions').controller('InterventionCardController',
       // Était dans la liste des participants
       if ($scope.intervention.getDemandeParticipation(benevole).isAccepted()) {
         $scope.intervention.removeBenevoleFromParticipants(benevole)
+          .then(function () {
+            plageInterventionFicheCtrl.updateConversation();
+          })
           .catch(function () {
             _.pull(ctrl.interested, benevole);
             ctrl.participants.splice(_.sortedIndexBy(ctrl.participants, benevole, function (benevole) {
@@ -99,6 +98,9 @@ angular.module('interventions').controller('InterventionCardController',
       if (_.isUndefined(_.find(ctrl.participants, ['_id', item._id]))) {
 
         $scope.intervention.addParticipant(benevole)
+          .then(function () {
+            plageInterventionFicheCtrl.updateConversation();
+          })
           .catch(function () {
             _.pull(ctrl.participants, benevole);
             ctrl.interested.splice(_.sortedIndexBy(ctrl.interested, benevole, function (benevole) {
@@ -113,6 +115,9 @@ angular.module('interventions').controller('InterventionCardController',
     ctrl.droppedInGarbage = function (item) {
       var benevole = new Benevole(item);
       $scope.intervention.removeBenevoleFromParticipants(benevole, true)
+        .then(function () {
+          plageInterventionFicheCtrl.updateConversation();
+        })
         .catch(function () {
           ctrl.participants.push(benevole);
         });
@@ -139,10 +144,40 @@ angular.module('interventions').controller('InterventionCardController',
         ctrl.participants.splice(_.sortedIndexBy(ctrl.participants, benevole, function (benevole) {
           return benevole.toString();
         }), 0, benevole);
-        $scope.intervention.addParticipant(benevole, message.body).catch(function () {
-          _.pull(ctrl.participants, benevole);
-        });
+        $scope.intervention.addParticipant(benevole, message.body)
+          .catch(function () {
+            _.pull(ctrl.participants, benevole);
+          });
       });
+    };
+
+    ctrl.saveIntervention = function ($event, interventionForm) {
+
+      function save(intervention) {
+        intervention.save().then(function () {
+          interventionForm.$setPristine();
+          Toast.show('Changements sauvegardé!');
+        });
+      }
+
+      if ($scope.intervention.isBooked()) {
+        return $mdDialog.show($mdDialog.confirm()
+            .title('Désirez vous envoyer ces changements aux participants ?')
+            .ariaLabel('Envois changements')
+            .targetEvent($event)
+            .ok('Bonne idée!')
+            .cancel('Nope'))
+          .then(function () {
+            save(_.assign($scope.intervention, {
+              notifyChanges: true
+            }));
+          })
+          .catch(function () {
+            return save($scope.intervention);
+          });
+      }
+
+      return save($scope.intervention);
     };
 
     ctrl.removeIntervention = function ($event, $index, intervention) {
@@ -150,6 +185,13 @@ angular.module('interventions').controller('InterventionCardController',
         intervention: intervention
       }).then(function () {
         plageInterventionFicheCtrl.removeIntervention($index);
+      });
+    };
+
+    ctrl.bookIntervention = function () {
+      return $scope.intervention.book().then(function () {
+        plageInterventionFicheCtrl.updateConversation();
+        plageInterventionFicheCtrl.updateStatus();
       });
     };
 

@@ -22,11 +22,8 @@ angular.module('interventions').directive('interventionsDashboardCard',
             });
           }
           var dialog = new Dialog(INTERVENTIONS.DIALOGS.ADD_PLAGE);
-          dialog.show($event).then(function (plage) {
+          dialog.show($event).then(function () {
             ctrl.nbInterventions++;
-            $state.go('interventions.fiche', {
-              plageId: plage._id
-            });
           });
         };
 
