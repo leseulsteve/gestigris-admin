@@ -50,10 +50,10 @@
 	<div flex="70" flex-gt-lg="80" layout="column">
 
 		<div layout="row" flex layout-align="center center" ng-hide="lodadingDone">
-			<md-progress-circular md-diameter="280"  md-mode="indeterminate"></md-progress-circular>
+			<md-progress-circular md-diameter="160"  md-mode="indeterminate"></md-progress-circular>
 		</div>
 
-		<benevole-card ng-if="lodadingDone" benevole="benevole"></benevole-card>
+		<benevole-card ng-if="lodadingDone" layout="column" flex benevole="benevole"></benevole-card>
 
 	</div>
 </benevole-section>

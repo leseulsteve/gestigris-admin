@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('conversations').directive('conversation',
-  function ($rootScope, $timeout) {
+  function ($rootScope, $timeout, ConversationService) {
     return {
       restrict: 'E',
       scope: {
@@ -30,6 +30,8 @@ angular.module('conversations').directive('conversation',
             unwatch();
           }
         });
+
+        scope.attachements = _.sortBy(ConversationService.getAttachements(), 'title');
 
       }
     };

@@ -17,12 +17,12 @@
 
 		<md-tabs flex class="md-accent">
       <md-tab label="activités" layout-fill>
-        <md-content layout-padding layout="column" flex ng-include="'modules/etablissements/views/etablissement.infos.html'"></md-content>
+        <div layout-padding layout="column" flex ng-include="'modules/etablissements/views/etablissement.infos.html'"></div>
       </md-tab>
       <md-tab label="Informations">
-        <md-content layout-padding layout="column" flex>
+        <div layout-padding layout="column" flex>
         	<etablissement-form etablissement="etablissement" auto-save="true"></etablissement-form>
-		  	</md-content>
+		  	</div>
       </md-tab>
       <md-tab label="Contacts">
         <div layout="row" layout-align="end center">
@@ -31,7 +31,7 @@
         								 ng-click="etablissementCardCtrl.addContact($event, etablissement)">
         	</md-tab-action>
 	      </div>
-      	<md-content layout-padding layout="column" flex>
+      	<div layout-padding layout="column" flex>
 		      <md-list flex>
 		        <md-list-item class="md-2-line" ng-repeat="contact in etablissementCardCtrl.contacts" ng-click="etablissementCardCtrl.detailsContact($event, contact)">
 		          <avatar user="contact"></avatar>
@@ -45,10 +45,10 @@
 		          </div>
 		        </md-list-item>
 	        </md-list>
-	  		</md-content>
+	  		</div>
       </md-tab>
       <md-tab label="Notes">
-      	<md-content layout-padding layout="column" flex style="margin-top: 16px;">
+      	<div layout-padding layout="column" flex style="margin-top: 16px;">
       		<form name="etablissementNoteForm">
         		<md-input-container class="md-block">
 		          <label>Notes administratives</label>
@@ -65,7 +65,7 @@
              					  keep-line-breaks></textarea>
 		        </md-input-container>
 		      </form>
-	  		</md-content>
+	  		</div>
       </md-tab>
     </md-tabs>
   </div>

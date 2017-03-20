@@ -2,7 +2,8 @@
 
 angular.module('interventions').constant('INTERVENTIONS', {
   ICONS: {
-    PLAGE: 'action:event'
+    PLAGE: 'action:event',
+    INTERVENTION: 'action:event'
   },
   DIALOGS: {
     ADD_PLAGE: {

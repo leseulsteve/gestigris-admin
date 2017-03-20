@@ -22,11 +22,7 @@ intervention-card {
       box-shadow: none;
       background-color: #aed581;
 
-      .md-chip-input-container input {
-        height: 28px;
-      }
-
-      .md-chip {
+      md-chip {
         margin: 7px 8px 0 0;
         height: 22px;
         line-height: 22px;

@@ -9,9 +9,6 @@ angular.module('interventions').directive('plageInterventionFiche',
       },
       templateUrl: 'modules/interventions/views/plage-intervention.fiche.html',
       controller: 'PlageFicheController',
-      controllerAs: 'plageFicheCtrl',
-      compile: function (iElement) {
-        iElement.attr('flex', '').attr('layout', 'column');
-      }
+      controllerAs: 'plageFicheCtrl'
     };
   });

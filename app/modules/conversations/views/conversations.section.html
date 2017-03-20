@@ -26,8 +26,8 @@
 					<md-list-item class="md-2-line" ng-class="{ active:item._id === conversation._id }"
 												ng-repeat="item in conversationsSectionCtrl.conversations"
 												ng-click="conversationsSectionCtrl.showConversation(item)">
-			      <div class="md-list-item-text">
-			        <h3>{{ item.toString() }}</h3>
+			      <div class="md-list-item-text" style="padding-right:16px">
+			       <md-truncate flex>{{ item.toString() }}</md-truncate>
 			      </div>
             <md-icon md-svg-icon="communication:message"></md-icon>
 			    	<md-divider ng-if="!$last"></md-divider>
@@ -43,10 +43,10 @@
 	<div flex="70" flex-gt-lg="80" layout="column">
 
 		<div layout="row" flex layout-align="center center" ng-hide="lodadingDone">
-			<md-progress-circular md-diameter="280" md-mode="indeterminate"></md-progress-circular>
+			<md-progress-circular md-diameter="160" md-mode="indeterminate"></md-progress-circular>
 		</div>
 
-		<conversation-card ng-if="lodadingDone" conversation="conversation"></conversation-card>
+		<conversation-card layout="column" flex ng-if="lodadingDone" conversation="conversation"></conversation-card>
 
 	</div>
 

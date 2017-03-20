@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('interventions').config(
-  function (ToolbarMenuServiceProvider, FabSpeedDialServiceProvider, SearchServiceProvider, EventServiceProvider, INTERVENTIONS) {
+  function (ToolbarMenuServiceProvider, FabSpeedDialServiceProvider, SearchServiceProvider, EventServiceProvider, ConversationServiceProvider, INTERVENTIONS) {
 
     ToolbarMenuServiceProvider.addItem({
       title: 'Interventions',
@@ -18,7 +18,7 @@ angular.module('interventions').config(
     SearchServiceProvider.register({
       factory: 'PlageIntervention',
       type: 'plage d\'intervention',
-      icon: INTERVENTIONS.ICONS.PLAGE,
+      icon: INTERVENTIONS.ICONS.INTERVENTION,
       resultState: {
         name: 'interventions.fiche',
         param: 'plageId'
@@ -30,6 +30,12 @@ angular.module('interventions').config(
       type: 'intervention',
       stateIcon: true,
       route: 'fiche-intervention'
+    });
+
+    ConversationServiceProvider.registerAttachement({
+      title: 'Intervention',
+      icon: INTERVENTIONS.ICONS.INTERVENTION,
+      service: 'ConversationAttachementService'
     });
 
   });

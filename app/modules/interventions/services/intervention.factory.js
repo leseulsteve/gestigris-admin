@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('interventions').factory('Intervention',
-  function ($rootScope, $q, Schema, Moment, DemandeParticipation, Benevole, InterventionTag, $mdToast) {
+  function ($rootScope, $q, $mdToast, Schema, Moment, DemandeParticipation, Benevole) {
 
     var Intervention = new Schema('intervention');
 

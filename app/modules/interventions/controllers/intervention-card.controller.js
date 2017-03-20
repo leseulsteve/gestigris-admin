@@ -53,7 +53,7 @@ angular.module('interventions').controller('InterventionCardController',
 
       if (_.isString(chip)) {
         var tag = new InterventionTag({
-          name: chip
+          name: chip.toLowerCase()
         });
         tag.save().then(assignTag);
         return tag;

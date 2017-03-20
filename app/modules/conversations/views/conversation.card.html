@@ -1,13 +1,12 @@
 <md-card class="plage-card" layout="column" flex>
-  <md-card-title layout="column" style="max-height:155px;height:155px;padding-bottom:0px">
-    <div class="md-title">Participants</div>
+  <md-card-title layout="column" style="max-height:210px;height:210px;padding-bottom:0px">
+    <div class="md-title">{{ conversation.toString() }}</div>
     <div layout="row" layout-align="start center" layout-wrap layout-margin>
       <avatar user="participant" click-for-details-avatar ng-repeat="participant in conversationParticipants"></avatar>
     </div>
   </md-card-title>
   <md-divider style="margin-top:8px;"></md-divider>
-  <span flex></span>
-  <md-card-content layout="column">
-    <conversation conversation="conversation" layout="column"></conversation>
+  <md-card-content flex layout="column">
+    <conversation conversation="conversation" flex layout="column"></conversation>
   </md-card-content>
 </md-card>

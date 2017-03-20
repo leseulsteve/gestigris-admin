@@ -9,9 +9,6 @@ angular.module('benevoles').directive('benevoleCard',
       controllerAs: 'benevoleCardCtrl',
       scope: {
         benevole: '='
-      },
-      compile: function (iElement) {
-        iElement.attr('flex', '').attr('layout', 'column');
       }
     };
   });

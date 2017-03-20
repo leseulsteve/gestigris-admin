@@ -1,43 +1,57 @@
-<md-list layout="column">
-
-  <md-content layout="column" flex>
-
-    <md-list-item class="md-2-line" ng-repeat="message in messages | orderBy : 'createdAt'"
-                  ng-mouseover="showOptions = true"
-                  ng-mouseleave="showOptions = false"
-                  ng-init="$last && scrollDown()">
-      <avatar user="conversationCtrl.getAuthor(message.author)" no-role></avatar>
-      <div class="md-list-item-text" layout="column">
-        <div layout="row" flex>
-          <h3>{{ conversationCtrl.getAuthor(message.author).toString() }}</h3>
-          <span flex></span>
-          <span class="md-caption" ng-hide="message.currentUserIsAuthor() && showOptions" style="padding-right:6px;line-height:23px;">
-            {{ message.createdAt.fromNow() }}
-          </span>
-          <md-button class="md-icon-button" aria-label="Supprimer"
-                     style="margin:0px;padding:0px;min-height:23px;height:18px;"
-                     ng-show="message.currentUserIsAuthor() && showOptions"
-                     ng-click="conversationCtrl.deleteMessage(message)">
-            <md-icon md-svg-icon="action:delete" style="height: 16px;"></md-icon>
-          </md-button>
-        </div>
-        <p>{{ message.body }}</p>
-      </div>
-
-    </md-list-item>
-
-  </md-content>
-  <form ng-submit="conversationCtrl.addMessage(newMessage)">
-    <div layout="row" layout-align="start center">
-      <avatar user="currentUser"></avatar>
-      <md-input-container md-no-float flex>
-        <input placeholder="Nouveau message" ng-model="newMessage.body" autocomplete="off">
-      </md-input-container>
-      <md-button class="md-icon-button md-primary" aria-label="Ajouter"
-                 type="submit"
-                 ng-disabled="newMessage.body === undefined || newMessage.body.length === 0">
-        <md-icon md-svg-icon="content:send"></md-icon>
-      </md-button>
+<md-list layout="column" flex>
+  <md-content flex layout="column">
+    <div layout="column" ng-repeat="message in messages | orderBy : 'createdAt'">
+      <md-list-item class="md-2-line" ng-style="$odd && {'background-color': 'white'}"
+                    ng-mouseover="showOptions = true"
+                    ng-mouseleave="showOptions = false"
+                    ng-init="$last && scrollDown()">
+          <avatar user="conversationCtrl.getAuthor(message.author)" no-role></avatar>
+          <div layout="row" flex ng-if="message._id">
+            <div class="md-list-item-text" layout="column" flex>
+              <h3>{{ conversationCtrl.getAuthor(message.author).toString() }}</h3>
+              <p>{{ message.body }}</p>
+            </div>
+            <div flex="15">
+              <span class="md-caption" ng-hide="message.currentUserIsAuthor() && showOptions" style="padding-right:6px;line-height:23px;">
+                {{ message.createdAt.fromNow() }}
+              </span>
+              <md-button class="md-icon-button" aria-label="Supprimer"
+                         style="margin:0px;padding:0px;min-height:23px;height:18px;"
+                         ng-show="message.currentUserIsAuthor() && showOptions"
+                         ng-click="conversationCtrl.deleteMessage(message)">
+                <md-icon md-svg-icon="action:delete" style="height: 16px;"></md-icon>
+              </md-button>
+            </div>
+          </div>
+          <form layout="row" flex ng-if="message._id === undefined" ng-submit="conversationCtrl.addMessage(message)">
+            <md-input-container md-no-float flex style="margin:0">
+              <input placeholder="Nouveau message" ng-model="message.body" autocomplete="off">
+            </md-input-container>
+            <div flex="15" layout="row" layout-align="start center">
+              <md-menu md-position-mode="target-right target">
+                <md-button aria-label="Ajouter un attachement" class="md-icon-button" ng-click="$mdMenu.open($event)">
+                  <md-icon md-menu-origin md-svg-icon="file:attachment"></md-icon>
+                </md-button>
+                <md-menu-content width="4" >
+                  <md-menu-item ng-repeat="attachement in attachements">
+                    <md-button ng-click="conversationCtrl.handleAttachementSelection(message, attachement)">
+                        <div layout="row" flex>
+                          <p flex>{{ attachement.title }}</p>
+                          <md-icon md-menu-align-target md-svg-icon="{{ attachement.icon }}" style="margin: auto 3px auto 0;"></md-icon>
+                        </div>
+                    </md-button>
+                  </md-menu-item>
+                </md-menu-content>
+              </md-menu>
+              <md-button class="md-icon-button md-primary" aria-label="Ajouter"
+                         type="submit"
+                         ng-disabled="message.body === undefined || message.body.length === 0">
+                <md-icon md-svg-icon="content:send"></md-icon>
+              </md-button>
+            </div>
+          </form>
+      </md-list-item>
+    <attachement ng-if="message.attachement" attachement="message.attachement"></attachement>
     </div>
-  </from>
+  </md-content>
 </md-list>

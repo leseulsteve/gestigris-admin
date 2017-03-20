@@ -28,14 +28,14 @@
 		<md-tabs flex class="md-accent">
       <md-tab label="activités" layout-fill>
         <md-tab-body>
-        	<md-content layout-padding layout="column" flex ng-include="'modules/benevoles/views/benevole.infos.html'"></md-content>
+        	<div layout-padding layout="column" flex ng-include="'modules/benevoles/views/benevole.infos.html'"></div>
         </md-tab-body>
       </md-tab>
       <md-tab label="profil" layout-fill>
         <md-tab-body>
-        	<md-content layout-padding layout="column" flex>
+        	<div layout-padding layout="column" flex>
         		<benevole-form benevole="benevole" auto-save="true"></benevole-form>
-		  		</md-content>
+		  		</md-div>
         </md-tab-body>
       </md-tab>
     </md-tabs>

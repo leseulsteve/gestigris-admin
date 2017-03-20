@@ -72,10 +72,10 @@
 	<div flex="70" flex-gt-lg="80" layout="column">
 
 		<div layout="row" flex layout-align="center center" ng-hide="lodadingDone">
-			<md-progress-circular md-diameter="280" md-mode="indeterminate"></md-progress-circular>
+			<md-progress-circular md-diameter="160" md-mode="indeterminate"></md-progress-circular>
 		</div>
 
-		<plage-intervention-fiche ng-if="lodadingDone" plage="plage"></plage-intervention-fiche>
+		<plage-intervention-fiche ng-if="lodadingDone" flex layout="column" plage="plage"></plage-intervention-fiche>
 
 	</div>
 
