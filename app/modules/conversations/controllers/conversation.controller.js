@@ -17,7 +17,7 @@ angular.module('conversations').controller('ConversationController',
           }
         }).then(function (benevoles) {
           ctrl.getAuthor = function (authorId) {
-            return _.find(benevoles, '_id', authorId);
+            return _.find(benevoles, ['_id', authorId]);
           };
           unwatch();
         });
