@@ -1,13 +1,16 @@
 'use strict';
 
 angular.module('conversations').controller('ConversationController',
-  function ($scope, Benevole, Message, $injector) {
+  function ($scope, Benevole, Message, $injector, UserAuth) {
 
     var ctrl = this;
 
     var unwatch = $scope.$watch('messages', function (messages) {
       if (messages)  {
-        messages.push(new Message());
+        messages.push(new Message({
+          author: UserAuth.getCurrentUser()._id,
+          conversation: $scope.conversation._id
+        }));
         Benevole.find({
           _id: {
             $in: _.map(messages, 'author')
@@ -23,11 +26,12 @@ angular.module('conversations').controller('ConversationController',
 
     ctrl.addMessage = function (newMessage) {
 
-      Message.create(_.assign({
-        conversation: $scope.conversation._id,
-      }, newMessage)).then(function (message) {
+      Message.create(newMessage).then(function (message) {
         _.assign(newMessage, message);
-        $scope.messages.push(new Message());
+        $scope.messages.push(new Message({
+          author: UserAuth.getCurrentUser()._id,
+          conversation: $scope.conversation._id
+        }));
 
         /*  var isParticipating = false,
           participants = $scope.conversation.getParticipants();
@@ -46,7 +50,8 @@ angular.module('conversations').controller('ConversationController',
     ctrl.handleAttachementSelection = function (message, attachement) {
       (attachement.serviceInstance || (attachement.serviceInstance = $injector.get(attachement.service)))
       .getItem().then(function (item) {
-        message.attachement = item;
+        message.attachements = message.attachements ||  [];
+        message.attachements.push(item);
       });
     };
 

@@ -26,7 +26,7 @@ angular.module('interventions').config(
       controller: function ($state, $location, plages, $stateParams) {
         if ($location.path().split('/').length === 2 && plages.length) {
           $state.go('interventions.fiche', {
-            plageId: _.first(plages)._id,
+            plageId: _.get(_.first(plages), '_id'),
             filters: $stateParams.filters
           });
         }

@@ -36,10 +36,15 @@ angular.module('benevoles').controller('BenevolesSectionController',
     ctrl.updateSearch = function (search) {
       Benevole.search(search).then(function (benevoles) {
         ctrl.benevoles = benevoles;
-        var firstBenevole = _.first(benevoles);
-        if (firstBenevole && $scope.benevole._id !== firstBenevole._id) {
-          ctrl.showBenevole(firstBenevole);
+        if (ctrl.benevoles.length) {
+          var firstBenevole = _.first(benevoles);
+          if (firstBenevole && (_.isUndefined($scope.benevole) || $scope.benevole._id !== firstBenevole._id)) {
+            ctrl.showBenevole(firstBenevole);
+          }
+        } else {
+          $scope.benevole = undefined;
         }
+
       });
     };
 
@@ -66,6 +71,10 @@ angular.module('benevoles').controller('BenevolesSectionController',
       });
     });
 
-    ctrl.showBenevole(_.find(ctrl.benevoles, ['_id', $stateParams.benevoleId]) || _.first(ctrl.benevoles));
+    if (ctrl.benevoles.length) {
+      ctrl.showBenevole(_.find(ctrl.benevoles, ['_id', $stateParams.benevoleId]) || _.first(ctrl.benevoles));
+    } else {
+      $scope.lodadingDone = true;
+    }
 
   });

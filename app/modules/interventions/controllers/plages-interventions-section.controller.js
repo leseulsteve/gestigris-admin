@@ -35,7 +35,7 @@ angular.module('interventions').controller('PlagesInterventionsSectionController
         PlageIntervention.find(query).then(function (plages) {
           ctrl.plages = plages;
           var firstPlage = _.first(plages);
-          if (firstPlage && $scope.plage._id !== firstPlage._id) {
+          if (firstPlage && (_.isUndefined($scope.plage) || $scope.plage._id !== firstPlage._id)) {
             ctrl.showPlage(firstPlage);
           }
         });
@@ -70,6 +70,10 @@ angular.module('interventions').controller('PlagesInterventionsSectionController
       });
     });
 
-    ctrl.showPlage(_.find(ctrl.plages, ['_id', $stateParams.plageId]) || _.first(ctrl.plages));
+    if (ctrl.plages.length) {
+      ctrl.showPlage(_.find(ctrl.plages, ['_id', $stateParams.plageId]) || _.first(ctrl.plages));
+    } else {
+      $scope.lodadingDone = true;
+    }
 
   });

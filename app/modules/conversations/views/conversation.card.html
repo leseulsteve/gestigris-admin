@@ -1,6 +1,14 @@
 <md-card class="plage-card" layout="column" flex>
-  <md-card-title layout="column" style="max-height:210px;height:210px;padding-bottom:0px">
-    <div class="md-title">{{ conversation.toString() }}</div>
+  <md-card-title layout="column" style="max-height:160px;height:160px;padding-bottom:0px">
+    <div layout="row" layout-align="start center">
+      <div flex class="md-title">{{ conversation.toString() }}</div>
+      <md-button class="md-icon-button" ng-if="conversation.type !== 'intervention'"
+                 ng-click="ConversationCardCtrl.archive(conversation)"
+                 ng-disabled="conversation.archived">
+        <md-icon md-svg-icon="content:archive"></md-icon>
+        <md-tooltip>archiver</md-tooltip>
+      </md-button>
+    </div>
     <div layout="row" layout-align="start center" layout-wrap layout-margin>
       <avatar user="participant" click-for-details-avatar ng-repeat="participant in conversationParticipants"></avatar>
     </div>

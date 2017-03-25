@@ -26,9 +26,8 @@ angular.module('benevoles').config(
       },
       controller: function ($state, $location, benevoles, $stateParams) {
         if ($location.path().split('/').length === 2 && benevoles.length) {
-          console.log($stateParams);
           $state.go('benevoles.fiche', {
-            benevoleId: _.first(benevoles)._id,
+            benevoleId: _.get(_.first(benevoles), '_id'),
             filters: $stateParams.filters
           });
         }

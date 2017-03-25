@@ -51,7 +51,9 @@
             </div>
           </form>
       </md-list-item>
-    <attachement ng-if="message.attachement" attachement="message.attachement"></attachement>
+      <div ng-repeat="attachement in message.attachements">
+        <attachement attachement="attachement"></attachement>
+      </div>
     </div>
   </md-content>
 </md-list>

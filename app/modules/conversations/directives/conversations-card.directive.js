@@ -8,6 +8,8 @@ angular.module('conversations').directive('conversationCard',
         conversation: '=',
       },
       templateUrl: 'modules/conversations/views/conversation.card.html',
+      controller: 'ConversationCardController',
+      controllerAs: 'ConversationCardCtrl',
       link: function (scope) {
 
         scope.$watch('conversation', function (conversation) {

@@ -7,7 +7,7 @@
   <md-toolbar style="min-height: 160px;">
     <div layout="row" layout-align="start center">
       <md-menu>
-        <md-button aria-label="Options" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+        <md-button aria-label="Options" class="md-icon-button" ng-click="$mdMenu.open($event)">
           <md-icon class="md-accent" md-svg-icon="navigation:more_vert"></md-icon>
         </md-button>
         <md-menu-content width="4">
@@ -42,10 +42,10 @@
     <div layout="row" layout-align="start center" class="md-padding">
       <avatar user="currentUser"></avatar>
       <div flex class="md-padding">{{ currentUser.toString() }}</div>
-    </div> 
+    </div>
   </md-toolbar>
   <md-content layout="column" md-scroll-y flex>
-    
+
     <md-list>
       <md-list-item ui-sref-active="active" ui-sref="benevoles" ng-click="sidenavCtrl.closeSidenav()">
         <p>Bénévoles</p>

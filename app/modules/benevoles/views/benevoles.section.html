@@ -14,11 +14,11 @@
 								 ng-change="benevolesSectionCtrl.updateSearch(search)">
 				</md-input-container>
 
-				<md-checkbox aria-label="Actifs"
-										 ng-model="search.actif"
-										 ng-change="benevolesSectionCtrl.updateSearch(search)">
-				  Actifs
-			  </md-checkbox>
+				<md-switch aria-label="actifs"
+									 ng-model="search.actif"
+									 ng-change="benevolesSectionCtrl.updateSearch(search)">
+				  actifs
+				</md-switch>
 
 			</md-card-content>
 
@@ -53,7 +53,7 @@
 			<md-progress-circular md-diameter="160"  md-mode="indeterminate"></md-progress-circular>
 		</div>
 
-		<benevole-card ng-if="lodadingDone" layout="column" flex benevole="benevole"></benevole-card>
+		<benevole-card ng-if="lodadingDone && benevole" layout="column" flex benevole="benevole"></benevole-card>
 
 	</div>
 </benevole-section>

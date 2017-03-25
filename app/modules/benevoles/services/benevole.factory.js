@@ -26,14 +26,6 @@ angular.module('benevoles').factory('Benevole',
       next();
     });
 
-    Benevole.prototype.toString = function () {
-      return this.prenom + ' ' + this.nomFamille;
-    };
-
-    Benevole.prototype.getRoleDescription = function () {
-      return this.role.description;
-    };
-
     Benevole.search = function (params) {
       var query = {};
       if (_.isString(params)) {
@@ -42,6 +34,14 @@ angular.module('benevoles').factory('Benevole',
         _.assign(query, params.benevoleName ? SearchFieldQueryBuilder.build(params.benevoleName) : undefined, _.omit(params, 'benevoleName'));
       }
       return Benevole.find(query);
+    };
+
+    Benevole.prototype.toString = function () {
+      return this.prenom + ' ' + this.nomFamille;
+    };
+
+    Benevole.prototype.getRoleDescription = function () {
+      return this.role.description;
     };
 
     Benevole.prototype.toString = function () {

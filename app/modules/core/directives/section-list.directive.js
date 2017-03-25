@@ -6,6 +6,9 @@ angular.module('core').directive('sectionList',
     var lastStateScollPosition = 0;
 
     function isScrolledIntoView(scroller, item) {
+      if (_.isUndefined(item)) {
+        return true;
+      }
       var elemTop = item.offsetTop - scroller.scrollTop,
         elemBottom = elemTop + item.offsetHeight;
       return (elemTop >= 0) && (elemBottom <= scroller.offsetHeight);

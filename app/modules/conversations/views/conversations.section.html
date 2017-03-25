@@ -2,21 +2,27 @@
 
 	<div layout="column" flex="30" flex-gt-lg="20">
 
-		<!--<md-card>
+		<md-card>
 
 			<md-card-content>
 
 				<md-input-container md-no-float class="md-icon-float md-block no-errors-spacer">
 					<md-icon md-svg-icon="action:search"></md-icon>
 					<input placeholder="recherche..." input-clear
-								 ng-model="search.searchField"
+								 ng-model="search.title"
 								 ng-model-options="{ debounce: PARAMS.DEBOUNCE_TIME }"
 								 ng-change="conversationsSectionCtrl.updateSearch(search)">
 				</md-input-container>
 
+				<md-switch aria-label="archivés" ng-disabled="conversationsSectionCtrl.noArchives"
+									 ng-model="search.archived"
+									 ng-change="conversationsSectionCtrl.updateSearch(search)">
+				  archivés
+				</md-switch>
+
 			</md-card-content>
 
-		</md-card>-->
+		</md-card>
 
 		<md-card flex>
 
@@ -46,7 +52,7 @@
 			<md-progress-circular md-diameter="160" md-mode="indeterminate"></md-progress-circular>
 		</div>
 
-		<conversation-card layout="column" flex ng-if="lodadingDone" conversation="conversation"></conversation-card>
+		<conversation-card layout="column" flex ng-if="lodadingDone && conversation" conversation="conversation"></conversation-card>
 
 	</div>
 

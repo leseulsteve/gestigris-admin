@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('conversations').factory('Conversation',
-  function ($rootScope, $q, Schema, Message, User, UserAuth, Benevole) {
+  function ($rootScope, $q, Schema, Message, User, UserAuth, Benevole, SearchFieldQueryBuilder) {
 
     var Conversation = new Schema('conversation');
 
@@ -9,6 +9,16 @@ angular.module('conversations').factory('Conversation',
       $rootScope.$broadcast('Conversation:new:currentUser', this);
       next();
     });
+
+    Conversation.search = function (params) {
+      var query = {};
+      if (_.isString(params)) {
+        query = SearchFieldQueryBuilder.build(params);
+      } else  {
+        _.assign(query, params.title ? SearchFieldQueryBuilder.build(params.title) : undefined, _.omit(params, 'title'));
+      }
+      return Conversation.find(query);
+    };
 
     Conversation.getNbNewMessages = function () {
       var currentUser = UserAuth.getCurrentUser();
@@ -51,6 +61,14 @@ angular.module('conversations').factory('Conversation',
         conversation: {
           $in: this._id
         }
+      });
+    };
+
+    Conversation.prototype.archive = function () {
+      return _.assign(this, {
+        archived: true
+      }).save().then(function (conversation) {
+        $rootScope.$broadcast('Conversation:archived', conversation);
       });
     };
 

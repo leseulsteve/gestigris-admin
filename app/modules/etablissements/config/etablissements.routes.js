@@ -21,7 +21,7 @@ angular.module('etablissements').config(
       controller: function ($state, $location, etablissements) {
         if ($location.path().split('/').length === 2) {
           $state.go('etablissements.fiche', {
-            etablissementId: _.first(etablissements)._id
+            etablissementId: _.get(_.first(etablissements), '_id')
           });
         }
       }

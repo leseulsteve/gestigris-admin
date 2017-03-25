@@ -35,7 +35,7 @@ angular.module('etablissements').controller('EtablissementsSectionController',
       Etablissement.search(search).then(function (etablissements) {
         ctrl.etablissements = etablissements;
         var firstEtablissement = _.first(etablissements);
-        if (firstEtablissement && $scope.etablissement._id !== firstEtablissement._id) {
+        if (firstEtablissement && (_.isUndefined($scope.etablissement) ||  $scope.etablissement._id !== firstEtablissement._id)) {
           ctrl.showEtablissement(firstEtablissement);
         }
       });
@@ -65,6 +65,10 @@ angular.module('etablissements').controller('EtablissementsSectionController',
       });
     });
 
-    ctrl.showEtablissement(_.find(ctrl.etablissements, ['_id', $stateParams.etablissementId]) ||  _.first(ctrl.etablissements));
+    if (ctrl.etablissements.length) {
+      ctrl.showEtablissement(_.find(ctrl.etablissements, ['_id', $stateParams.etablissementId]) ||  _.first(ctrl.etablissements));
+    } else {
+      $scope.lodadingDone = true;
+    }
 
   });

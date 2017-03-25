@@ -8,7 +8,7 @@ angular.module('conversations').directive('attachement',
         attachement: '=',
       },
       link: function (scope, element) {
-        element.css('padding-left', '56px').css('padding-right', '56px');
+        element.css('padding-left', '56px').css('padding-right', '56px').css('display', 'block');
         element.append($compile('<' + scope.attachement.type + '></' + scope.attachement.type + '>')(scope));
       }
     };
