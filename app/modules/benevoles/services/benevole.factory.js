@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('benevoles').factory('Benevole',
-  function ($rootScope, Schema, Avatar, SearchFieldQueryBuilder) {
+  function ($rootScope, Schema, Avatar, SearchQueryBuilder, SectionFilters) {
 
     var Benevole = new Schema('benevole');
 
@@ -27,13 +27,18 @@ angular.module('benevoles').factory('Benevole',
     });
 
     Benevole.search = function (params) {
-      var query = {};
-      if (_.isString(params)) {
-        query = SearchFieldQueryBuilder.build(params);
-      } else  {
-        _.assign(query, params.benevoleName ? SearchFieldQueryBuilder.build(params.benevoleName) : undefined, _.omit(params, 'benevoleName'));
-      }
-      return Benevole.find(query);
+      return Benevole.find(SearchQueryBuilder.build(params));
+    };
+
+    Benevole.getGroups = function () {
+      return SectionFilters.getFilters('benevoles').then(function (filters) {
+        return _.map(filters, function (filter) {
+          return {
+            title: filter.title,
+            query: filter.query
+          };
+        });
+      });
     };
 
     Benevole.prototype.toString = function () {

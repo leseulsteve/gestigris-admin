@@ -1,0 +1,51 @@
+<div layout="column" ng-controller="BenevolesSectionFiltersController as benevolesSectionFiltersCtrl">
+
+  <div layout="row" layout-align="start center">
+    <md-switch aria-label="actifs" name="actif"
+               ng-model="query.actif">
+      actifs
+    </md-switch>
+
+    <span flex="5"></span>
+
+    <md-input-container class="no-errors-spacer" flex>
+      <label>Rôle</label>
+      <md-select ng-model="query.role">
+        <md-option ng-value="null">Tout</md-option>
+        <md-option ng-repeat="role in benevolesSectionFiltersCtrl.roles"
+                   ng-value="role" ng-selected="role._id === query.role._id">
+          {{ role.toString() }}
+        </md-option>
+      </md-select>
+    </md-input-container>
+
+  </div>
+
+  <div layout="row" layout-align="start center">
+
+    <md-input-container class="no-errors-spacer" flex>
+      <label>Sexe</label>
+      <md-select ng-model="query.sexe">
+        <md-option ng-value="null">Tout</md-option>
+        <md-option ng-repeat="sexe in ['homme', 'femme']" ng-value="sexe">
+          {{ sexe }}
+        </md-option>
+      </md-select>
+    </md-input-container>
+
+    <span flex="5"></span>
+
+    <md-input-container class="no-errors-spacer" flex>
+      <label>Orientation</label>
+      <md-select ng-model="query.orientation">
+        <md-option ng-value="null">Tout</md-option>
+        <md-option ng-repeat="orientation in ['homosexuel', 'bisexuel']" ng-value="orientation">
+          {{ orientation }}
+        </md-option>
+      </md-select>
+    </md-input-container>
+
+  </div>
+
+
+</div>

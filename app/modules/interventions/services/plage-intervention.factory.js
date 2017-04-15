@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('interventions').factory('PlageIntervention',
-  function ($q, Schema, Moment, UserAuth, Conversation, Etablissement, Intervention, Contact) {
+  function ($q, Schema, Moment, UserAuth, Conversation, Etablissement, Intervention, Contact, SearchQueryBuilder) {
 
     var PlageIntervention = new Schema('plage-intervention');
 
@@ -17,40 +17,8 @@ angular.module('interventions').factory('PlageIntervention',
       next();
     });
 
-    PlageIntervention.search = function (terms) {
-      return Etablissement.search(terms).then(function (etablissements) {
-        return PlageIntervention.find({
-          etablissement: {
-            $in: _.map(etablissements, '_id')
-          },
-          date: {
-            $gte: new Moment().startOf('day')
-          }
-        });
-      });
-    };
-
-    PlageIntervention.formatFilters = function (filters) {
-      var query = {};
-      if (filters.date) {
-        _.assign(query, {
-          date: {
-            $gte: filters.date.start,
-            $lte: filters.date.end
-          }
-        });
-      }
-      if (filters.etablissementName) {
-        return Etablissement.search(filters.etablissementName).then(function (etablissements) {
-          return _.assign(query, {
-            etablissement: {
-              $in: _.map(etablissements, '_id')
-            }
-          });
-        });
-      } else {
-        return $q.when(query);
-      }
+    PlageIntervention.search = function (params) {
+      return PlageIntervention.find(SearchQueryBuilder.build(params));
     };
 
     PlageIntervention.prototype.toString = function () {

@@ -1,11 +1,10 @@
 'use strict';
 
-angular.module('interventions').controller('PlagesInterventionsSectionController',
-  function ($rootScope, $scope, $q, $timeout, plages, PlageIntervention, $stateParams, $state, PARAMS) {
+angular.module('interventions').controller('InterventionsSectionController',
+  function ($rootScope, $scope, $q, $timeout, PlageIntervention, $stateParams, $state, PARAMS) {
 
     var ctrl = this;
 
-    ctrl.plages = plages;
     $scope.search = $stateParams.filters;
 
     ctrl.showPlage = function (plage) {
@@ -31,16 +30,22 @@ angular.module('interventions').controller('PlagesInterventionsSectionController
     };
 
     ctrl.updateSearch = function (search) {
-      PlageIntervention.formatFilters(search).then(function (query) {
-        PlageIntervention.find(query).then(function (plages) {
+      PlageIntervention.search(search)
+        .then(function (plages) {
           ctrl.plages = plages;
-          var firstPlage = _.first(plages);
-          if (firstPlage && (_.isUndefined($scope.plage) || $scope.plage._id !== firstPlage._id)) {
-            ctrl.showPlage(firstPlage);
+          if (plages.length) {
+            var firstPlage = _.first(plages);
+            if (firstPlage && (_.isUndefined($scope.plage) || $scope.plage._id !== firstPlage._id)) {
+              ctrl.showPlage(firstPlage);
+            }
+          } else {
+            $scope.lodadingDone = true;
+            $scope.plage = undefined;
           }
         });
-      });
     };
+
+    ctrl.updateFilters = _.debounce(ctrl.updateSearch, PARAMS.DEBOUNCE_TIME);
 
     var listeners = [];
 
@@ -64,16 +69,8 @@ angular.module('interventions').controller('PlagesInterventionsSectionController
 
     }));
 
-    $scope.$on('destroy', function () {
-      _.forEach(listeners, function (listener) {
-        listener();
-      });
+    $rootScope.$on('$stateChangeStart', function () {
+      _.invokeMap(listeners, _.call);
     });
-
-    if (ctrl.plages.length) {
-      ctrl.showPlage(_.find(ctrl.plages, ['_id', $stateParams.plageId]) || _.first(ctrl.plages));
-    } else {
-      $scope.lodadingDone = true;
-    }
 
   });

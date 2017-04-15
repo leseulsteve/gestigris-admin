@@ -23,6 +23,13 @@ body {
   overflow: auto;
 }
 
+.search-subheader {
+  .md-subheader-inner {
+    padding: 8px;
+    background: rgb(179, 144, 79);
+  }
+}
+
 .shake-it {
   animation: shake 1s;
 }

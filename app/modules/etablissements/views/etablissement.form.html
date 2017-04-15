@@ -78,6 +78,7 @@
                  ng-model="etablissement.commissionScolaire"
                  ng-change="etablissementFormCtrl.saveEtablissement(etablissementForm)"
                  ng-disabled="disabledForm">
+        <md-option ng-value="null">Aucune</md-option>
         <md-option ng-repeat="commissionScolaire in etablissementFormCtrl.commissionsScolaires"
                    ng-value="commissionScolaire" ng-selected="commissionScolaire._id === etablissement.commissionScolaire._id">
           {{ commissionScolaire.toString() }}

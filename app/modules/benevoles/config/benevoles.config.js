@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('benevoles').config(
-  function (ToolbarMenuServiceProvider, SearchServiceProvider, FabSpeedDialServiceProvider, RightPanelProvider, BENEVOLES) {
+  function (ToolbarMenuServiceProvider, SearchServiceProvider, FabSpeedDialServiceProvider, RightPanelProvider, ConversationServiceProvider, SectionFiltersProvider, BENEVOLES) {
 
     ToolbarMenuServiceProvider.addItem({
       title: 'Benevoles',
@@ -23,6 +23,18 @@ angular.module('benevoles').config(
       tooltip: 'bénévole',
       icon: BENEVOLES.ICONS.BENEVOLE,
       dialog: BENEVOLES.DIALOGS.ADD_BENEVOLE
+    });
+
+    ConversationServiceProvider.register('Benevole');
+
+    SectionFiltersProvider.register('benevoles', {
+      filters: [{
+        title: 'benevoles actifs',
+        query: {
+          actif: true
+        }
+      }],
+      templateUrl: 'modules/benevoles/views/benevoles-section.filters.html'
     });
 
     RightPanelProvider.register({

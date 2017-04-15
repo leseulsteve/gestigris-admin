@@ -17,9 +17,10 @@
                           md-contact-name="fullname"
                           md-contact-image="avatar"
                           md-require-match="true"
-                          md-highlight-flags="i"
+                          md-highlight-flags="i" required
                           placeholder="Destinataire(s)">
         </md-contact-chips>
+        <div class="md-caption">utilisez @ pour écrire à un groupe</div>
         <div ng-messages="messageForm.destinataires.$error">
           <div ng-message="required">requis.</div>
         </div>
@@ -40,9 +41,14 @@
           </div>
         </md-input-container>
 
+        <div ng-repeat="attachement in nouveauMessageCtrl.message.attachements">
+          <attachement attachement="attachement"></attachement>
+        </div>
+
       </div>
     </md-dialog-content>
     <md-dialog-actions layout="row">
+      <attachement-button message="nouveauMessageCtrl.message"></attachement-button>
       <md-button type="button" ng-click="nouveauMessageCtrl.cancel()">
         Annuler
       </md-button>

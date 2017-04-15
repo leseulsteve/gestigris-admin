@@ -1,15 +1,11 @@
 'use strict';
 
 angular.module('benevoles').controller('BenevolesSectionController',
-  function ($rootScope, $scope, $q, $timeout, benevoles, Benevole, $stateParams, $state, PARAMS) {
+  function ($rootScope, $scope, $q, $timeout, Benevole, $stateParams, $state, PARAMS) {
 
     var ctrl = this;
 
-    ctrl.benevoles = benevoles;
-
-    $scope.search = _.assign({
-      actif: true
-    }, $stateParams.filters);
+    $scope.search = $stateParams.filters;
 
     ctrl.showBenevole = function (benevole) {
       if (_.isUndefined($scope.benevole) || benevole._id !== $scope.benevole._id) {
@@ -34,19 +30,23 @@ angular.module('benevoles').controller('BenevolesSectionController',
     };
 
     ctrl.updateSearch = function (search) {
-      Benevole.search(search).then(function (benevoles) {
-        ctrl.benevoles = benevoles;
-        if (ctrl.benevoles.length) {
-          var firstBenevole = _.first(benevoles);
-          if (firstBenevole && (_.isUndefined($scope.benevole) || $scope.benevole._id !== firstBenevole._id)) {
-            ctrl.showBenevole(firstBenevole);
+      Benevole.search(search)
+        .then(function (benevoles) {
+          ctrl.benevoles = benevoles;
+          if (ctrl.benevoles.length) {
+            var firstBenevole = _.first(benevoles);
+            if (firstBenevole && (_.isUndefined($scope.benevole) || $scope.benevole._id !== firstBenevole._id)) {
+              ctrl.showBenevole(firstBenevole);
+            }
+          } else {
+            $scope.lodadingDone = true;
+            $scope.benevole = undefined;
           }
-        } else {
-          $scope.benevole = undefined;
-        }
 
-      });
+        });
     };
+
+    ctrl.updateFilters = _.debounce(ctrl.updateSearch, PARAMS.DEBOUNCE_TIME);
 
     var listeners = [];
 
@@ -65,16 +65,8 @@ angular.module('benevoles').controller('BenevolesSectionController',
       }
     }));
 
-    $scope.$on('destroy', function () {
-      _.forEach(listeners, function (listener) {
-        listener();
-      });
+    $rootScope.$on('$stateChangeStart', function () {
+      _.invokeMap(listeners, _.call);
     });
-
-    if (ctrl.benevoles.length) {
-      ctrl.showBenevole(_.find(ctrl.benevoles, ['_id', $stateParams.benevoleId]) || _.first(ctrl.benevoles));
-    } else {
-      $scope.lodadingDone = true;
-    }
 
   });

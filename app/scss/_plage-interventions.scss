@@ -3,17 +3,13 @@ plage-intervention-section {
     height: 50px;
 
     md-datepicker {
-      &:first-of-type {
-        position: absolute;
-        left: -18px;
-        top: 14px;
-      }
+      position: absolute;
+      left: -18px;
+      top: 14px;
+      padding-right: 0;
 
-      &:last-of-type {
-        position: absolute;
-        left: -21px;
-        top: 14px;
-        padding-right: 0;
+      .md-datepicker-input-container {
+        margin-left: 0;
       }
     }
   }

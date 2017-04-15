@@ -3,22 +3,12 @@
 angular.module('etablissements').config(
   function ($provide) {
 
-    $provide.decorator('Etablissement', function ($delegate, $rootScope, SearchFieldQueryBuilder) {
+    $provide.decorator('Etablissement', function ($delegate, $rootScope, SearchQueryBuilder) {
 
       var Etablissement = $delegate;
 
       Etablissement.search = function (params) {
-        var query = {};
-        if (_.isString(params)) {
-          query = SearchFieldQueryBuilder.build(params);
-        } else  {
-          _.assign(query, params.etablissementName ? SearchFieldQueryBuilder.build(params.etablissementName) : undefined, _.omit(params, 'etablissementName'));
-        }
-        return Etablissement.find(query);
-      };
-
-      Etablissement.searchByName = function (params) {
-        return Etablissement.find(SearchFieldQueryBuilder.build(params));
+        return Etablissement.find(SearchQueryBuilder.build(params));
       };
 
       Etablissement.post('create', function (next) {

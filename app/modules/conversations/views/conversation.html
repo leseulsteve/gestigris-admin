@@ -28,21 +28,7 @@
               <input placeholder="Nouveau message" ng-model="message.body" autocomplete="off">
             </md-input-container>
             <div flex="15" layout="row" layout-align="start center">
-              <md-menu md-position-mode="target-right target">
-                <md-button aria-label="Ajouter un attachement" class="md-icon-button" ng-click="$mdMenu.open($event)">
-                  <md-icon md-menu-origin md-svg-icon="file:attachment"></md-icon>
-                </md-button>
-                <md-menu-content width="4" >
-                  <md-menu-item ng-repeat="attachement in attachements">
-                    <md-button ng-click="conversationCtrl.handleAttachementSelection(message, attachement)">
-                        <div layout="row" flex>
-                          <p flex>{{ attachement.title }}</p>
-                          <md-icon md-menu-align-target md-svg-icon="{{ attachement.icon }}" style="margin: auto 3px auto 0;"></md-icon>
-                        </div>
-                    </md-button>
-                  </md-menu-item>
-                </md-menu-content>
-              </md-menu>
+              <attachement-button message="message"></attachement-button>
               <md-button class="md-icon-button md-primary" aria-label="Ajouter"
                          type="submit"
                          ng-disabled="message.body === undefined || message.body.length === 0">

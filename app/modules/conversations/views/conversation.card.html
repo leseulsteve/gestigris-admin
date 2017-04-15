@@ -1,5 +1,5 @@
-<md-card class="plage-card" layout="column" flex>
-  <md-card-title layout="column" style="max-height:160px;height:160px;padding-bottom:0px">
+<md-card class="plage-card" layout="column">
+  <md-card-title layout="column" style="padding-bottom:0px">
     <div layout="row" layout-align="start center">
       <div flex class="md-title">{{ conversation.toString() }}</div>
       <md-button class="md-icon-button" ng-if="conversation.type !== 'intervention'"
@@ -9,7 +9,7 @@
         <md-tooltip>archiver</md-tooltip>
       </md-button>
     </div>
-    <div layout="row" layout-align="start center" layout-wrap layout-margin>
+    <div layout="row" layout-align="start center" layout-wrap layout-margin style="margin-top:50px;margin-bottom:50px;">
       <avatar user="participant" click-for-details-avatar ng-repeat="participant in conversationParticipants"></avatar>
     </div>
   </md-card-title>

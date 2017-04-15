@@ -47,14 +47,6 @@ angular.module('conversations').controller('ConversationController',
       });
     };
 
-    ctrl.handleAttachementSelection = function (message, attachement) {
-      (attachement.serviceInstance || (attachement.serviceInstance = $injector.get(attachement.service)))
-      .getItem().then(function (item) {
-        message.attachements = message.attachements ||  [];
-        message.attachements.push(item);
-      });
-    };
-
     ctrl.deleteMessage = function (message) {
       message.remove().then(function () {
         _.pull($scope.messages, message);

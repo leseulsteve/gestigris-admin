@@ -2,33 +2,23 @@
 
 	<div layout="column" flex="30" flex-gt-lg="20">
 
-		<md-card>
-
-			<md-card-content>
-
-				<md-input-container md-no-float class="md-icon-float md-block no-errors-spacer ">
-					<md-icon md-svg-icon="action:search"></md-icon>
-					<input placeholder="recherche..." input-clear
-								 ng-model="search.benevoleName"
-								 ng-model-options="{ debounce: PARAMS.DEBOUNCE_TIME }"
-								 ng-change="benevolesSectionCtrl.updateSearch(search)">
-				</md-input-container>
-
-				<md-switch aria-label="actifs"
-									 ng-model="search.actif"
-									 ng-change="benevolesSectionCtrl.updateSearch(search)">
-				  actifs
-				</md-switch>
-
-			</md-card-content>
-
-		</md-card>
+		<section-filters-card section-name="benevoles" on-change="benevolesSectionCtrl.updateFilters(query)"></section-filters-card>
 
 		<md-card flex>
 
 			<md-content flex>
 
 				<md-list section-list flex layout="column">
+
+					<md-subheader class="search-subheader">
+						<md-input-container md-no-float class="md-icon-float md-block no-errors-spacer" style="margin:0">
+							<md-icon md-svg-icon="action:search"></md-icon>
+							<input placeholder="recherche..." input-clear
+									 	 ng-model="query.searchTerm"
+									   ng-change="benevolesSectionCtrl.updateFilters(query)">
+					  </md-input-container>
+					</md-subheader>
+
 					<md-list-item class="md-2-line" ng-class="{ active:item._id === benevole._id }"
 												ng-repeat="item in benevolesSectionCtrl.benevoles"
 												ng-click="benevolesSectionCtrl.showBenevole(item)">

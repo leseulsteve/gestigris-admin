@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('etablissements').config(
-  function (ToolbarMenuServiceProvider, SearchServiceProvider, FabSpeedDialServiceProvider, ETABLISSEMENTS) {
+  function (ToolbarMenuServiceProvider, SearchServiceProvider, FabSpeedDialServiceProvider, SectionFiltersProvider, ETABLISSEMENTS) {
 
     ToolbarMenuServiceProvider.addItem({
       title: 'Établissements',
@@ -23,6 +23,14 @@ angular.module('etablissements').config(
       tooltip: 'établissement',
       icon: ETABLISSEMENTS.ICONS.ETABLISSEMENT,
       dialog: ETABLISSEMENTS.DIALOGS.ADD_ETABLISSEMENT
+    });
+
+    SectionFiltersProvider.register('etablissements', {
+      filters: [{
+        title: 'Tous établissements',
+        query: {}
+      }],
+      templateUrl: 'modules/etablissements/views/etablissements.section-filters.html'
     });
 
   });

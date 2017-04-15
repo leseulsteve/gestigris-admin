@@ -104,6 +104,30 @@
 				</ng-messages>
 			</md-input-container>
 
+			<md-input-container flex>
+				<label>Sexe</label>
+				<md-select name="sexe" ng-model="benevole.sexe" md-on-close="benevoleFormCtrl.saveBenevole(userProfileForm)" required>
+					<md-option ng-repeat="sexe in ['homme', 'femme']" ng-value="sexe">
+						{{ sexe }}
+					</md-option>
+				</md-select>
+				<ng-messages for="userProfileForm.sexe.$error">
+					<ng-message when="required">requis.</ng-message>
+				</ng-messages>
+			</md-input-container>
+
+			<md-input-container flex>
+				<label>Orientation</label>
+				<md-select name="orientation" ng-model="benevole.orientation" md-on-close="benevoleFormCtrl.saveBenevole(userProfileForm)" required>
+					<md-option ng-repeat="orientation in ['homosexuel', 'bisexuel']"  ng-value="orientation">
+						{{ orientation }}
+					</md-option>
+				</md-select>
+				<ng-messages for="userProfileForm.orientation.$error">
+					<ng-message when="required">requis.</ng-message>
+				</ng-messages>
+			</md-input-container>
+
 			<telephone-input flex="50" ng-model="benevole.telephones"
 											 ng-change="benevoleFormCtrl.saveBenevole(userProfileForm)">
 			</telephone-input>

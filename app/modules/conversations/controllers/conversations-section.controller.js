@@ -1,27 +1,11 @@
 'use strict';
 
 angular.module('conversations').controller('ConversationsSectionController',
-  function ($scope, $q, $rootScope, conversations, $state, $stateParams, $timeout, Conversation, PARAMS) {
+  function ($scope, $q, $rootScope, $state, $stateParams, $timeout, Conversation, PARAMS) {
 
     var ctrl = this;
 
-    ctrl.conversations = conversations;
-
-    Conversation.findOne({
-      type: {
-        $ne: 'intervention'
-      },
-      archived: true
-    }).then(function (conversation) {
-      ctrl.noArchives = _.isNull(conversation);
-    });
-
-    $scope.search = $stateParams.filters ||  {
-      archived: false,
-      type: {
-        $ne: 'intervention'
-      }
-    };
+    $scope.search = $stateParams.filters;
 
     ctrl.showConversation = function (conversation) {
       if (_.isUndefined($scope.conversation) || conversation._id !== $scope.conversation._id) {
@@ -46,7 +30,11 @@ angular.module('conversations').controller('ConversationsSectionController',
     };
 
     ctrl.updateSearch = function (search) {
-      Conversation.search(search).then(function (conversations) {
+      Conversation.search(_.assign(search, {
+        type: {
+          $ne: 'intervention'
+        }
+      })).then(function (conversations) {
         ctrl.conversations = conversations;
         if (ctrl.conversations.length) {
           var firstConversation = _.first(conversations);
@@ -54,10 +42,13 @@ angular.module('conversations').controller('ConversationsSectionController',
             ctrl.showConversation(firstConversation);
           }
         } else {
+          $scope.lodadingDone = true;
           $scope.conversation = undefined;
         }
       });
     };
+
+    ctrl.updateFilters = _.debounce(ctrl.updateSearch, PARAMS.DEBOUNCE_TIME);
 
     var listeners = [];
 
@@ -82,16 +73,8 @@ angular.module('conversations').controller('ConversationsSectionController',
       _.pullAt(ctrl.conversations, convoIndex);
     }));
 
-    $scope.$on('destroy', function () {
-      _.forEach(listeners, function (listener) {
-        listener();
-      });
+    $rootScope.$on('$stateChangeStart', function () {
+      _.invokeMap(listeners, _.call);
     });
-
-    if (ctrl.conversations.length) {
-      ctrl.showConversation(_.find(ctrl.conversations, ['_id', $stateParams.conversationId]) ||  _.first(ctrl.conversations));
-    } else {
-      $scope.lodadingDone = true;
-    }
 
   });

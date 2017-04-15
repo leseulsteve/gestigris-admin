@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('interventions').config(
-  function (ToolbarMenuServiceProvider, FabSpeedDialServiceProvider, SearchServiceProvider, EventServiceProvider, ConversationServiceProvider, INTERVENTIONS) {
+  function (ToolbarMenuServiceProvider, FabSpeedDialServiceProvider, SearchServiceProvider, EventServiceProvider, ConversationServiceProvider, SectionFiltersProvider, INTERVENTIONS) {
 
     ToolbarMenuServiceProvider.addItem({
       title: 'Interventions',
@@ -36,6 +36,18 @@ angular.module('interventions').config(
       title: 'Intervention',
       icon: INTERVENTIONS.ICONS.INTERVENTION,
       service: 'ConversationAttachementService'
+    });
+
+    SectionFiltersProvider.register('interventions', {
+      filters: [{
+        title: 'À venir',
+        query: {
+          date: {
+            gte: moment().startOf('day').toDate()
+          }
+        }
+      }],
+      templateUrl: 'modules/interventions/views/interventions-section.filters.html'
     });
 
   });

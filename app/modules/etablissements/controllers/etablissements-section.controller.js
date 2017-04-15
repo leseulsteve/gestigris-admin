@@ -1,11 +1,9 @@
 'use strict';
 
 angular.module('etablissements').controller('EtablissementsSectionController',
-  function ($rootScope, $scope, $q, $timeout, etablissements, Etablissement, $stateParams, $state, PARAMS) {
+  function ($rootScope, $scope, $q, $timeout, Etablissement, $stateParams, $state, PARAMS) {
 
     var ctrl = this;
-
-    ctrl.etablissements = etablissements;
 
     $scope.search = $stateParams.filters;
 
@@ -32,14 +30,22 @@ angular.module('etablissements').controller('EtablissementsSectionController',
     };
 
     ctrl.updateSearch = function (search) {
-      Etablissement.search(search).then(function (etablissements) {
-        ctrl.etablissements = etablissements;
-        var firstEtablissement = _.first(etablissements);
-        if (firstEtablissement && (_.isUndefined($scope.etablissement) ||  $scope.etablissement._id !== firstEtablissement._id)) {
-          ctrl.showEtablissement(firstEtablissement);
-        }
-      });
+      Etablissement.search(search)
+        .then(function (etablissements) {
+          ctrl.etablissements = etablissements;
+          if (etablissements.length) {
+            var firstEtablissement = _.first(etablissements);
+            if (firstEtablissement && (_.isUndefined($scope.etablissement) ||  $scope.etablissement._id !== firstEtablissement._id)) {
+              ctrl.showEtablissement(firstEtablissement);
+            }
+          } else {
+            $scope.lodadingDone = true;
+            $scope.etablissement = undefined;
+          }
+        });
     };
+
+    ctrl.updateFilters = _.debounce(ctrl.updateSearch, PARAMS.DEBOUNCE_TIME);
 
     var listeners = [];
 
@@ -59,16 +65,8 @@ angular.module('etablissements').controller('EtablissementsSectionController',
 
     }));
 
-    $scope.$on('destroy', function () {
-      _.forEach(listeners, function (listener) {
-        listener();
-      });
+    $rootScope.$on('$stateChangeStart', function () {
+      _.invokeMap(listeners, _.call);
     });
-
-    if (ctrl.etablissements.length) {
-      ctrl.showEtablissement(_.find(ctrl.etablissements, ['_id', $stateParams.etablissementId]) ||  _.first(ctrl.etablissements));
-    } else {
-      $scope.lodadingDone = true;
-    }
 
   });

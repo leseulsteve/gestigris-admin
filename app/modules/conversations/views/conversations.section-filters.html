@@ -1,0 +1,9 @@
+<div layout="column" ng-controller="ConversationsSectionFiltersController as conversationsSectionFiltersCtrl">
+
+  <md-switch aria-label="archivés"
+             ng-model="query.archived"
+             ng-change="conversationsSectionFiltersCtrl.updateFilters(query)">
+    archivés
+  </md-switch>
+
+</div>

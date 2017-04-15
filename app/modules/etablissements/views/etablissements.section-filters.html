@@ -1,0 +1,47 @@
+<div layout="column" ng-controller="EtablissementSectionFiltersController as etablissementsSectionFiltersCtrl">
+
+  <div layout="row" layout-align="start center">
+
+    <md-input-container class="no-errors-spacer" flex>
+      <label>Type</label>
+      <md-select ng-model="query.type">
+        <md-option ng-value="null">Tout</md-option>
+        <md-option ng-repeat="etablissemenType in etablissementsSectionFiltersCtrl.etablissementTypes"
+                   ng-value="etablissemenType._id" ng-selected="etablissemenType._id === query.type">
+          {{ etablissemenType.toString() }}
+        </md-option>
+      </md-select>
+    </md-input-container>
+
+  </div>
+
+  <div layout="row" layout-align="start center">
+
+    <md-input-container class="no-errors-spacer" flex>
+      <label>Comission Scolaire</label>
+      <md-select ng-model="query.commissionScolaire">
+        <md-option ng-value="null">Toute</md-option>
+        <md-option ng-repeat="commissionScolaire in etablissementsSectionFiltersCtrl.commissionsScolaires"
+                   ng-value="commissionScolaire._id" ng-selected="commissionScolaire._id === query.commissionScolaire">
+          {{ commissionScolaire.toString() }}
+        </md-option>
+      </md-select>
+    </md-input-container>
+
+    <span flex="5"></span>
+
+    <md-input-container class="no-errors-spacer" flex>
+      <label>Ville</label>
+      <md-select ng-model="query.address.city">
+        <md-option ng-value="null">Toute</md-option>
+        <md-option ng-repeat="ville in etablissementsSectionFiltersCtrl.villes"
+                   ng-value="ville._id" ng-selected="ville._id === query.address.city">
+          {{ ville.toString() }}
+        </md-option>
+      </md-select>
+    </md-input-container>
+
+  </div>
+
+
+</div>

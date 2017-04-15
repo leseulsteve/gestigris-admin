@@ -1,0 +1,17 @@
+<div layout="column" ng-controller="InterventionsSectionFiltersController as interventionsSectionFiltersCtrl">
+
+  <div layout="row" class="date-filters">
+
+    <div layout="column" flex style="position:relative">
+      <label class="md-caption">De</label>
+      <md-datepicker ng-model="query.date.gte"></md-datepicker>
+    </div>
+
+    <div layout="column" flex style="position:relative">
+      <label class="md-caption">À</label>
+      <md-datepicker ng-model="query.date.lte"></md-datepicker>
+    </div>
+
+  </div>
+
+</div>

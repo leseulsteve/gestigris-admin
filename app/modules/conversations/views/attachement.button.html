@@ -1,0 +1,15 @@
+<md-menu md-position-mode="target-right target">
+  <md-button aria-label="Ajouter un attachement" class="md-icon-button" ng-click="$mdMenu.open($event)">
+    <md-icon md-menu-origin md-svg-icon="file:attachment"></md-icon>
+  </md-button>
+  <md-menu-content width="4" >
+    <md-menu-item ng-repeat="attachement in attachements">
+      <md-button ng-click="attachementButtonCtrl.handleAttachementSelection(attachement)">
+          <div layout="row" flex>
+            <p flex>{{ attachement.title }}</p>
+            <md-icon md-menu-align-target md-svg-icon="{{ attachement.icon }}" style="margin: auto 3px auto 0;"></md-icon>
+          </div>
+      </md-button>
+    </md-menu-item>
+  </md-menu-content>
+</md-menu>

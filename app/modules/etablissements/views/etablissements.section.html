@@ -2,27 +2,23 @@
 
 	<div layout="column" flex="30" flex-gt-lg="20">
 
-		<md-card>
-
-			<md-card-content>
-
-				<md-input-container md-no-float class="md-icon-float md-block no-errors-spacer">
-					<md-icon md-svg-icon="action:search"></md-icon>
-					<input placeholder="recherche..." input-clear
-								 ng-model="search.etablissementName"
-								 ng-model-options="{ debounce: PARAMS.DEBOUNCE_TIME }"
-								 ng-change="etablissementsSectionCtrl.updateSearch(search)">
-				</md-input-container>
-
-			</md-card-content>
-
-		</md-card>
+		<section-filters-card section-name="etablissements" on-change="etablissementsSectionCtrl.updateFilters(query)"></section-filters-card>
 
 		<md-card flex>
 
 			<md-content flex>
 
 				<md-list section-list flex layout="column">
+
+					<md-subheader class="search-subheader">
+						<md-input-container md-no-float class="md-icon-float md-block no-errors-spacer" style="margin:0">
+							<md-icon md-svg-icon="action:search"></md-icon>
+							<input placeholder="recherche..." input-clear
+									 	 ng-model="query.searchTerm"
+									   ng-change="etablissementsSectionCtrl.updateFilters(query)">
+					  </md-input-container>
+					</md-subheader>
+
 					<md-list-item class="md-2-line" ng-class="{ active:item._id === etablissement._id }"
 												ng-repeat="item in etablissementsSectionCtrl.etablissements"
 												ng-click="etablissementsSectionCtrl.showEtablissement(item)">
