@@ -122,7 +122,7 @@ angular.module('gestigris-common')
 'use strict';
 
 angular.module('benevoles').config(
-  ['ToolbarMenuServiceProvider', 'SearchServiceProvider', 'FabSpeedDialServiceProvider', 'RightPanelProvider', 'BENEVOLES', function (ToolbarMenuServiceProvider, SearchServiceProvider, FabSpeedDialServiceProvider, RightPanelProvider, BENEVOLES) {
+  ['ToolbarMenuServiceProvider', 'SearchServiceProvider', 'FabSpeedDialServiceProvider', 'RightPanelProvider', 'ConversationServiceProvider', 'SectionFiltersProvider', 'BENEVOLES', function (ToolbarMenuServiceProvider, SearchServiceProvider, FabSpeedDialServiceProvider, RightPanelProvider, ConversationServiceProvider, SectionFiltersProvider, BENEVOLES) {
 
     ToolbarMenuServiceProvider.addItem({
       title: 'Benevoles',
@@ -144,6 +144,18 @@ angular.module('benevoles').config(
       tooltip: 'bénévole',
       icon: BENEVOLES.ICONS.BENEVOLE,
       dialog: BENEVOLES.DIALOGS.ADD_BENEVOLE
+    });
+
+    ConversationServiceProvider.register('Benevole');
+
+    SectionFiltersProvider.register('benevoles', {
+      filters: [{
+        title: 'benevoles actifs',
+        query: {
+          actif: true
+        }
+      }],
+      templateUrl: 'modules/benevoles/views/benevoles-section.filters.html'
     });
 
     RightPanelProvider.register({
@@ -184,35 +196,6 @@ angular.module('benevoles').config(
 
     state('benevoles', {
       url: '/benevoles',
-      template: '<ui-view layout="column" flex></ui-view>',
-      params: {
-        filters: null
-      },
-      resolve: {
-        benevoles: ['$q', '$timeout', 'Benevole', 'PARAMS', '$stateParams', function ($q, $timeout, Benevole, PARAMS, $stateParams) {
-          $stateParams.filters = _.assign({
-            actif: true
-          }, $stateParams.filters);
-          return $q.all([
-            $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
-            Benevole.search($stateParams.filters)
-          ]).then(function (results) {
-            return _.last(results);
-          });
-        }]
-      },
-      controller: ['$state', '$location', 'benevoles', '$stateParams', function ($state, $location, benevoles, $stateParams) {
-        if ($location.path().split('/').length === 2 && benevoles.length) {
-          $state.go('benevoles.fiche', {
-            benevoleId: _.get(_.first(benevoles), '_id'),
-            filters: $stateParams.filters
-          });
-        }
-      }]
-    }).
-
-    state('benevoles.fiche', {
-      url: '/:benevoleId',
       title: 'Bénévoles',
       params: {
         filters: null
@@ -220,18 +203,35 @@ angular.module('benevoles').config(
       templateUrl: 'modules/benevoles/views/benevoles.section.html',
       controller: 'BenevolesSectionController',
       controllerAs: 'benevolesSectionCtrl'
+    }).
+
+    state('benevoles.fiche', {
+      url: '/:benevoleId'
     });
   }]);
 ;
 'use strict';
 
 angular.module('conversations').config(
-  ['ToolbarMenuServiceProvider', 'CONVERSATIONS', function (ToolbarMenuServiceProvider, CONVERSATIONS) {
+  ['ToolbarMenuServiceProvider', 'SectionFiltersProvider', 'CONVERSATIONS', function (ToolbarMenuServiceProvider, SectionFiltersProvider, CONVERSATIONS) {
 
     ToolbarMenuServiceProvider.addItem({
       title: 'Conversations',
       icon: CONVERSATIONS.ICONS.CONVERSATION,
       route: 'conversations'
+    });
+
+    SectionFiltersProvider.register('conversations', {
+      filters: [{
+        title: 'Non-archivées',
+        query: {
+          archived: false
+        },
+        type: {
+          $ne: 'intervention'
+        }
+      }],
+      templateUrl: 'modules/conversations/views/conversations.section-filters.html'
     });
 
   }]);
@@ -258,38 +258,6 @@ angular.module('conversations').config(
 
     state('conversations', {
       url: '/conversations',
-      template: '<ui-view layout="column" flex></ui-view>',
-      params: {
-        filters: null
-      },
-      resolve: {
-        conversations: ['$q', '$timeout', 'Conversation', 'PARAMS', '$stateParams', function ($q, $timeout, Conversation, PARAMS, $stateParams) {
-          $stateParams.filters = _.assign({
-            archived: false,
-            type: {
-              $ne: 'intervention'
-            }
-          }, $stateParams.filters);
-          return $q.all([
-            $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
-            Conversation.search($stateParams.filters)
-          ]).then(function (results) {
-            return _.last(results);
-          });
-        }]
-      },
-      controller: ['$state', '$location', '$stateParams', 'conversations', function ($state, $location, $stateParams, conversations) {
-        if ($location.path().split('/').length === 2) {
-          $state.go('conversations.fiche', {
-            conversationId: _.get(_.first(conversations), '_id'),
-            filters: $stateParams.filters
-          });
-        }
-      }]
-    }).
-
-    state('conversations.fiche', {
-      url: '/:conversationId',
       title: 'Conversations',
       params: {
         filters: null
@@ -297,6 +265,10 @@ angular.module('conversations').config(
       templateUrl: 'modules/conversations/views/conversations.section.html',
       controller: 'ConversationsSectionController',
       controllerAs: 'conversationsSectionCtrl'
+    }).
+
+    state('conversations.fiche', {
+      url: '/:conversationId'
     });
 
   }]);
@@ -380,7 +352,7 @@ angular.module('dashboard').config(
 'use strict';
 
 angular.module('etablissements').config(
-  ['ToolbarMenuServiceProvider', 'SearchServiceProvider', 'FabSpeedDialServiceProvider', 'ETABLISSEMENTS', function (ToolbarMenuServiceProvider, SearchServiceProvider, FabSpeedDialServiceProvider, ETABLISSEMENTS) {
+  ['ToolbarMenuServiceProvider', 'SearchServiceProvider', 'FabSpeedDialServiceProvider', 'SectionFiltersProvider', 'ETABLISSEMENTS', function (ToolbarMenuServiceProvider, SearchServiceProvider, FabSpeedDialServiceProvider, SectionFiltersProvider, ETABLISSEMENTS) {
 
     ToolbarMenuServiceProvider.addItem({
       title: 'Établissements',
@@ -402,6 +374,14 @@ angular.module('etablissements').config(
       tooltip: 'établissement',
       icon: ETABLISSEMENTS.ICONS.ETABLISSEMENT,
       dialog: ETABLISSEMENTS.DIALOGS.ADD_ETABLISSEMENT
+    });
+
+    SectionFiltersProvider.register('etablissements', {
+      filters: [{
+        title: 'Tous établissements',
+        query: {}
+      }],
+      templateUrl: 'modules/etablissements/views/etablissements.section-filters.html'
     });
 
   }]);
@@ -436,32 +416,17 @@ angular.module('etablissements').config(
 
     state('etablissements', {
       url: '/etablissements',
-      template: '<ui-view layout="column" flex></ui-view>',
-      resolve: {
-        etablissements: ['$q', '$timeout', 'Etablissement', 'PARAMS', function ($q, $timeout, Etablissement, PARAMS) {
-          return $q.all([
-            $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
-            Etablissement.find()
-          ]).then(function (results) {
-            return _.last(results);
-          });
-        }]
-      },
-      controller: ['$state', '$location', 'etablissements', function ($state, $location, etablissements) {
-        if ($location.path().split('/').length === 2) {
-          $state.go('etablissements.fiche', {
-            etablissementId: _.get(_.first(etablissements), '_id')
-          });
-        }
-      }]
-    }).
-
-    state('etablissements.fiche', {
-      url: '/:etablissementId',
       title: 'Établissements',
+      params: {
+        filters: null
+      },
       templateUrl: 'modules/etablissements/views/etablissements.section.html',
       controller: 'EtablissementsSectionController',
       controllerAs: 'etablissementsSectionCtrl'
+    }).
+
+    state('etablissements.fiche', {
+      url: '/:etablissementId'
     });
 
   }]);
@@ -469,7 +434,7 @@ angular.module('etablissements').config(
 'use strict';
 
 angular.module('interventions').config(
-  ['ToolbarMenuServiceProvider', 'FabSpeedDialServiceProvider', 'SearchServiceProvider', 'EventServiceProvider', 'ConversationServiceProvider', 'INTERVENTIONS', function (ToolbarMenuServiceProvider, FabSpeedDialServiceProvider, SearchServiceProvider, EventServiceProvider, ConversationServiceProvider, INTERVENTIONS) {
+  ['ToolbarMenuServiceProvider', 'FabSpeedDialServiceProvider', 'SearchServiceProvider', 'EventServiceProvider', 'ConversationServiceProvider', 'SectionFiltersProvider', 'INTERVENTIONS', function (ToolbarMenuServiceProvider, FabSpeedDialServiceProvider, SearchServiceProvider, EventServiceProvider, ConversationServiceProvider, SectionFiltersProvider, INTERVENTIONS) {
 
     ToolbarMenuServiceProvider.addItem({
       title: 'Interventions',
@@ -506,6 +471,18 @@ angular.module('interventions').config(
       service: 'ConversationAttachementService'
     });
 
+    SectionFiltersProvider.register('interventions', {
+      filters: [{
+        title: 'À venir',
+        query: {
+          date: {
+            gte: moment().startOf('day').toDate()
+          }
+        }
+      }],
+      templateUrl: 'modules/interventions/views/interventions-section.filters.html'
+    });
+
   }]);
 ;
 'use strict';
@@ -538,41 +515,17 @@ angular.module('interventions').config(
 
     state('interventions', {
       url: '/plage-interventions',
-      template: '<ui-view layout="column" flex></ui-view>',
-      params: {
-        filters: null
-      },
-      resolve: {
-        plages: ['$q', '$timeout', 'PlageIntervention', 'PARAMS', '$stateParams', function ($q, $timeout, PlageIntervention, PARAMS, $stateParams) {
-          return $q.all([
-            $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
-            ($stateParams.filters ? PlageIntervention.formatFilters($stateParams.filters) : $q.when({})).then(function (query) {
-              return PlageIntervention.find(query);
-            })
-          ]).then(function (results) {
-            return _.last(results);
-          });
-        }]
-      },
-      controller: ['$state', '$location', 'plages', '$stateParams', function ($state, $location, plages, $stateParams) {
-        if ($location.path().split('/').length === 2 && plages.length) {
-          $state.go('interventions.fiche', {
-            plageId: _.get(_.first(plages), '_id'),
-            filters: $stateParams.filters
-          });
-        }
-      }]
-    }).
-
-    state('interventions.fiche', {
-      url: '/:plageId',
       title: 'Plages d\'interventions',
       params: {
         filters: null
       },
       templateUrl: 'modules/interventions/views/plages-interventions.section.html',
-      controller: 'PlagesInterventionsSectionController',
-      controllerAs: 'plagesInterventionsSectionCtrl'
+      controller: 'InterventionsSectionController',
+      controllerAs: 'interventionsSectionCtrl'
+    }).
+
+    state('interventions.fiche', {
+      url: '/:plageId'
     });
 
   }]);
@@ -630,24 +583,8 @@ angular.module('users')
 ;
 'use strict';
 
-angular.module('benevoles').factory('BenevoleRole',
-
-  ['$q', '$timeout', 'Schema', function ($q, $timeout, Schema) {
-
-    var BenevoleRole = new Schema('benevole-role');
-
-    BenevoleRole.prototype.toString = function () {
-      return this.description;
-    };
-
-    return BenevoleRole;
-
-  }]);
-;
-'use strict';
-
 angular.module('benevoles').factory('Benevole',
-  ['$rootScope', 'Schema', 'Avatar', 'SearchFieldQueryBuilder', function ($rootScope, Schema, Avatar, SearchFieldQueryBuilder) {
+  ['$rootScope', 'Schema', 'Avatar', 'SearchQueryBuilder', 'SectionFilters', function ($rootScope, Schema, Avatar, SearchQueryBuilder, SectionFilters) {
 
     var Benevole = new Schema('benevole');
 
@@ -673,13 +610,18 @@ angular.module('benevoles').factory('Benevole',
     });
 
     Benevole.search = function (params) {
-      var query = {};
-      if (_.isString(params)) {
-        query = SearchFieldQueryBuilder.build(params);
-      } else  {
-        _.assign(query, params.benevoleName ? SearchFieldQueryBuilder.build(params.benevoleName) : undefined, _.omit(params, 'benevoleName'));
-      }
-      return Benevole.find(query);
+      return Benevole.find(SearchQueryBuilder.build(params));
+    };
+
+    Benevole.getGroups = function () {
+      return SectionFilters.getFilters('benevoles').then(function (filters) {
+        return _.map(filters, function (filter) {
+          return {
+            title: filter.title,
+            query: filter.query
+          };
+        });
+      });
     };
 
     Benevole.prototype.toString = function () {
@@ -1008,7 +950,10 @@ angular.module('conversations').factory('Conversation',
 angular.module('conversations').provider('ConversationService',
   function () {
 
-    var attachements = [];
+    var attachements = [],
+      allGroups = [],
+      fetchersFactories = [],
+      groupProviders = [];
 
     return {
 
@@ -1016,7 +961,29 @@ angular.module('conversations').provider('ConversationService',
         attachements.push(attachement);
       },
 
-      $get: ['$rootScope', 'Conversation', function ($rootScope, Conversation) {
+      register: function (serviceName) {
+        groupProviders.push(serviceName);
+      },
+
+      $get: ['$rootScope', '$q', '$injector', 'Conversation', function ($rootScope, $q, $injector, Conversation) {
+
+        _.forEach(groupProviders, function (groupProviderName) {
+          var groupProvider = $injector.get(groupProviderName);
+
+          fetchersFactories.push(groupProvider);
+
+          if (_.isFunction(groupProvider.getGroups)) {
+            groupProvider.getGroups().then(function (groups) {
+              allGroups = _.sortBy(allGroups.concat(_.map(groups, function (group) {
+                return _.assign(group, {
+                  fullname: '@' + group.title.toLowerCase(),
+                  factory: groupProvider
+                });
+              })), 'fullname');
+            });
+          }
+        });
+
         return {
 
           init: function () {
@@ -1029,6 +996,27 @@ angular.module('conversations').provider('ConversationService',
                 $rootScope.conversations = undefined;
               });
             });
+          },
+
+          searchReceivers: function (search) {
+            if (_.startsWith(search.searchTerm, '@')) {
+              return $q.when(_.filter(allGroups, function (group) {
+                return _.startsWith(group.fullname, search.searchTerm);
+              }));
+            }
+
+            return $q.all(_.invokeMap(fetchersFactories, 'search', search))
+              .then(function (results) {
+                return _.map(_.uniqBy(_.flatten(results), '_id'), function (destinataire) {
+                  return _.assign(destinataire, {
+                    fullname: destinataire.toString()
+                  });
+                });
+              });
+          },
+
+          getGroupMembers: function (group) {
+            return group.factory.search(group.query);
           },
 
           getAttachements: function () {
@@ -1173,7 +1161,9 @@ angular.module('core').provider('RightPanel',
 ;
 'use strict';
 
-angular.module('core').service('SearchFieldQueryBuilder',
+angular.module('core')
+
+.service('SearchFieldQueryBuilder',
   function () {
 
     function getRegex(term) {
@@ -1191,6 +1181,172 @@ angular.module('core').service('SearchFieldQueryBuilder',
         $and: _.map(splittedSearchTermsString, getRegex)
       };
     };
+  })
+
+.service('SearchQueryBuilder',
+  ['SearchFieldQueryBuilder', 'Moment', function (SearchFieldQueryBuilder, Moment) {
+
+    function cleanQuery(query) {
+
+      var newQuery = {};
+
+      _.forOwn(query, function (value, key) {
+
+        if (!_.isObject(value)) {
+          newQuery[key] = value;
+
+        } else {
+
+          _.forEach(_.keys(value), function (nestedKey) {
+
+            if (_.includes(['gte', 'lte', 'in', 'or'], nestedKey)) {
+              var val = nestedKey === 'lte' ? new Moment(value[nestedKey]).endOf('day').toDate() : value[nestedKey];
+              _.merge(newQuery, _.set({}, key + '.$' + nestedKey, val));
+
+            } else {
+              var newKey = key + '.' + nestedKey;
+              if (_.get(query, newKey)) {
+                newQuery[newKey] = value[nestedKey];
+              }
+            }
+          });
+        }
+      });
+
+      if (query.searchTerm) {
+        _.assign(newQuery, SearchFieldQueryBuilder.build(query.searchTerm));
+      }
+
+      console.log(newQuery);
+      return _.omit(newQuery, 'searchTerm');
+    }
+
+    this.build = function (params) {
+      return _.isString(params) ? SearchFieldQueryBuilder.build(params) : cleanQuery(params);
+    };
+  }]);
+;
+'use strict';
+
+angular.module('core').provider('SectionFilters',
+  function () {
+
+    var allFilters = {},
+      id = 0;
+
+    return {
+
+      register: function (sectionName, config) {
+        allFilters[sectionName] = _.map(config.filters, function (filter) {
+          return _.assign(filter, {
+            _id: ++id,
+            default: true,
+            templateUrl: config.templateUrl
+          });
+        });
+      },
+
+      $get: ['$window', 'Schema', function ($window, Schema) {
+
+        function getLastSelectedFilters() {
+          return JSON.parse($window.localStorage.getItem('selected-section-filters') ||  '{}');
+        }
+
+        var Config = new Schema('config');
+
+        var configs = {};
+
+        function SectionFilter(params) {
+          _.assign(this, params);
+        }
+
+        SectionFilter.prototype.save = function () {
+          var filter = _.pick(this, ['_id', 'title', 'query']),
+            config = configs[this.sectionName],
+            index = _.findIndex(config.data.filters, ['_id', filter._id]);
+
+          if (index === -1) {
+            config.data.filters.push(filter);
+          } else {
+            config.data.filters.splice(index, 1, filter);
+          }
+          return config.save();
+        };
+
+        SectionFilter.prototype.remove = function () {
+          var config = configs[this.sectionName];
+          _.remove(config.data.filters, {
+            _id: this._id
+          });
+          return config.save();
+        };
+
+        return {
+
+          getFilters: function (sectionName) {
+            var configName = 'sectionFilters' + sectionName;
+            return Config.findOne({
+              name: configName
+            }).then(function (config) {
+
+              function returnFilters(config) {
+                configs[sectionName] = config;
+
+                return _.orderBy(_.map(allFilters[sectionName].concat(config.data.filters), function (filter) {
+                  return new SectionFilter(_.assign(filter, {
+                    title: _.startCase(_.toLower(filter.title)),
+                    sectionName: sectionName,
+                    templateUrl: _.first(allFilters[sectionName]).templateUrl
+                  }));
+                }), 'title');
+              }
+
+              if (_.isNull(config)) {
+                return Config.create({
+                  name: configName,
+                  data: {
+                    filters: []
+                  }
+                }).then(returnFilters);
+              }
+
+              return returnFilters(config);
+            });
+          },
+
+          getSelectedFilter: function (sectionName) {
+            return this.getFilters(sectionName).then(function (filters) {
+              var lastSelectedFilters = getLastSelectedFilters(),
+                lastSelectedFilter = _.find(filters, ['_id', lastSelectedFilters[sectionName]]);
+
+              if (_.isUndefined(lastSelectedFilter)) {
+                lastSelectedFilter = _.first(filters);
+                this.setSelectedFilter(sectionName, lastSelectedFilter);
+              }
+
+              return lastSelectedFilter;
+            }.bind(this));
+          },
+
+          setSelectedFilter: function (sectionName, filter) {
+            var lastSelectedFilters = getLastSelectedFilters();
+            lastSelectedFilters[sectionName] = filter._id;
+            $window.localStorage.setItem('selected-section-filters', JSON.stringify(lastSelectedFilters));
+          },
+
+          getNewFilter: function (sectionName) {
+            return new SectionFilter(_.assign({}, _.first(allFilters[sectionName]), {
+              title: 'Nouveau groupe',
+              default: false,
+              _id: ++id
+            }));
+          }
+
+        };
+
+      }]
+    };
+
   });
 ;
 'use strict';
@@ -1283,22 +1439,12 @@ angular.module('etablissements').factory('CommissionScolaire',
 angular.module('etablissements').config(
   ['$provide', function ($provide) {
 
-    $provide.decorator('Etablissement', ['$delegate', '$rootScope', 'SearchFieldQueryBuilder', function ($delegate, $rootScope, SearchFieldQueryBuilder) {
+    $provide.decorator('Etablissement', ['$delegate', '$rootScope', 'SearchQueryBuilder', function ($delegate, $rootScope, SearchQueryBuilder) {
 
       var Etablissement = $delegate;
 
       Etablissement.search = function (params) {
-        var query = {};
-        if (_.isString(params)) {
-          query = SearchFieldQueryBuilder.build(params);
-        } else  {
-          _.assign(query, params.etablissementName ? SearchFieldQueryBuilder.build(params.etablissementName) : undefined, _.omit(params, 'etablissementName'));
-        }
-        return Etablissement.find(query);
-      };
-
-      Etablissement.searchByName = function (params) {
-        return Etablissement.find(SearchFieldQueryBuilder.build(params));
+        return Etablissement.find(SearchQueryBuilder.build(params));
       };
 
       Etablissement.post('create', function (next) {
@@ -1760,7 +1906,7 @@ angular.module('interventions').factory('Intervention',
 'use strict';
 
 angular.module('interventions').factory('PlageIntervention',
-  ['$q', 'Schema', 'Moment', 'UserAuth', 'Conversation', 'Etablissement', 'Intervention', 'Contact', function ($q, Schema, Moment, UserAuth, Conversation, Etablissement, Intervention, Contact) {
+  ['$q', 'Schema', 'Moment', 'UserAuth', 'Conversation', 'Etablissement', 'Intervention', 'Contact', 'SearchQueryBuilder', function ($q, Schema, Moment, UserAuth, Conversation, Etablissement, Intervention, Contact, SearchQueryBuilder) {
 
     var PlageIntervention = new Schema('plage-intervention');
 
@@ -1776,40 +1922,8 @@ angular.module('interventions').factory('PlageIntervention',
       next();
     });
 
-    PlageIntervention.search = function (terms) {
-      return Etablissement.search(terms).then(function (etablissements) {
-        return PlageIntervention.find({
-          etablissement: {
-            $in: _.map(etablissements, '_id')
-          },
-          date: {
-            $gte: new Moment().startOf('day')
-          }
-        });
-      });
-    };
-
-    PlageIntervention.formatFilters = function (filters) {
-      var query = {};
-      if (filters.date) {
-        _.assign(query, {
-          date: {
-            $gte: filters.date.start,
-            $lte: filters.date.end
-          }
-        });
-      }
-      if (filters.etablissementName) {
-        return Etablissement.search(filters.etablissementName).then(function (etablissements) {
-          return _.assign(query, {
-            etablissement: {
-              $in: _.map(etablissements, '_id')
-            }
-          });
-        });
-      } else {
-        return $q.when(query);
-      }
+    PlageIntervention.search = function (params) {
+      return PlageIntervention.find(SearchQueryBuilder.build(params));
     };
 
     PlageIntervention.prototype.toString = function () {
@@ -2153,6 +2267,22 @@ angular.module('benevoles').directive('benevoleForm',
 ;
 'use strict';
 
+angular.module('benevoles').factory('BenevoleRole',
+
+  ['$q', '$timeout', 'Schema', function ($q, $timeout, Schema) {
+
+    var BenevoleRole = new Schema('benevole-role');
+
+    BenevoleRole.prototype.toString = function () {
+      return this.description;
+    };
+
+    return BenevoleRole;
+
+  }]);
+;
+'use strict';
+
 angular.module('benevoles').directive('benevolesDashboardCard',
   function () {
     return {
@@ -2228,6 +2358,34 @@ angular.module('benevoles').directive('observateursDashboardCard',
 ;
 'use strict';
 
+angular.module('conversations').directive('attachementButton',
+  ['ConversationService', '$injector', function (ConversationService, $injector) {
+    return {
+      restrict: 'E',
+      scope: {
+        message: '=',
+      },
+      templateUrl: 'modules/conversations/views/attachement.button.html',
+      controllerAs: 'attachementButtonCtrl',
+      controller: ['$scope', function ($scope) {
+
+        $scope.attachements = _.sortBy(ConversationService.getAttachements(), 'title');
+
+        this.handleAttachementSelection = function (attachement) {
+          (attachement.serviceInstance || (attachement.serviceInstance = $injector.get(attachement.service)))
+          .getItem().then(function (item) {
+            $scope.message.attachements = $scope.message.attachements ||  [];
+            $scope.message.attachements.push(item);
+          });
+
+        };
+
+      }]
+    };
+  }]);
+;
+'use strict';
+
 angular.module('conversations').directive('attachement',
   ['$compile', function ($compile) {
     return {
@@ -2293,7 +2451,7 @@ angular.module('conversations').directive('conversationSideNavList',
 'use strict';
 
 angular.module('conversations').directive('conversation',
-  ['$rootScope', '$timeout', 'ConversationService', function ($rootScope, $timeout, ConversationService) {
+  ['$rootScope', '$timeout', function ($rootScope, $timeout) {
     return {
       restrict: 'E',
       scope: {
@@ -2322,8 +2480,6 @@ angular.module('conversations').directive('conversation',
             unwatch();
           }
         });
-
-        scope.attachements = _.sortBy(ConversationService.getAttachements(), 'title');
 
       }
     };
@@ -2631,6 +2787,81 @@ angular.module('core').directive('rightPanel',
       }
     };
   }]);
+;
+'use strict';
+
+angular.module('core').directive('sectionFiltersCard',
+  function () {
+    return {
+      restrict: 'E',
+      scope: {
+        sectionName: '@',
+        onChange: '&'
+      },
+      templateUrl: 'modules/core/views/section-filters.card.html',
+      controllerAs: 'sectionFiltersCardCtrl',
+      controller: ['$scope', 'SectionFilters', 'Toast', function ($scope, SectionFilters, Toast) {
+
+        SectionFilters.getFilters($scope.sectionName).then(function (filters) {
+          $scope.filters = filters;
+        });
+
+        this.selectFilter = function (filter) {
+          $scope.selectedFilter = filter;
+          $scope.query = angular.copy(filter.query);
+          SectionFilters.setSelectedFilter($scope.sectionName, filter);
+        };
+
+        SectionFilters.getSelectedFilter($scope.sectionName).then(function (selectedFilter) {
+          this.selectFilter(selectedFilter);
+        }.bind(this));
+
+        $scope.$watch('query', function (value, oldValue) {
+          if (value !== oldValue) {
+            $scope.onChange({
+              query: value
+            });
+          }
+        }, true);
+
+        this.saveFilter = function (filterForm) {
+          if (filterForm.$valid) {
+            var that = this;
+            $scope.changingTitle = false;
+            _.assign($scope.selectedFilter, {
+              query: $scope.query
+            }).save().then(function () {
+              that.selectFilter($scope.selectedFilter);
+              $scope.filters.splice(_.findIndex($scope.filters, ['_id', $scope.selectedFilter._id]), 1, $scope.selectedFilter);
+              $scope.showFilters = false;
+              filterForm.$setPristine();
+              Toast.show('Sauvegardé!');
+            });
+          }
+        };
+
+        this.deleteFilter = function () {
+          $scope.selectedFilter.remove().then(function () {
+            $scope.showFilters = false;
+            _.remove($scope.filters, {
+              _id: $scope.selectedFilter._id
+            });
+            this.selectFilter(_.first($scope.filters));
+            Toast.show('Supprimé!');
+          }.bind(this));
+        };
+
+        this.createFilter = function () {
+          var filter = SectionFilters.getNewFilter($scope.sectionName);
+          $scope.changingTitle = true;
+          $scope.showFilters = true;
+          $scope.filters.unshift(filter);
+          this.selectFilter(filter);
+        };
+
+      }]
+    };
+  });
 ;
 'use strict';
 
@@ -3162,16 +3393,29 @@ angular.module('benevoles').controller('BenevoleFromCtrl',
 ;
 'use strict';
 
+angular.module('benevoles').controller('BenevolesSectionFiltersController',
+  ['$scope', 'BenevoleRole', function ($scope, BenevoleRole) {
+
+    BenevoleRole.find().then(function (roles) {
+      this.roles = roles;
+    }.bind(this));
+
+    $scope.$watch('query', function (query) {
+      _.forEach(['role', 'sexe', 'orientation'], function (queryField) {
+        $scope.query[queryField] = query[queryField] || null;
+      });
+    });
+
+  }]);
+;
+'use strict';
+
 angular.module('benevoles').controller('BenevolesSectionController',
-  ['$rootScope', '$scope', '$q', '$timeout', 'benevoles', 'Benevole', '$stateParams', '$state', 'PARAMS', function ($rootScope, $scope, $q, $timeout, benevoles, Benevole, $stateParams, $state, PARAMS) {
+  ['$rootScope', '$scope', '$q', '$timeout', 'Benevole', '$stateParams', '$state', 'PARAMS', function ($rootScope, $scope, $q, $timeout, Benevole, $stateParams, $state, PARAMS) {
 
     var ctrl = this;
 
-    ctrl.benevoles = benevoles;
-
-    $scope.search = _.assign({
-      actif: true
-    }, $stateParams.filters);
+    $scope.search = $stateParams.filters;
 
     ctrl.showBenevole = function (benevole) {
       if (_.isUndefined($scope.benevole) || benevole._id !== $scope.benevole._id) {
@@ -3196,19 +3440,23 @@ angular.module('benevoles').controller('BenevolesSectionController',
     };
 
     ctrl.updateSearch = function (search) {
-      Benevole.search(search).then(function (benevoles) {
-        ctrl.benevoles = benevoles;
-        if (ctrl.benevoles.length) {
-          var firstBenevole = _.first(benevoles);
-          if (firstBenevole && (_.isUndefined($scope.benevole) || $scope.benevole._id !== firstBenevole._id)) {
-            ctrl.showBenevole(firstBenevole);
+      Benevole.search(search)
+        .then(function (benevoles) {
+          ctrl.benevoles = benevoles;
+          if (ctrl.benevoles.length) {
+            var firstBenevole = _.first(benevoles);
+            if (firstBenevole && (_.isUndefined($scope.benevole) || $scope.benevole._id !== firstBenevole._id)) {
+              ctrl.showBenevole(firstBenevole);
+            }
+          } else {
+            $scope.lodadingDone = true;
+            $scope.benevole = undefined;
           }
-        } else {
-          $scope.benevole = undefined;
-        }
 
-      });
+        });
     };
+
+    ctrl.updateFilters = _.debounce(ctrl.updateSearch, PARAMS.DEBOUNCE_TIME);
 
     var listeners = [];
 
@@ -3227,17 +3475,9 @@ angular.module('benevoles').controller('BenevolesSectionController',
       }
     }));
 
-    $scope.$on('destroy', function () {
-      _.forEach(listeners, function (listener) {
-        listener();
-      });
+    $rootScope.$on('$stateChangeStart', function () {
+      _.invokeMap(listeners, _.call);
     });
-
-    if (ctrl.benevoles.length) {
-      ctrl.showBenevole(_.find(ctrl.benevoles, ['_id', $stateParams.benevoleId]) || _.first(ctrl.benevoles));
-    } else {
-      $scope.lodadingDone = true;
-    }
 
   }]);
 ;
@@ -3368,14 +3608,6 @@ angular.module('conversations').controller('ConversationController',
       });
     };
 
-    ctrl.handleAttachementSelection = function (message, attachement) {
-      (attachement.serviceInstance || (attachement.serviceInstance = $injector.get(attachement.service)))
-      .getItem().then(function (item) {
-        message.attachements = message.attachements ||  [];
-        message.attachements.push(item);
-      });
-    };
-
     ctrl.deleteMessage = function (message) {
       message.remove().then(function () {
         _.pull($scope.messages, message);
@@ -3386,28 +3618,25 @@ angular.module('conversations').controller('ConversationController',
 ;
 'use strict';
 
+angular.module('conversations').controller('ConversationsSectionFiltersController',
+  ['$scope', function ($scope) {
+
+    $scope.$watch('query', function (query) {
+      _.forEach(['archived'], function (queryField) {
+        _.set($scope.query, queryField, _.get(query, queryField, null));
+      });
+    });
+
+  }]);
+;
+'use strict';
+
 angular.module('conversations').controller('ConversationsSectionController',
-  ['$scope', '$q', '$rootScope', 'conversations', '$state', '$stateParams', '$timeout', 'Conversation', 'PARAMS', function ($scope, $q, $rootScope, conversations, $state, $stateParams, $timeout, Conversation, PARAMS) {
+  ['$scope', '$q', '$rootScope', '$state', '$stateParams', '$timeout', 'Conversation', 'PARAMS', function ($scope, $q, $rootScope, $state, $stateParams, $timeout, Conversation, PARAMS) {
 
     var ctrl = this;
 
-    ctrl.conversations = conversations;
-
-    Conversation.findOne({
-      type: {
-        $ne: 'intervention'
-      },
-      archived: true
-    }).then(function (conversation) {
-      ctrl.noArchives = _.isNull(conversation);
-    });
-
-    $scope.search = $stateParams.filters ||  {
-      archived: false,
-      type: {
-        $ne: 'intervention'
-      }
-    };
+    $scope.search = $stateParams.filters;
 
     ctrl.showConversation = function (conversation) {
       if (_.isUndefined($scope.conversation) || conversation._id !== $scope.conversation._id) {
@@ -3432,7 +3661,11 @@ angular.module('conversations').controller('ConversationsSectionController',
     };
 
     ctrl.updateSearch = function (search) {
-      Conversation.search(search).then(function (conversations) {
+      Conversation.search(_.assign(search, {
+        type: {
+          $ne: 'intervention'
+        }
+      })).then(function (conversations) {
         ctrl.conversations = conversations;
         if (ctrl.conversations.length) {
           var firstConversation = _.first(conversations);
@@ -3440,10 +3673,13 @@ angular.module('conversations').controller('ConversationsSectionController',
             ctrl.showConversation(firstConversation);
           }
         } else {
+          $scope.lodadingDone = true;
           $scope.conversation = undefined;
         }
       });
     };
+
+    ctrl.updateFilters = _.debounce(ctrl.updateSearch, PARAMS.DEBOUNCE_TIME);
 
     var listeners = [];
 
@@ -3468,24 +3704,16 @@ angular.module('conversations').controller('ConversationsSectionController',
       _.pullAt(ctrl.conversations, convoIndex);
     }));
 
-    $scope.$on('destroy', function () {
-      _.forEach(listeners, function (listener) {
-        listener();
-      });
+    $rootScope.$on('$stateChangeStart', function () {
+      _.invokeMap(listeners, _.call);
     });
-
-    if (ctrl.conversations.length) {
-      ctrl.showConversation(_.find(ctrl.conversations, ['_id', $stateParams.conversationId]) ||  _.first(ctrl.conversations));
-    } else {
-      $scope.lodadingDone = true;
-    }
 
   }]);
 ;
 'use strict';
 
 angular.module('conversations').controller('NouveauMessageController',
-  ['Benevole', 'Conversation', '$mdToast', 'UserAuth', function (Benevole, Conversation, $mdToast, UserAuth) {
+  ['$scope', '$q', 'Benevole', 'Conversation', 'ConversationService', '$mdToast', 'UserAuth', function ($scope, $q, Benevole, Conversation, ConversationService, $mdToast, UserAuth) {
 
     var ctrl = this;
 
@@ -3500,17 +3728,11 @@ angular.module('conversations').controller('NouveauMessageController',
     };
 
     ctrl.searchDestinataires = function (searchTerm) {
-      return Benevole.search({
+      return ConversationService.searchReceivers({
         _id: {
           $nin: _.map(ctrl.message.destinataires, '_id').concat(currentUser._id)
         },
-        benevoleName: searchTerm
-      }).then(function (results) {
-        return _.map(results, function (destinataire) {
-          return _.assign(destinataire, {
-            fullname: destinataire.toString()
-          });
-        });
+        searchTerm: searchTerm
       });
     };
 
@@ -3527,12 +3749,26 @@ angular.module('conversations').controller('NouveauMessageController',
       ctrl.dialog.hide().then(function () {
         $mdToast.show(toast).then(function (response) {
           if (_.isUndefined(response)) {
-            Conversation.create({
-              title: ctrl.message.subject,
-              participants: _.map(ctrl.message.destinataires, '_id').concat(currentUser._id),
-              type: 'private',
-              message: ctrl.message.body
+
+            $q.all(_.map(ctrl.message.destinataires, function (destinataire) {
+              if (_.startsWith(destinataire.fullname, '@')) {
+                return ConversationService.getGroupMembers(destinataire)
+                  .then(function (members) {
+                    _.pull(ctrl.message.destinataires, destinataire);
+                    ctrl.message.destinataires = ctrl.message.destinataires.concat(members);
+                  });
+              }
+            })).then(function () {
+              console.log(_.uniq(_.map(ctrl.message.destinataires.concat(currentUser), '_id')));
+              Conversation.create({
+                title: ctrl.message.subject,
+                participants: _.uniq(_.map(ctrl.message.destinataires.concat(currentUser), '_id')),
+                type: 'private',
+                message: ctrl.message.body,
+                attachements: ctrl.message.attachements
+              });
             });
+
           }
         });
       });
@@ -3682,12 +3918,35 @@ angular.module('etablissements').controller('EtablissementFromCtrl',
 ;
 'use strict';
 
+angular.module('etablissements').controller('EtablissementSectionFiltersController',
+  ['$scope', 'EtablissementType', 'CommissionScolaire', 'Ville', function ($scope, EtablissementType, CommissionScolaire, Ville) {
+
+    EtablissementType.find().then(function (etablissementTypes) {
+      this.etablissementTypes = etablissementTypes;
+    }.bind(this));
+
+    CommissionScolaire.find().then(function (commissionsScolaires) {
+      this.commissionsScolaires = commissionsScolaires;
+    }.bind(this));
+
+    Ville.find().then(function (villes) {
+      this.villes = villes;
+    }.bind(this));
+
+    $scope.$watch('query', function (query) {
+      _.forEach(['type', 'commissionScolaire', 'address.city'], function (queryField) {
+        _.set($scope.query, queryField, _.get(query, queryField, null));
+      });
+    });
+
+  }]);
+;
+'use strict';
+
 angular.module('etablissements').controller('EtablissementsSectionController',
-  ['$rootScope', '$scope', '$q', '$timeout', 'etablissements', 'Etablissement', '$stateParams', '$state', 'PARAMS', function ($rootScope, $scope, $q, $timeout, etablissements, Etablissement, $stateParams, $state, PARAMS) {
+  ['$rootScope', '$scope', '$q', '$timeout', 'Etablissement', '$stateParams', '$state', 'PARAMS', function ($rootScope, $scope, $q, $timeout, Etablissement, $stateParams, $state, PARAMS) {
 
     var ctrl = this;
-
-    ctrl.etablissements = etablissements;
 
     $scope.search = $stateParams.filters;
 
@@ -3714,14 +3973,22 @@ angular.module('etablissements').controller('EtablissementsSectionController',
     };
 
     ctrl.updateSearch = function (search) {
-      Etablissement.search(search).then(function (etablissements) {
-        ctrl.etablissements = etablissements;
-        var firstEtablissement = _.first(etablissements);
-        if (firstEtablissement && (_.isUndefined($scope.etablissement) ||  $scope.etablissement._id !== firstEtablissement._id)) {
-          ctrl.showEtablissement(firstEtablissement);
-        }
-      });
+      Etablissement.search(search)
+        .then(function (etablissements) {
+          ctrl.etablissements = etablissements;
+          if (etablissements.length) {
+            var firstEtablissement = _.first(etablissements);
+            if (firstEtablissement && (_.isUndefined($scope.etablissement) ||  $scope.etablissement._id !== firstEtablissement._id)) {
+              ctrl.showEtablissement(firstEtablissement);
+            }
+          } else {
+            $scope.lodadingDone = true;
+            $scope.etablissement = undefined;
+          }
+        });
     };
+
+    ctrl.updateFilters = _.debounce(ctrl.updateSearch, PARAMS.DEBOUNCE_TIME);
 
     var listeners = [];
 
@@ -3741,17 +4008,9 @@ angular.module('etablissements').controller('EtablissementsSectionController',
 
     }));
 
-    $scope.$on('destroy', function () {
-      _.forEach(listeners, function (listener) {
-        listener();
-      });
+    $rootScope.$on('$stateChangeStart', function () {
+      _.invokeMap(listeners, _.call);
     });
-
-    if (ctrl.etablissements.length) {
-      ctrl.showEtablissement(_.find(ctrl.etablissements, ['_id', $stateParams.etablissementId]) ||  _.first(ctrl.etablissements));
-    } else {
-      $scope.lodadingDone = true;
-    }
 
   }]);
 ;
@@ -4153,6 +4412,96 @@ angular.module('interventions').controller('InterventionCardController',
 ;
 'use strict';
 
+angular.module('interventions').controller('InterventionsSectionController',
+  ['$rootScope', '$scope', '$q', '$timeout', 'PlageIntervention', '$stateParams', '$state', 'PARAMS', function ($rootScope, $scope, $q, $timeout, PlageIntervention, $stateParams, $state, PARAMS) {
+
+    var ctrl = this;
+
+    $scope.search = $stateParams.filters;
+
+    ctrl.showPlage = function (plage) {
+      if (_.isUndefined($scope.plage) || plage._id !== $scope.plage._id) {
+
+        $scope.lodadingDone = false;
+        $scope.plage = plage;
+
+        $state.go('interventions.fiche', {
+          plageId: plage._id
+        }, {
+          notify: false
+        });
+
+        $q.all([
+          $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
+          PlageIntervention.findById(plage._id)
+        ]).then(function (results) {
+          $scope.plage = _.last(results);
+          $scope.lodadingDone = true;
+        });
+      }
+    };
+
+    ctrl.updateSearch = function (search) {
+      PlageIntervention.search(search)
+        .then(function (plages) {
+          ctrl.plages = plages;
+          if (plages.length) {
+            var firstPlage = _.first(plages);
+            if (firstPlage && (_.isUndefined($scope.plage) || $scope.plage._id !== firstPlage._id)) {
+              ctrl.showPlage(firstPlage);
+            }
+          } else {
+            $scope.lodadingDone = true;
+            $scope.plage = undefined;
+          }
+        });
+    };
+
+    ctrl.updateFilters = _.debounce(ctrl.updateSearch, PARAMS.DEBOUNCE_TIME);
+
+    var listeners = [];
+
+    listeners.push($rootScope.$on('PLAGE:STATUS-CHANGE', function ($event, plage) {
+      _.find(ctrl.plages, '_id', plage._id).status = plage.status;
+    }));
+
+    listeners.push($rootScope.$on('PlageIntervention:new', function ($event, nouvellePlage) {
+      _.sortedPush(ctrl.plages, nouvellePlage, function (plage) {
+        return plage.toString();
+      });
+    }));
+
+    listeners.push($rootScope.$on('PlageIntervention:remove', function ($event, removedPlage) {
+      _.remove(ctrl.plages, function (plage) {
+        return plage._id === removedPlage._id;
+      });
+      if (removedPlage._id === $scope.plage._id) {
+        ctrl.showPlage(ctrl.plages[ctrl.currentIndex - 1]  ||  _.first(ctrl.plages));
+      }
+
+    }));
+
+    $rootScope.$on('$stateChangeStart', function () {
+      _.invokeMap(listeners, _.call);
+    });
+
+  }]);
+;
+'use strict';
+
+angular.module('interventions').controller('InterventionsSectionFiltersController',
+  ['$scope', function ($scope) {
+
+    $scope.$watch('query', function (query) {
+      _.forEach(['date'], function (queryField) {
+        _.set($scope.query, queryField, _.get(query, queryField, null));
+      });
+    });
+
+  }]);
+;
+'use strict';
+
 angular.module('interventions').controller('NouvellePlageInterventionController',
   ['$state', 'Etablissement', 'Contact', 'PlageIntervention', function ($state, Etablissement, Contact, PlageIntervention) {
 
@@ -4251,86 +4600,6 @@ angular.module('interventions').controller('PlageFicheController',
 ;
 'use strict';
 
-angular.module('interventions').controller('PlagesInterventionsSectionController',
-  ['$rootScope', '$scope', '$q', '$timeout', 'plages', 'PlageIntervention', '$stateParams', '$state', 'PARAMS', function ($rootScope, $scope, $q, $timeout, plages, PlageIntervention, $stateParams, $state, PARAMS) {
-
-    var ctrl = this;
-
-    ctrl.plages = plages;
-    $scope.search = $stateParams.filters;
-
-    ctrl.showPlage = function (plage) {
-      if (_.isUndefined($scope.plage) || plage._id !== $scope.plage._id) {
-
-        $scope.lodadingDone = false;
-        $scope.plage = plage;
-
-        $state.go('interventions.fiche', {
-          plageId: plage._id
-        }, {
-          notify: false
-        });
-
-        $q.all([
-          $timeout(angular.noop, PARAMS.MIN_LOADING_TIME),
-          PlageIntervention.findById(plage._id)
-        ]).then(function (results) {
-          $scope.plage = _.last(results);
-          $scope.lodadingDone = true;
-        });
-      }
-    };
-
-    ctrl.updateSearch = function (search) {
-      PlageIntervention.formatFilters(search).then(function (query) {
-        PlageIntervention.find(query).then(function (plages) {
-          ctrl.plages = plages;
-          var firstPlage = _.first(plages);
-          if (firstPlage && (_.isUndefined($scope.plage) || $scope.plage._id !== firstPlage._id)) {
-            ctrl.showPlage(firstPlage);
-          }
-        });
-      });
-    };
-
-    var listeners = [];
-
-    listeners.push($rootScope.$on('PLAGE:STATUS-CHANGE', function ($event, plage) {
-      _.find(ctrl.plages, '_id', plage._id).status = plage.status;
-    }));
-
-    listeners.push($rootScope.$on('PlageIntervention:new', function ($event, nouvellePlage) {
-      _.sortedPush(ctrl.plages, nouvellePlage, function (plage) {
-        return plage.toString();
-      });
-    }));
-
-    listeners.push($rootScope.$on('PlageIntervention:remove', function ($event, removedPlage) {
-      _.remove(ctrl.plages, function (plage) {
-        return plage._id === removedPlage._id;
-      });
-      if (removedPlage._id === $scope.plage._id) {
-        ctrl.showPlage(ctrl.plages[ctrl.currentIndex - 1]  ||  _.first(ctrl.plages));
-      }
-
-    }));
-
-    $scope.$on('destroy', function () {
-      _.forEach(listeners, function (listener) {
-        listener();
-      });
-    });
-
-    if (ctrl.plages.length) {
-      ctrl.showPlage(_.find(ctrl.plages, ['_id', $stateParams.plageId]) || _.first(ctrl.plages));
-    } else {
-      $scope.lodadingDone = true;
-    }
-
-  }]);
-;
-'use strict';
-
 angular.module('interventions').controller('UrgentInterventionsCardController',
   ['Intervention', '$state', function (Intervention, $state) {
 
@@ -4410,18 +4679,28 @@ angular.module('search').controller('SearchBarController',
 angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
   'use strict';
 
+  $templateCache.put('modules/benevoles/views/benevole-role.select.html',
+    "<md-input-container><label>Rôle</label><md-select ng-model=ctrl.userState><md-option><em>None</em></md-option><md-option ng-repeat=\"state in ctrl.states\" ng-value=state.abbrev ng-disabled=\"$index === 1\">{{state.abbrev}}</md-option></md-select></md-input-container>"
+  );
+
+
   $templateCache.put('modules/benevoles/views/benevole.card.html',
     "<md-card layout=column flex><div layout=column class=card-header><div layout=row class=card-header-tools><span flex></span><md-button class=md-icon-button ng-click=\"benevoleCardCtrl.sendMessage($event, benevole)\"><md-icon md-svg-icon=communication:message></md-icon><md-tooltip>Message</md-tooltip></md-button><md-button class=md-icon-button ng-click=\"benevoleCardCtrl.deleteBenevole($event, benevole)\" ng-disabled=true><md-icon md-svg-icon=action:delete></md-icon><md-tooltip>Supprimer</md-tooltip></md-button></div><span flex></span><div layout=row layout-align=\"start center\" class=\"fiche-title-over-custom-tabs md-padding\"><avatar user=benevole click-to-update></avatar><span class=\"md-title benevole-name\">{{ benevole.toString() }}</span></div></div><div layout=column flex><md-tabs flex class=md-accent><md-tab label=activités layout-fill><md-tab-body><div layout-padding layout=column flex ng-include=\"'modules/benevoles/views/benevole.infos.html'\"></div></md-tab-body></md-tab><md-tab label=profil layout-fill><md-tab-body><div layout-padding layout=column flex><benevole-form benevole=benevole auto-save=true></benevole-form></div></md-tab-body></md-tab></md-tabs></div></md-card>"
   );
 
 
   $templateCache.put('modules/benevoles/views/benevole.form.html',
-    "<ng-form name=userProfileForm auto-save-form=autoSave novalidate autocomplete=off><div layout=row flex layout-wrap><div layout=column flex=45><md-input-container><label>Prénom</label><input name=prenom ng-model=benevole.prenom ng-model-options=\"{ updateOn: 'blur' }\" ng-change=benevoleFormCtrl.saveBenevole(userProfileForm) required><ng-messages for=userProfileForm.prenom.$error><ng-message when=required>requis.</ng-message></ng-messages></md-input-container><md-input-container><label>Nom de famille</label><input name=nomFamille ng-model=benevole.nomFamille ng-model-options=\"{ updateOn: 'blur' }\" ng-change=benevoleFormCtrl.saveBenevole(userProfileForm) required><ng-messages for=userProfileForm.nomFamille.$error><ng-message when=required>requis.</ng-message></ng-messages></md-input-container><md-input-container><label>Date de naissance</label><input type=date name=dateNaissance ng-model=benevole.dateNaissance ng-model-options=\"{ updateOn: 'blur' }\" ng-change=benevoleFormCtrl.saveBenevole(userProfileForm) required><ng-messages for=userProfileForm.dateNaissance.$error ng-show=\"userProfileForm.dateNaissance.$touched || userProfileForm.dateNaissance.$dirty\"><ng-message when=required>requis.</ng-message><ng-message when=date>date invalide.</ng-message></ng-messages></md-input-container><md-input-container><label>Courriel</label><input type=email name=email ng-model=benevole.email ng-model-options=\"{ updateOn: 'blur' }\" ng-change=benevoleFormCtrl.saveBenevole(userProfileForm) required><ng-messages for=userProfileForm.email.$error ng-show=\"userProfileForm.email.$touched || userProfileForm.email.$dirty\"><ng-message when=required>requis.</ng-message><ng-message when=email>courriel invalide.</ng-message></ng-messages></md-input-container><input style=display:none><md-input-container flex><label>{{ benevoleFormCtrl.isNew ? 'Mot de passe' : 'Nouveau mot de passe' }}</label><input name=password type=password autocomplete=new-password ng-model=benevole.password ng-model-options=\"{ updateOn: 'blur' }\" ng-change=\"benevole.password === benevole.passwordMatch && benevoleFormCtrl.saveBenevole(userProfileForm)\" ng-required=userProfileForm.isNew><ng-messages for=userProfileForm.password.$error><ng-message when=required>requis.</ng-message></ng-messages></md-input-container><md-input-container><label>Vérification mot de passe</label><input name=passwordMatch type=password autocomplete=off ng-model=benevole.passwordMatch ng-model-options=\"{ updateOn: 'default blur', debounce: { default: 500, blur: 0 } }\" ng-change=\"benevole.password === benevole.passwordMatch && benevoleFormCtrl.saveBenevole(userProfileForm)\" ng-disabled=\"benevole.password === undefined\" ng-required=benevole.password password-verify=benevole.password><ng-messages for=userProfileForm.passwordMatch.$error ng-show=\"userProfileForm.passwordMatch.$touched || userProfileForm.passwordMatch.$dirty\"><ng-message when=required>requis.</ng-message><ng-message when=passwordVerify>Ne correspond pas au mot de passe.</ng-message></ng-messages></md-input-container></div><span flex=10></span><div layout=column flex=45><md-input-container><label>Rôle</label><md-select name=role ng-model=benevole.role ng-change=benevoleFormCtrl.saveBenevole(userProfileForm) required><md-option ng-repeat=\"role in benevoleFormCtrl.benevoleRoles\" ng-value=role ng-selected=\"role._id === benevole.role._id\">{{ role.toString() }}</md-option></md-select><ng-messages for=userProfileForm.role.$error><ng-message when=required>requis.</ng-message></ng-messages></md-input-container><telephone-input flex=50 ng-model=benevole.telephones ng-change=benevoleFormCtrl.saveBenevole(userProfileForm)></telephone-input></div></div></ng-form>"
+    "<ng-form name=userProfileForm auto-save-form=autoSave novalidate autocomplete=off><div layout=row flex layout-wrap><div layout=column flex=45><md-input-container><label>Prénom</label><input name=prenom ng-model=benevole.prenom ng-model-options=\"{ updateOn: 'blur' }\" ng-change=benevoleFormCtrl.saveBenevole(userProfileForm) required><ng-messages for=userProfileForm.prenom.$error><ng-message when=required>requis.</ng-message></ng-messages></md-input-container><md-input-container><label>Nom de famille</label><input name=nomFamille ng-model=benevole.nomFamille ng-model-options=\"{ updateOn: 'blur' }\" ng-change=benevoleFormCtrl.saveBenevole(userProfileForm) required><ng-messages for=userProfileForm.nomFamille.$error><ng-message when=required>requis.</ng-message></ng-messages></md-input-container><md-input-container><label>Date de naissance</label><input type=date name=dateNaissance ng-model=benevole.dateNaissance ng-model-options=\"{ updateOn: 'blur' }\" ng-change=benevoleFormCtrl.saveBenevole(userProfileForm) required><ng-messages for=userProfileForm.dateNaissance.$error ng-show=\"userProfileForm.dateNaissance.$touched || userProfileForm.dateNaissance.$dirty\"><ng-message when=required>requis.</ng-message><ng-message when=date>date invalide.</ng-message></ng-messages></md-input-container><md-input-container><label>Courriel</label><input type=email name=email ng-model=benevole.email ng-model-options=\"{ updateOn: 'blur' }\" ng-change=benevoleFormCtrl.saveBenevole(userProfileForm) required><ng-messages for=userProfileForm.email.$error ng-show=\"userProfileForm.email.$touched || userProfileForm.email.$dirty\"><ng-message when=required>requis.</ng-message><ng-message when=email>courriel invalide.</ng-message></ng-messages></md-input-container><input style=display:none><md-input-container flex><label>{{ benevoleFormCtrl.isNew ? 'Mot de passe' : 'Nouveau mot de passe' }}</label><input name=password type=password autocomplete=new-password ng-model=benevole.password ng-model-options=\"{ updateOn: 'blur' }\" ng-change=\"benevole.password === benevole.passwordMatch && benevoleFormCtrl.saveBenevole(userProfileForm)\" ng-required=userProfileForm.isNew><ng-messages for=userProfileForm.password.$error><ng-message when=required>requis.</ng-message></ng-messages></md-input-container><md-input-container><label>Vérification mot de passe</label><input name=passwordMatch type=password autocomplete=off ng-model=benevole.passwordMatch ng-model-options=\"{ updateOn: 'default blur', debounce: { default: 500, blur: 0 } }\" ng-change=\"benevole.password === benevole.passwordMatch && benevoleFormCtrl.saveBenevole(userProfileForm)\" ng-disabled=\"benevole.password === undefined\" ng-required=benevole.password password-verify=benevole.password><ng-messages for=userProfileForm.passwordMatch.$error ng-show=\"userProfileForm.passwordMatch.$touched || userProfileForm.passwordMatch.$dirty\"><ng-message when=required>requis.</ng-message><ng-message when=passwordVerify>Ne correspond pas au mot de passe.</ng-message></ng-messages></md-input-container></div><span flex=10></span><div layout=column flex=45><md-input-container><label>Rôle</label><md-select name=role ng-model=benevole.role ng-change=benevoleFormCtrl.saveBenevole(userProfileForm) required><md-option ng-repeat=\"role in benevoleFormCtrl.benevoleRoles\" ng-value=role ng-selected=\"role._id === benevole.role._id\">{{ role.toString() }}</md-option></md-select><ng-messages for=userProfileForm.role.$error><ng-message when=required>requis.</ng-message></ng-messages></md-input-container><md-input-container flex><label>Sexe</label><md-select name=sexe ng-model=benevole.sexe md-on-close=benevoleFormCtrl.saveBenevole(userProfileForm) required><md-option ng-repeat=\"sexe in ['homme', 'femme']\" ng-value=sexe>{{ sexe }}</md-option></md-select><ng-messages for=userProfileForm.sexe.$error><ng-message when=required>requis.</ng-message></ng-messages></md-input-container><md-input-container flex><label>Orientation</label><md-select name=orientation ng-model=benevole.orientation md-on-close=benevoleFormCtrl.saveBenevole(userProfileForm) required><md-option ng-repeat=\"orientation in ['homosexuel', 'bisexuel']\" ng-value=orientation>{{ orientation }}</md-option></md-select><ng-messages for=userProfileForm.orientation.$error><ng-message when=required>requis.</ng-message></ng-messages></md-input-container><telephone-input flex=50 ng-model=benevole.telephones ng-change=benevoleFormCtrl.saveBenevole(userProfileForm)></telephone-input></div></div></ng-form>"
   );
 
 
   $templateCache.put('modules/benevoles/views/benevole.infos.html',
     "<div layout=row flex><div flex=60></div><div class=md-whiteframe-1dp flex=40><md-toolbar><div class=md-toolbar-tools><h2>Récent</h2></div></md-toolbar><md-list><md-list-item class=md-2-line><md-icon md-svg-icon=communication:message></md-icon><div class=md-list-item-text><h3>Qqchose</h3><p>description</p></div><md-divider></md-divider></md-list-item><md-list-item class=md-2-line><md-icon md-svg-icon=content:add></md-icon><div class=md-list-item-text><h3>Qqchose</h3><p>description</p></div><md-divider></md-divider></md-list-item><md-list-item class=md-2-line><md-icon md-svg-icon=communication:message></md-icon><div class=md-list-item-text><h3>Qqchose</h3><p>description</p></div><md-divider></md-divider></md-list-item><md-list-item class=md-2-line><md-icon md-svg-icon=communication:message></md-icon><div class=md-list-item-text><h3>Qqchose</h3><p>description</p></div><md-divider></md-divider></md-list-item><md-list-item class=md-2-line><md-icon md-svg-icon=communication:message></md-icon><div class=md-list-item-text><h3>Qqchose</h3><p>description</p></div><md-divider></md-divider></md-list-item></md-list></div></div>"
+  );
+
+
+  $templateCache.put('modules/benevoles/views/benevoles-section.filters.html',
+    "<div layout=column ng-controller=\"BenevolesSectionFiltersController as benevolesSectionFiltersCtrl\"><div layout=row layout-align=\"start center\"><md-switch aria-label=actifs name=actif ng-model=query.actif>actifs</md-switch><span flex=5></span><md-input-container class=no-errors-spacer flex><label>Rôle</label><md-select ng-model=query.role><md-option ng-value=null>Tout</md-option><md-option ng-repeat=\"role in benevolesSectionFiltersCtrl.roles\" ng-value=role ng-selected=\"role._id === query.role._id\">{{ role.toString() }}</md-option></md-select></md-input-container></div><div layout=row layout-align=\"start center\"><md-input-container class=no-errors-spacer flex><label>Sexe</label><md-select ng-model=query.sexe><md-option ng-value=null>Tout</md-option><md-option ng-repeat=\"sexe in ['homme', 'femme']\" ng-value=sexe>{{ sexe }}</md-option></md-select></md-input-container><span flex=5></span><md-input-container class=no-errors-spacer flex><label>Orientation</label><md-select ng-model=query.orientation><md-option ng-value=null>Tout</md-option><md-option ng-repeat=\"orientation in ['homosexuel', 'bisexuel']\" ng-value=orientation>{{ orientation }}</md-option></md-select></md-input-container></div></div>"
   );
 
 
@@ -4433,7 +4712,7 @@ angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('modules/benevoles/views/benevoles.section.html',
-    "<benevole-section layout=row flex><div layout=column flex=30 flex-gt-lg=20><md-card><md-card-content><md-input-container md-no-float class=\"md-icon-float md-block no-errors-spacer\"><md-icon md-svg-icon=action:search></md-icon><input placeholder=recherche... input-clear ng-model=search.benevoleName ng-model-options=\"{ debounce: PARAMS.DEBOUNCE_TIME }\" ng-change=benevolesSectionCtrl.updateSearch(search)></md-input-container><md-switch aria-label=actifs ng-model=search.actif ng-change=benevolesSectionCtrl.updateSearch(search)>actifs</md-switch></md-card-content></md-card><md-card flex><md-content flex><md-list section-list flex layout=column><md-list-item class=md-2-line ng-class=\"{ active:item._id === benevole._id }\" ng-repeat=\"item in benevolesSectionCtrl.benevoles\" ng-click=benevolesSectionCtrl.showBenevole(item)><avatar user=item no-role></avatar><div class=md-list-item-text><h3>{{ item.toString() }}</h3><p>{{ item.getRoleDescription() }}</p></div><md-divider ng-if=!$last></md-divider></md-list-item></md-list></md-content></md-card></div><div flex=70 flex-gt-lg=80 layout=column><div layout=row flex layout-align=\"center center\" ng-hide=lodadingDone><md-progress-circular md-diameter=160 md-mode=indeterminate></md-progress-circular></div><benevole-card ng-if=\"lodadingDone && benevole\" layout=column flex benevole=benevole></benevole-card></div></benevole-section>"
+    "<benevole-section layout=row flex><div layout=column flex=30 flex-gt-lg=20><section-filters-card section-name=benevoles on-change=benevolesSectionCtrl.updateFilters(query)></section-filters-card><md-card flex><md-content flex><md-list section-list flex layout=column><md-subheader class=search-subheader><md-input-container md-no-float class=\"md-icon-float md-block no-errors-spacer\" style=margin:0><md-icon md-svg-icon=action:search></md-icon><input placeholder=recherche... input-clear ng-model=query.searchTerm ng-change=benevolesSectionCtrl.updateFilters(query)></md-input-container></md-subheader><md-list-item class=md-2-line ng-class=\"{ active:item._id === benevole._id }\" ng-repeat=\"item in benevolesSectionCtrl.benevoles\" ng-click=benevolesSectionCtrl.showBenevole(item)><avatar user=item no-role></avatar><div class=md-list-item-text><h3>{{ item.toString() }}</h3><p>{{ item.getRoleDescription() }}</p></div><md-divider ng-if=!$last></md-divider></md-list-item></md-list></md-content></md-card></div><div flex=70 flex-gt-lg=80 layout=column><div layout=row flex layout-align=\"center center\" ng-hide=lodadingDone><md-progress-circular md-diameter=160 md-mode=indeterminate></md-progress-circular></div><benevole-card ng-if=\"lodadingDone && benevole\" layout=column flex benevole=benevole></benevole-card></div></benevole-section>"
   );
 
 
@@ -4473,13 +4752,18 @@ angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('modules/conversations/views/attachement.button.html',
+    "<md-menu md-position-mode=\"target-right target\"><md-button aria-label=\"Ajouter un attachement\" class=md-icon-button ng-click=$mdMenu.open($event)><md-icon md-menu-origin md-svg-icon=file:attachment></md-icon></md-button><md-menu-content width=4><md-menu-item ng-repeat=\"attachement in attachements\"><md-button ng-click=attachementButtonCtrl.handleAttachementSelection(attachement)><div layout=row flex><p flex>{{ attachement.title }}</p><md-icon md-menu-align-target md-svg-icon=\"{{ attachement.icon }}\" style=\"margin: auto 3px auto 0\"></md-icon></div></md-button></md-menu-item></md-menu-content></md-menu>"
+  );
+
+
   $templateCache.put('modules/conversations/views/conversation.card.html',
-    "<md-card class=plage-card layout=column flex><md-card-title layout=column style=max-height:160px;height:160px;padding-bottom:0px><div layout=row layout-align=\"start center\"><div flex class=md-title>{{ conversation.toString() }}</div><md-button class=md-icon-button ng-if=\"conversation.type !== 'intervention'\" ng-click=ConversationCardCtrl.archive(conversation) ng-disabled=conversation.archived><md-icon md-svg-icon=content:archive></md-icon><md-tooltip>archiver</md-tooltip></md-button></div><div layout=row layout-align=\"start center\" layout-wrap layout-margin><avatar user=participant click-for-details-avatar ng-repeat=\"participant in conversationParticipants\"></avatar></div></md-card-title><md-divider style=margin-top:8px></md-divider><md-card-content flex layout=column><conversation conversation=conversation flex layout=column></conversation></md-card-content></md-card>"
+    "<md-card class=plage-card layout=column><md-card-title layout=column style=padding-bottom:0px><div layout=row layout-align=\"start center\"><div flex class=md-title>{{ conversation.toString() }}</div><md-button class=md-icon-button ng-if=\"conversation.type !== 'intervention'\" ng-click=ConversationCardCtrl.archive(conversation) ng-disabled=conversation.archived><md-icon md-svg-icon=content:archive></md-icon><md-tooltip>archiver</md-tooltip></md-button></div><div layout=row layout-align=\"start center\" layout-wrap layout-margin style=margin-top:50px;margin-bottom:50px><avatar user=participant click-for-details-avatar ng-repeat=\"participant in conversationParticipants\"></avatar></div></md-card-title><md-divider style=margin-top:8px></md-divider><md-card-content flex layout=column><conversation conversation=conversation flex layout=column></conversation></md-card-content></md-card>"
   );
 
 
   $templateCache.put('modules/conversations/views/conversation.html',
-    "<md-list layout=column flex><md-content flex layout=column><div layout=column ng-repeat=\"message in messages | orderBy : 'createdAt'\"><md-list-item class=md-2-line ng-style=\"$odd && {'background-color': 'white'}\" ng-mouseover=\"showOptions = true\" ng-mouseleave=\"showOptions = false\" ng-init=\"$last && scrollDown()\"><avatar user=conversationCtrl.getAuthor(message.author) no-role></avatar><div layout=row flex ng-if=message._id><div class=md-list-item-text layout=column flex><h3>{{ conversationCtrl.getAuthor(message.author).toString() }}</h3><p>{{ message.body }}</p></div><div flex=15><span class=md-caption ng-hide=\"message.currentUserIsAuthor() && showOptions\" style=padding-right:6px;line-height:23px>{{ message.createdAt.fromNow() }}</span><md-button class=md-icon-button aria-label=Supprimer style=margin:0px;padding:0px;min-height:23px;height:18px ng-show=\"message.currentUserIsAuthor() && showOptions\" ng-click=conversationCtrl.deleteMessage(message)><md-icon md-svg-icon=action:delete style=\"height: 16px\"></md-icon></md-button></div></div><form layout=row flex ng-if=\"message._id === undefined\" ng-submit=conversationCtrl.addMessage(message)><md-input-container md-no-float flex style=margin:0><input placeholder=\"Nouveau message\" ng-model=message.body autocomplete=off></md-input-container><div flex=15 layout=row layout-align=\"start center\"><md-menu md-position-mode=\"target-right target\"><md-button aria-label=\"Ajouter un attachement\" class=md-icon-button ng-click=$mdMenu.open($event)><md-icon md-menu-origin md-svg-icon=file:attachment></md-icon></md-button><md-menu-content width=4><md-menu-item ng-repeat=\"attachement in attachements\"><md-button ng-click=\"conversationCtrl.handleAttachementSelection(message, attachement)\"><div layout=row flex><p flex>{{ attachement.title }}</p><md-icon md-menu-align-target md-svg-icon=\"{{ attachement.icon }}\" style=\"margin: auto 3px auto 0\"></md-icon></div></md-button></md-menu-item></md-menu-content></md-menu><md-button class=\"md-icon-button md-primary\" aria-label=Ajouter type=submit ng-disabled=\"message.body === undefined || message.body.length === 0\"><md-icon md-svg-icon=content:send></md-icon></md-button></div></form></md-list-item><div ng-repeat=\"attachement in message.attachements\"><attachement attachement=attachement></attachement></div></div></md-content></md-list>"
+    "<md-list layout=column flex><md-content flex layout=column><div layout=column ng-repeat=\"message in messages | orderBy : 'createdAt'\"><md-list-item class=md-2-line ng-style=\"$odd && {'background-color': 'white'}\" ng-mouseover=\"showOptions = true\" ng-mouseleave=\"showOptions = false\" ng-init=\"$last && scrollDown()\"><avatar user=conversationCtrl.getAuthor(message.author) no-role></avatar><div layout=row flex ng-if=message._id><div class=md-list-item-text layout=column flex><h3>{{ conversationCtrl.getAuthor(message.author).toString() }}</h3><p>{{ message.body }}</p></div><div flex=15><span class=md-caption ng-hide=\"message.currentUserIsAuthor() && showOptions\" style=padding-right:6px;line-height:23px>{{ message.createdAt.fromNow() }}</span><md-button class=md-icon-button aria-label=Supprimer style=margin:0px;padding:0px;min-height:23px;height:18px ng-show=\"message.currentUserIsAuthor() && showOptions\" ng-click=conversationCtrl.deleteMessage(message)><md-icon md-svg-icon=action:delete style=\"height: 16px\"></md-icon></md-button></div></div><form layout=row flex ng-if=\"message._id === undefined\" ng-submit=conversationCtrl.addMessage(message)><md-input-container md-no-float flex style=margin:0><input placeholder=\"Nouveau message\" ng-model=message.body autocomplete=off></md-input-container><div flex=15 layout=row layout-align=\"start center\"><attachement-button message=message></attachement-button><md-button class=\"md-icon-button md-primary\" aria-label=Ajouter type=submit ng-disabled=\"message.body === undefined || message.body.length === 0\"><md-icon md-svg-icon=content:send></md-icon></md-button></div></form></md-list-item><div ng-repeat=\"attachement in message.attachements\"><attachement attachement=attachement></attachement></div></div></md-content></md-list>"
   );
 
 
@@ -4488,8 +4772,13 @@ angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('modules/conversations/views/conversations.section-filters.html',
+    "<div layout=column ng-controller=\"ConversationsSectionFiltersController as conversationsSectionFiltersCtrl\"><md-switch aria-label=archivés ng-model=query.archived ng-change=conversationsSectionFiltersCtrl.updateFilters(query)>archivés</md-switch></div>"
+  );
+
+
   $templateCache.put('modules/conversations/views/conversations.section.html',
-    "<div layout=row flex><div layout=column flex=30 flex-gt-lg=20><md-card><md-card-content><md-input-container md-no-float class=\"md-icon-float md-block no-errors-spacer\"><md-icon md-svg-icon=action:search></md-icon><input placeholder=recherche... input-clear ng-model=search.title ng-model-options=\"{ debounce: PARAMS.DEBOUNCE_TIME }\" ng-change=conversationsSectionCtrl.updateSearch(search)></md-input-container><md-switch aria-label=archivés ng-disabled=conversationsSectionCtrl.noArchives ng-model=search.archived ng-change=conversationsSectionCtrl.updateSearch(search)>archivés</md-switch></md-card-content></md-card><md-card flex><md-content flex><md-list section-list flex layout=column><md-list-item class=md-2-line ng-class=\"{ active:item._id === conversation._id }\" ng-repeat=\"item in conversationsSectionCtrl.conversations\" ng-click=conversationsSectionCtrl.showConversation(item)><div class=md-list-item-text style=padding-right:16px><md-truncate flex>{{ item.toString() }}</md-truncate></div><md-icon md-svg-icon=communication:message></md-icon><md-divider ng-if=!$last></md-divider></md-list-item></md-list></md-content></md-card></div><div flex=70 flex-gt-lg=80 layout=column><div layout=row flex layout-align=\"center center\" ng-hide=lodadingDone><md-progress-circular md-diameter=160 md-mode=indeterminate></md-progress-circular></div><conversation-card layout=column flex ng-if=\"lodadingDone && conversation\" conversation=conversation></conversation-card></div></div>"
+    "<div layout=row flex><div layout=column flex=30 flex-gt-lg=20><section-filters-card section-name=conversations on-change=conversationsSectionCtrl.updateFilters(query)></section-filters-card><md-card flex><md-content flex><md-list section-list flex layout=column><md-list-item class=md-2-line ng-class=\"{ active:item._id === conversation._id }\" ng-repeat=\"item in conversationsSectionCtrl.conversations\" ng-click=conversationsSectionCtrl.showConversation(item)><div class=md-list-item-text style=padding-right:16px><md-truncate flex>{{ item.toString() }}</md-truncate></div><md-icon md-svg-icon=communication:message></md-icon><md-divider ng-if=!$last></md-divider></md-list-item></md-list></md-content></md-card></div><div flex=70 flex-gt-lg=80 layout=column><div layout=row flex layout-align=\"center center\" ng-hide=lodadingDone><md-progress-circular md-diameter=160 md-mode=indeterminate></md-progress-circular></div><conversation-card layout=column flex ng-if=\"lodadingDone && conversation\" conversation=conversation></conversation-card></div></div>"
   );
 
 
@@ -4506,7 +4795,7 @@ angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('modules/conversations/views/nouveau-message.dialog.html',
-    "<md-dialog aria-label=\"Nouveau message\" style=width:800px><form novalidate name=messageForm ng-submit=nouveauMessageCtrl.send(messageForm)><md-toolbar><div class=md-toolbar-tools><h2>Nouveau message</h2><span flex></span><md-button class=md-icon-button ng-click=nouveauMessageCtrl.cancel()><md-icon md-svg-icon=navigation:close aria-label=\"Close dialog\"></md-icon></md-button></div></md-toolbar><md-dialog-content><div class=md-dialog-content><md-contact-chips ng-model=nouveauMessageCtrl.message.destinataires name=destinataires md-contacts=nouveauMessageCtrl.searchDestinataires($query) md-contact-name=fullname md-contact-image=avatar md-require-match=true md-highlight-flags=i placeholder=Destinataire(s)></md-contact-chips><div ng-messages=messageForm.destinataires.$error><div ng-message=required>requis.</div></div><md-input-container class=md-block><label>Sujet</label><input name=subject ng-model=nouveauMessageCtrl.message.subject required><div ng-messages=messageForm.subject.$error><div ng-message=required>requis.</div></div></md-input-container><md-input-container class=md-block><label>Message</label><textarea name=body ng-model=nouveauMessageCtrl.message.body rows=5 required></textarea><div ng-messages=messageForm.body.$error><div ng-message=required>requis.</div></div></md-input-container></div></md-dialog-content><md-dialog-actions layout=row><md-button type=button ng-click=nouveauMessageCtrl.cancel()>Annuler</md-button><md-button type=submit class=\"md-primary md-raised\" style=margin-right:20px>Envoyer</md-button></md-dialog-actions></form></md-dialog>"
+    "<md-dialog aria-label=\"Nouveau message\" style=width:800px><form novalidate name=messageForm ng-submit=nouveauMessageCtrl.send(messageForm)><md-toolbar><div class=md-toolbar-tools><h2>Nouveau message</h2><span flex></span><md-button class=md-icon-button ng-click=nouveauMessageCtrl.cancel()><md-icon md-svg-icon=navigation:close aria-label=\"Close dialog\"></md-icon></md-button></div></md-toolbar><md-dialog-content><div class=md-dialog-content><md-contact-chips ng-model=nouveauMessageCtrl.message.destinataires name=destinataires md-contacts=nouveauMessageCtrl.searchDestinataires($query) md-contact-name=fullname md-contact-image=avatar md-require-match=true md-highlight-flags=i required placeholder=Destinataire(s)></md-contact-chips><div class=md-caption>utilisez @ pour écrire à un groupe</div><div ng-messages=messageForm.destinataires.$error><div ng-message=required>requis.</div></div><md-input-container class=md-block><label>Sujet</label><input name=subject ng-model=nouveauMessageCtrl.message.subject required><div ng-messages=messageForm.subject.$error><div ng-message=required>requis.</div></div></md-input-container><md-input-container class=md-block><label>Message</label><textarea name=body ng-model=nouveauMessageCtrl.message.body rows=5 required></textarea><div ng-messages=messageForm.body.$error><div ng-message=required>requis.</div></div></md-input-container><div ng-repeat=\"attachement in nouveauMessageCtrl.message.attachements\"><attachement attachement=attachement></attachement></div></div></md-dialog-content><md-dialog-actions layout=row><attachement-button message=nouveauMessageCtrl.message></attachement-button><md-button type=button ng-click=nouveauMessageCtrl.cancel()>Annuler</md-button><md-button type=submit class=\"md-primary md-raised\" style=margin-right:20px>Envoyer</md-button></md-dialog-actions></form></md-dialog>"
   );
 
 
@@ -4522,6 +4811,11 @@ angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('modules/core/views/right-panel.html',
     "<md-sidenav class=\"md-sidenav-right md-whiteframe-4dp\" md-component-id=right-panel><md-toolbar class=md-theme-light><div class=md-toolbar-tools><md-button class=md-icon-button ng-click=closeSideNav() aria-label=Fermer><md-icon md-svg-icon=navigation:arrow_forward></md-icon></md-button><h1>{{ title }}</h1></div></md-toolbar><div layout=column flex><md-content layout=column flex ng-include=templateUrl></md-content></div></md-sidenav>"
+  );
+
+
+  $templateCache.put('modules/core/views/section-filters.card.html',
+    "<md-card><form name=filterForm novalidate ng-submit=sectionFiltersCardCtrl.saveFilter(filterForm)><md-card-title style=padding-bottom:0><md-card-title-text layout=row layout-align=\"start center\"><md-menu><md-button aria-label=\"Changer de groupe\" class=md-icon-button ng-click=$mdMenu.open($event) style=margin:0;padding:0><md-icon md-menu-origin md-svg-icon=content:filter_list></md-icon></md-button><md-menu-content width=4><md-menu-item ng-repeat=\"filter in filters\"><md-button ng-click=sectionFiltersCardCtrl.selectFilter(filter)><div layout=row flex><md-icon md-menu-align-target md-svg-icon=content:filter_list></md-icon><p flex>{{ filter.title }}</p></div></md-button></md-menu-item><md-divider></md-divider><md-menu-item><md-button ng-click=sectionFiltersCardCtrl.createFilter($event)><div layout=row flex><md-icon md-menu-align-target md-svg-icon=content:add></md-icon><p flex>Nouveau groupe</p></div></md-button></md-menu-item></md-menu-content></md-menu><div layout=column><div ng-if=!changingTitle class=md-title style=font-size:16px>{{ selectedFilter.title }}</div><md-input-container ng-if=changingTitle md-no-float class=\"md-icon-float md-block no-errors-spacer\" style=margin:0><input aria-label=\"Nom du groupe\" name=title ng-model=selectedFilter.title required></md-input-container></div></md-card-title-text></md-card-title><md-card-content><div layout=row layout-align=\"start center\"><div layout=row layout-align=\"start center\" ng-show=!selectedFilter.default><md-button type=submit ng-show=showFilters class=md-icon-button style=margin:0;padding:0 ng-class=\"{'md-primary': filterForm.$dirty}\" ng-disabled=filterForm.$pristine><md-icon md-svg-icon=content:save><md-tooltip>Sauvegarder</md-tooltip></md-icon></md-button><md-button class=md-icon-button ng-show=showFilters ng-click=\"changingTitle = !changingTitle\" style=margin:0;padding:0><md-icon md-svg-icon=editor:mode_edit><md-tooltip>Changer titre</md-tooltip></md-icon></md-button><md-button class=md-icon-button ng-show=showFilters ng-click=sectionFiltersCardCtrl.deleteFilter() style=margin:0;padding:0><md-icon md-svg-icon=action:delete><md-tooltip>Supprimer</md-tooltip></md-icon></md-button></div><div flex></div><div class=md-subhead ng-click=\"showFilters = !showFilters\">options</div><md-button class=md-icon-button ng-click=\"showFilters = !showFilters\" style=margin:0;padding:0><md-icon md-svg-icon=\"navigation:expand_{{ showFilters ? 'less' : 'more' }}\"><md-tooltip>{{ showFilters ? 'Cacher' : 'Afficher' }}</md-tooltip></md-icon></md-button></div><div ng-show=showFilters layout=column flex><md-divider style=margin-top:16px;margin-bottom:16px></md-divider><div ng-include=selectedFilter.templateUrl></div></div></md-card-content></form></md-card>"
   );
 
 
@@ -4541,7 +4835,7 @@ angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('modules/etablissements/views/etablissement.form.html',
-    "<ng-form name=etablissementForm auto-save-form=autoSave novalidate><div layout=row flex layout-align=\"start start\" style=\"margin-top: 16px\" ng-init=\"addingType = false\"><md-input-container class=md-block flex><label>Nom</label><input name=name ng-model=etablissement.name ng-model-options=\"{ updateOn: 'blur' }\" ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm) ng-disabled=disabledForm required><div ng-messages=etablissementForm.name.$error><div ng-message=required>requis.</div></div></md-input-container><span flex=5></span><md-input-container ng-hide=addingType flex=45><label>Type d'établissement</label><md-select name=etablissementType ng-model=etablissement.type ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm) ng-disabled=disabledForm ng-required=!addingType><md-option ng-repeat=\"type in etablissementFormCtrl.etablissementTypes\" ng-value=type ng-selected=\"type._id === etablissement.type._id\">{{ type.toString() }}</md-option></md-select><div ng-messages=etablissementForm.etablissementType.$error><div ng-message=required>requis.</div></div></md-input-container><md-input-container ng-show=addingType flex=45><label style=margin-left:1px>Nouveau type d'établissement</label><input name=typeDescription focus-on=addingType ng-model=etablissement.typeDescription ng-model-options=\"{ updateOn: 'blur' }\" ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm) ng-required=addingType><div ng-messages=etablissementForm.typeDescription.$error><div ng-message=required>requis.</div></div></md-input-container><md-button style=\"margin-top:18px; margin-left:0px\" flex=5 class=\"md-icon-button md-primary\" aria-label=Ajouter ng-disabled=disabledForm ng-click=etablissementFormCtrl.toggleAddingType()><md-icon md-svg-icon=\"{{ 'content:' + (addingType ? 'clear' : 'add') }}\"></md-icon><md-tooltip>Ajouter</md-tooltip></md-button></div><div layout=row flex layout-align=\"start start\"><md-input-container class=md-block flex><label>Adresse</label><input name=adresse ng-model=etablissement.address.street ng-model-options=\"{ updateOn: 'blur' }\" ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm) ng-disabled=disabledForm required><div ng-messages=etablissementForm.adresse.$error><div ng-message=required>requis.</div></div></md-input-container><span flex=5></span><md-input-container ng-hide=addingCommission flex=45><label>Commission Scolaire</label><md-select name=commissionScolaire ng-model=etablissement.commissionScolaire ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm) ng-disabled=disabledForm><md-option ng-repeat=\"commissionScolaire in etablissementFormCtrl.commissionsScolaires\" ng-value=commissionScolaire ng-selected=\"commissionScolaire._id === etablissement.commissionScolaire._id\">{{ commissionScolaire.toString() }}</md-option></md-select><div ng-messages=etablissementForm.commissionScolaire.$error><div ng-message=required>requis.</div></div></md-input-container><md-input-container ng-show=addingCommission flex=45><label style=margin-left:1px>Nouvelle commission scolaire</label><input name=typeDescription focus-on=addingCommission ng-model=etablissement.commissionDescription ng-model-options=\"{ updateOn: 'blur' }\" ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm)><div ng-messages=etablissementForm.typeDescription.$error><div ng-message=required>requis.</div></div></md-input-container><md-button style=\"margin-top:18px; margin-left:0px\" flex=5 class=\"md-icon-button md-primary\" aria-label=Ajouter ng-disabled=disabledForm ng-click=etablissementFormCtrl.toggleAddingCommission()><md-icon md-svg-icon=\"{{ 'content:' + (addingCommission ? 'clear' : 'add') }}\"></md-icon><md-tooltip>Ajouter</md-tooltip></md-button></div><div layout=row flex layout-align=\"start start\"><md-input-container flex=45><label>Ville</label><md-select name=ville ng-model=etablissement.address.city ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm) ng-disabled=disabledForm required><md-option ng-repeat=\"ville in etablissementFormCtrl.villes\" ng-value=ville ng-selected=\"ville._id === etablissement.address.city._id\">{{ ville.toString() }}</md-option></md-select><div ng-messages=etablissementForm.ville.$error><div ng-message=required>requis.</div></div></md-input-container><span flex=5></span><md-input-container flex=45><label>Province</label><md-select name=province ng-model=etablissement.address.province ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm) ng-disabled=disabledForm required><md-option ng-repeat=\"province in etablissementFormCtrl.provinces\" ng-value=province ng-selected=\"province._id === etablissement.address.province._id\">{{ province.toString() }}</md-option></md-select><div ng-messages=etablissementForm.province.$error><div ng-message=required>requis.</div></div></md-input-container><span flex=5></span><md-input-container class=md-block flex=15><label>Code Postal</label><input name=postalCode ng-model=etablissement.address.postalCode ng-model-options=\"{ updateOn: 'blur' }\" ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm) ui-mask=\"A9A 9A9\" ng-disabled=disabledForm required><div ng-messages=etablissementForm.postalCode.$error><div ng-message=required>requis.</div></div></md-input-container><span flex=5></span></div><telephone-input flex=50 ng-model=etablissement.telephones ng-disabled=disabledForm ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm)></telephone-input></ng-form>"
+    "<ng-form name=etablissementForm auto-save-form=autoSave novalidate><div layout=row flex layout-align=\"start start\" style=\"margin-top: 16px\" ng-init=\"addingType = false\"><md-input-container class=md-block flex><label>Nom</label><input name=name ng-model=etablissement.name ng-model-options=\"{ updateOn: 'blur' }\" ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm) ng-disabled=disabledForm required><div ng-messages=etablissementForm.name.$error><div ng-message=required>requis.</div></div></md-input-container><span flex=5></span><md-input-container ng-hide=addingType flex=45><label>Type d'établissement</label><md-select name=etablissementType ng-model=etablissement.type ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm) ng-disabled=disabledForm ng-required=!addingType><md-option ng-repeat=\"type in etablissementFormCtrl.etablissementTypes\" ng-value=type ng-selected=\"type._id === etablissement.type._id\">{{ type.toString() }}</md-option></md-select><div ng-messages=etablissementForm.etablissementType.$error><div ng-message=required>requis.</div></div></md-input-container><md-input-container ng-show=addingType flex=45><label style=margin-left:1px>Nouveau type d'établissement</label><input name=typeDescription focus-on=addingType ng-model=etablissement.typeDescription ng-model-options=\"{ updateOn: 'blur' }\" ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm) ng-required=addingType><div ng-messages=etablissementForm.typeDescription.$error><div ng-message=required>requis.</div></div></md-input-container><md-button style=\"margin-top:18px; margin-left:0px\" flex=5 class=\"md-icon-button md-primary\" aria-label=Ajouter ng-disabled=disabledForm ng-click=etablissementFormCtrl.toggleAddingType()><md-icon md-svg-icon=\"{{ 'content:' + (addingType ? 'clear' : 'add') }}\"></md-icon><md-tooltip>Ajouter</md-tooltip></md-button></div><div layout=row flex layout-align=\"start start\"><md-input-container class=md-block flex><label>Adresse</label><input name=adresse ng-model=etablissement.address.street ng-model-options=\"{ updateOn: 'blur' }\" ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm) ng-disabled=disabledForm required><div ng-messages=etablissementForm.adresse.$error><div ng-message=required>requis.</div></div></md-input-container><span flex=5></span><md-input-container ng-hide=addingCommission flex=45><label>Commission Scolaire</label><md-select name=commissionScolaire ng-model=etablissement.commissionScolaire ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm) ng-disabled=disabledForm><md-option ng-value=null>Aucune</md-option><md-option ng-repeat=\"commissionScolaire in etablissementFormCtrl.commissionsScolaires\" ng-value=commissionScolaire ng-selected=\"commissionScolaire._id === etablissement.commissionScolaire._id\">{{ commissionScolaire.toString() }}</md-option></md-select><div ng-messages=etablissementForm.commissionScolaire.$error><div ng-message=required>requis.</div></div></md-input-container><md-input-container ng-show=addingCommission flex=45><label style=margin-left:1px>Nouvelle commission scolaire</label><input name=typeDescription focus-on=addingCommission ng-model=etablissement.commissionDescription ng-model-options=\"{ updateOn: 'blur' }\" ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm)><div ng-messages=etablissementForm.typeDescription.$error><div ng-message=required>requis.</div></div></md-input-container><md-button style=\"margin-top:18px; margin-left:0px\" flex=5 class=\"md-icon-button md-primary\" aria-label=Ajouter ng-disabled=disabledForm ng-click=etablissementFormCtrl.toggleAddingCommission()><md-icon md-svg-icon=\"{{ 'content:' + (addingCommission ? 'clear' : 'add') }}\"></md-icon><md-tooltip>Ajouter</md-tooltip></md-button></div><div layout=row flex layout-align=\"start start\"><md-input-container flex=45><label>Ville</label><md-select name=ville ng-model=etablissement.address.city ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm) ng-disabled=disabledForm required><md-option ng-repeat=\"ville in etablissementFormCtrl.villes\" ng-value=ville ng-selected=\"ville._id === etablissement.address.city._id\">{{ ville.toString() }}</md-option></md-select><div ng-messages=etablissementForm.ville.$error><div ng-message=required>requis.</div></div></md-input-container><span flex=5></span><md-input-container flex=45><label>Province</label><md-select name=province ng-model=etablissement.address.province ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm) ng-disabled=disabledForm required><md-option ng-repeat=\"province in etablissementFormCtrl.provinces\" ng-value=province ng-selected=\"province._id === etablissement.address.province._id\">{{ province.toString() }}</md-option></md-select><div ng-messages=etablissementForm.province.$error><div ng-message=required>requis.</div></div></md-input-container><span flex=5></span><md-input-container class=md-block flex=15><label>Code Postal</label><input name=postalCode ng-model=etablissement.address.postalCode ng-model-options=\"{ updateOn: 'blur' }\" ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm) ui-mask=\"A9A 9A9\" ng-disabled=disabledForm required><div ng-messages=etablissementForm.postalCode.$error><div ng-message=required>requis.</div></div></md-input-container><span flex=5></span></div><telephone-input flex=50 ng-model=etablissement.telephones ng-disabled=disabledForm ng-change=etablissementFormCtrl.saveEtablissement(etablissementForm)></telephone-input></ng-form>"
   );
 
 
@@ -4557,8 +4851,13 @@ angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('modules/etablissements/views/etablissements.section-filters.html',
+    "<div layout=column ng-controller=\"EtablissementSectionFiltersController as etablissementsSectionFiltersCtrl\"><div layout=row layout-align=\"start center\"><md-input-container class=no-errors-spacer flex><label>Type</label><md-select ng-model=query.type><md-option ng-value=null>Tout</md-option><md-option ng-repeat=\"etablissemenType in etablissementsSectionFiltersCtrl.etablissementTypes\" ng-value=etablissemenType._id ng-selected=\"etablissemenType._id === query.type\">{{ etablissemenType.toString() }}</md-option></md-select></md-input-container></div><div layout=row layout-align=\"start center\"><md-input-container class=no-errors-spacer flex><label>Comission Scolaire</label><md-select ng-model=query.commissionScolaire><md-option ng-value=null>Toute</md-option><md-option ng-repeat=\"commissionScolaire in etablissementsSectionFiltersCtrl.commissionsScolaires\" ng-value=commissionScolaire._id ng-selected=\"commissionScolaire._id === query.commissionScolaire\">{{ commissionScolaire.toString() }}</md-option></md-select></md-input-container><span flex=5></span><md-input-container class=no-errors-spacer flex><label>Ville</label><md-select ng-model=query.address.city><md-option ng-value=null>Toute</md-option><md-option ng-repeat=\"ville in etablissementsSectionFiltersCtrl.villes\" ng-value=ville._id ng-selected=\"ville._id === query.address.city\">{{ ville.toString() }}</md-option></md-select></md-input-container></div></div>"
+  );
+
+
   $templateCache.put('modules/etablissements/views/etablissements.section.html',
-    "<div layout=row flex><div layout=column flex=30 flex-gt-lg=20><md-card><md-card-content><md-input-container md-no-float class=\"md-icon-float md-block no-errors-spacer\"><md-icon md-svg-icon=action:search></md-icon><input placeholder=recherche... input-clear ng-model=search.etablissementName ng-model-options=\"{ debounce: PARAMS.DEBOUNCE_TIME }\" ng-change=etablissementsSectionCtrl.updateSearch(search)></md-input-container></md-card-content></md-card><md-card flex><md-content flex><md-list section-list flex layout=column><md-list-item class=md-2-line ng-class=\"{ active:item._id === etablissement._id }\" ng-repeat=\"item in etablissementsSectionCtrl.etablissements\" ng-click=etablissementsSectionCtrl.showEtablissement(item)><div class=md-list-item-text><h3>{{ item.toString() }}</h3><p>{{ item.type.name }}</p></div><md-divider ng-if=!$last></md-divider></md-list-item></md-list></md-content></md-card></div><div flex=70 flex-gt-lg=80 layout=column><div layout=row flex layout-align=\"center center\" ng-hide=lodadingDone><md-progress-circular md-diameter=160 md-mode=indeterminate></md-progress-circular></div><etablissement-card ng-if=\"lodadingDone && etablissement\" flex layout=column etablissement=etablissement></etablissement-card></div></div>"
+    "<div layout=row flex><div layout=column flex=30 flex-gt-lg=20><section-filters-card section-name=etablissements on-change=etablissementsSectionCtrl.updateFilters(query)></section-filters-card><md-card flex><md-content flex><md-list section-list flex layout=column><md-subheader class=search-subheader><md-input-container md-no-float class=\"md-icon-float md-block no-errors-spacer\" style=margin:0><md-icon md-svg-icon=action:search></md-icon><input placeholder=recherche... input-clear ng-model=query.searchTerm ng-change=etablissementsSectionCtrl.updateFilters(query)></md-input-container></md-subheader><md-list-item class=md-2-line ng-class=\"{ active:item._id === etablissement._id }\" ng-repeat=\"item in etablissementsSectionCtrl.etablissements\" ng-click=etablissementsSectionCtrl.showEtablissement(item)><div class=md-list-item-text><h3>{{ item.toString() }}</h3><p>{{ item.type.name }}</p></div><md-divider ng-if=!$last></md-divider></md-list-item></md-list></md-content></md-card></div><div flex=70 flex-gt-lg=80 layout=column><div layout=row flex layout-align=\"center center\" ng-hide=lodadingDone><md-progress-circular md-diameter=160 md-mode=indeterminate></md-progress-circular></div><etablissement-card ng-if=\"lodadingDone && etablissement\" flex layout=column etablissement=etablissement></etablissement-card></div></div>"
   );
 
 
@@ -4587,6 +4886,11 @@ angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('modules/interventions/views/interventions-section.filters.html',
+    "<div layout=column ng-controller=\"InterventionsSectionFiltersController as interventionsSectionFiltersCtrl\"><div layout=row class=date-filters><div layout=column flex style=position:relative><label class=md-caption>De</label><md-datepicker ng-model=query.date.gte></md-datepicker></div><div layout=column flex style=position:relative><label class=md-caption>À</label><md-datepicker ng-model=query.date.lte></md-datepicker></div></div></div>"
+  );
+
+
   $templateCache.put('modules/interventions/views/interventions.dashboard-card.html',
     "<md-card ng-click=interventionsDashboardCardCtrl.handleClick($event)><md-card-content flex layout=column layout-align=\"center center\" class=text-center><md-icon flex style=\"height:50; width:50px\" md-svg-icon=\"{{ INTERVENTIONS.ICONS.PLAGE }}\"></md-icon><div flex><div class=md-display-1 style=margin-right:8px ng-if=interventionsDashboardCardCtrl.nbInterventions>{{ interventionsDashboardCardCtrl.nbInterventions }}</div><ng-pluralize class=md-title count=interventionsDashboardCardCtrl.nbInterventions when=\"{'0': 'Ajouter une intervention',\n" +
     "													'one': 'plage d\\'intervention à venir',\n" +
@@ -4605,7 +4909,7 @@ angular.module('angularjsapp').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('modules/interventions/views/plages-interventions.section.html',
-    "<plage-intervention-section layout=row flex><div layout=column flex=30 flex-gt-lg=20><md-card><md-card-content><div layout=row class=date-filters><div layout=column flex style=position:relative><label class=md-caption>De</label><md-datepicker ng-model=search.date.start ng-change=plagesInterventionsSectionCtrl.updateSearch(search)></md-datepicker></div><div layout=column flex style=position:relative><label class=md-caption>À</label><md-datepicker ng-model=search.date.end ng-change=plagesInterventionsSectionCtrl.updateSearch(search)></md-datepicker></div></div><md-input-container md-no-float class=\"md-icon-float md-block no-errors-spacer\"><md-icon md-svg-icon=action:search></md-icon><input placeholder=recherche... input-clear ng-model=search.etablissementName ng-model-options=\"{ debounce: PARAMS.DEBOUNCE_TIME }\" ng-change=plagesInterventionsSectionCtrl.updateSearch(search)></md-input-container></md-card-content></md-card><md-card flex><md-content flex><md-list section-list flex layout=column><md-list-item class=md-2-line ng-class=\"{ active:item._id === plage._id }\" ng-repeat=\"item in plagesInterventionsSectionCtrl.plages\" ng-click=plagesInterventionsSectionCtrl.showPlage(item)><div class=md-list-item-text><h3>{{ item.etablissement.toString() }}</h3><p>{{ item.date.format('dddd DD MMMM YYYY') }}</p></div><md-icon ng-if=item.isUrgent() class=md-warn md-svg-icon=alert:warning><md-tooltip>urgence</md-tooltip></md-icon><md-icon ng-if=item.contactNotified class=md-primary md-svg-icon=action:check_circle><md-tooltip>contact notifié</md-tooltip></md-icon><md-icon ng-class=\"{ 'md-primary': item.isBooked() }\" md-svg-icon=\"{{ item.isBooked() ? 'action:lock' : 'action:lock_open' }}\"><md-tooltip>{{ item.isBooked() ? 'fermée' : 'ouverte' }}</md-tooltip></md-icon><md-divider ng-if=!$last></md-divider></md-list-item></md-list></md-content></md-card></div><div flex=70 flex-gt-lg=80 layout=column><div layout=row flex layout-align=\"center center\" ng-hide=lodadingDone><md-progress-circular md-diameter=160 md-mode=indeterminate></md-progress-circular></div><plage-intervention-fiche ng-if=\"lodadingDone && plage\" flex layout=column plage=plage></plage-intervention-fiche></div></plage-intervention-section>"
+    "<plage-intervention-section layout=row flex><div layout=column flex=30 flex-gt-lg=20><section-filters-card section-name=interventions on-change=interventionsSectionCtrl.updateFilters(query)></section-filters-card><md-card flex><md-content flex><md-list section-list flex layout=column><md-list-item class=md-2-line ng-class=\"{ active:item._id === plage._id }\" ng-repeat=\"item in interventionsSectionCtrl.plages\" ng-click=interventionsSectionCtrl.showPlage(item)><div class=md-list-item-text><h3>{{ item.etablissement.toString() }}</h3><p>{{ item.date.format('dddd DD MMMM YYYY') }}</p></div><md-icon ng-if=item.isUrgent() class=md-warn md-svg-icon=alert:warning><md-tooltip>urgence</md-tooltip></md-icon><md-icon ng-if=item.contactNotified class=md-primary md-svg-icon=action:check_circle><md-tooltip>contact notifié</md-tooltip></md-icon><md-icon ng-class=\"{ 'md-primary': item.isBooked() }\" md-svg-icon=\"{{ item.isBooked() ? 'action:lock' : 'action:lock_open' }}\"><md-tooltip>{{ item.isBooked() ? 'fermée' : 'ouverte' }}</md-tooltip></md-icon><md-divider ng-if=!$last></md-divider></md-list-item></md-list></md-content></md-card></div><div flex=70 flex-gt-lg=80 layout=column><div layout=row flex layout-align=\"center center\" ng-hide=lodadingDone><md-progress-circular md-diameter=160 md-mode=indeterminate></md-progress-circular></div><plage-intervention-fiche ng-if=\"lodadingDone && plage\" flex layout=column plage=plage></plage-intervention-fiche></div></plage-intervention-section>"
   );
 
 

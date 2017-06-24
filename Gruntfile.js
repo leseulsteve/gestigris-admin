@@ -588,6 +588,6 @@ module.exports = function (grunt) {
     'concurrent:copyCommon',
     'comments:dist',
     'clean:postDist',
-    //  'ftp-deploy:build'
+    'ftp-deploy:build'
   ]);
 };
