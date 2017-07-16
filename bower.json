@@ -5,7 +5,6 @@
     "gestigris-common": "git+https://github.com/leseulsteve/gestigris-common.git",
     "angular-drag-and-drop-lists": "~1.4.0",
     "angular-flickity": "~1.1.2",
-    "ngImgCropFullExtended": "~0.5.5",
     "animate.css": "~3.5.2",
     "angular-ui-mask": "~1.8.7",
     "zenscroll": "~3.3.0",
